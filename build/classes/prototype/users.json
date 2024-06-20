@@ -1,0 +1,15 @@
+[
+      {
+         "patient_id"   :  "1",
+         "username" :  "Ashish",
+         "pass"   :  "Java",
+         "type"   :  "DOCTOR",
+      },
+    
+      {
+         "patient_id"   :  "2",
+         "username" :  "Test",
+         "pass"   :  "admin",
+         "type"   :  "PATIENT",
+      }
+]
