@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -90,7 +91,11 @@ public class LoginMenu extends Stage{
                     System.out.println(authenticate.getType());
                     //load up main menu
                     hideScene();
-                    MainMenu menu = new MainMenu(authenticate.getType());
+                    //loadup menus, loadup different using 
+                    //      authenticate.getType()
+                    //need to build constructors
+                    Menus login = new Menus();
+                    //MainMenu menu = new MainMenu(authenticate.getType());
                 } else {
                     System.out.println("authentication failed");
                     //reset page with error
@@ -101,7 +106,10 @@ public class LoginMenu extends Stage{
             }
         });
     }
-    private void hideScene() {
+    public void hideScene() {
         this.hide();
+    }
+    public void showScene() {
+        this.show();
     }
 }

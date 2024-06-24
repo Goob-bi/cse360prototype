@@ -5,33 +5,38 @@
  */
 package prototype;
 
-import java.awt.Paint;
-import java.text.DecimalFormat;
 import javafx.application.Application;
-import static javafx.application.Application.launch;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
 /**
  *
  * @author andreas lees
  */
-public class Control extends Application{
-
+public class Control extends Application {
+    
     @Override
     public void start(Stage primaryStage) {
-        LoginMenu login = new LoginMenu();
+        LoginMenu authMenu = new LoginMenu();
+        //obsolete code, handled within LoginMenu
+    //    if (!authMenu.isShowing()) {
+    //        Menus login = new Menus();
+    //    }
         
-        primaryStage.setScene(login.getScene());
-        primaryStage.show();
+        
+        //primaryStage.setScene(login.getScene());
+        //primaryStage.show();
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        launch(args);
     }
     
 }
