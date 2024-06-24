@@ -1,0 +1,1 @@
+this project uses java 8 and javafx
