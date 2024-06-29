@@ -10,6 +10,6 @@
          "patient_id"   :  "2",
          "username" :  "Test",
          "pass"   :  "admin",
-         "type"   :  "PATIENT",
+         "type"   :  "NURSE",
       }
 ]
