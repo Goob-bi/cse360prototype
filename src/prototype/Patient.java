@@ -33,13 +33,13 @@ public class Patient {
     private BufferedWriter output = null;
     private JSONObject jo;
     
-    public String getVitalName() {
+    public String getVitalFile() {
         return this.vitalName;
     }
-    public String getHealthName() {
+    public String getHealthFile() {
         return this.healthName;
     }
-    public String getInfoName() {
+    public String getInfoFile() {
         return this.infoName;
     }
     Patient(String patientID) {
@@ -111,7 +111,6 @@ public class Patient {
             ja = listCheck(filePath + patientListFilename);
             System.out.println(ja.toString());
             ja.accumulate("patientID", patientID);
-            //ja.put(patientID);
             File file2 = new File(filePath + patientListFilename);
             output = new BufferedWriter(new FileWriter(file2));
             output.write(ja.toString());
@@ -145,15 +144,8 @@ public class Patient {
             JSONArray ja = new JSONArray(fileDATA);
             System.out.println("test"); 
             System.out.println(this.patientID);
-   //         JSONObject jo2 = new JSONObject();
-   //         jo2.put("patientID", this.patientID);
-   //         jo2.put("username", this.getFirstName());
-   //         jo2.put("pass", this.patientID);
-    //        jo2.put("type", "PATIENT");
             ja.put(jo2);
             System.out.println("test2"); 
-            //jo = listCheck(filePath + "users.json");
-            //jo.accumulate("patientID", patientID);
             output = new BufferedWriter(new FileWriter(file3));
             output.write(ja.toString());
 
