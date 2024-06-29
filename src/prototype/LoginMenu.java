@@ -120,7 +120,7 @@ public class LoginMenu extends Stage{
                     //      authenticate.getType()
                     //need to build constructors
                  //   Menus login = new Menus();
-                    Menus login = new Menus(authenticate.getType());
+                    Menus login = new Menus(authenticate);
                     //MainMenu menu = new MainMenu(authenticate.getType());
                 } else {
                     System.out.println("authentication failed");

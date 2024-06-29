@@ -59,6 +59,11 @@ public class Patient {
         return jo.getString("firstName") + " " + jo.getString("lastName");
     }
     
+    public String getFirstName() {
+        loadPatient(infoName);
+        return jo.getString("firstName");
+    }
+    
     public boolean savePatient(String firstName, String lastName,String email,String phone,String healthHist,String insID) {
         
         jo = fileCheck(infoName);
@@ -87,21 +92,79 @@ public class Patient {
             System.out.println("File Saved"); 
             
             //add to patientList
-            jo = listCheck();
-            jo.accumulate("patientID", patientID);
-            File file2 = new File(filePath + patientListFilename);
-            output = new BufferedWriter(new FileWriter(file2));
-            output.write(jo.toString());
-
-            output.close();
-            System.out.println("Added to patient list"); 
-            
+            System.out.println("Adding to patient list"); 
+            addPatient(jo.get("patientID").toString());
+            //----------
+            //add to userList
+            System.out.println("adding to user list"); 
+            addUser(loadPatient(infoName));
             return true;
         } catch (IOException ex) {
             System.out.println("Error saving file"); 
         }
         
         return false;
+    }
+    private void addPatient(String patientID) {
+        try {
+            JSONObject ja = new JSONObject();
+            ja = listCheck(filePath + patientListFilename);
+            System.out.println(ja.toString());
+            ja.accumulate("patientID", patientID);
+            //ja.put(patientID);
+            File file2 = new File(filePath + patientListFilename);
+            output = new BufferedWriter(new FileWriter(file2));
+            output.write(ja.toString());
+
+            output.close();
+            System.out.println("Added to patient list"); 
+            
+            
+        } catch (IOException ex) {
+            System.out.println("Error saving file"); 
+        }
+        
+    }
+    private void addUser(JSONObject patientO) {
+        try {
+            JSONObject jo2 = new JSONObject();
+            jo2.put("patientID", this.patientID);
+            jo2.put("username", this.getFirstName());
+            jo2.put("pass", this.patientID);
+            jo2.put("type", "PATIENT");
+            
+            //JSONArray ja = new JSONArray();
+            System.out.println("Adding to user list"); 
+            File file3 = new File("./src/prototype/users.json");
+            Scanner readFile = new Scanner(file3);
+            String fileDATA = "";
+            while (readFile.hasNextLine()) {
+                fileDATA = fileDATA.concat(readFile.nextLine());
+            }
+            System.out.println(fileDATA);
+            JSONArray ja = new JSONArray(fileDATA);
+            System.out.println("test"); 
+            System.out.println(this.patientID);
+   //         JSONObject jo2 = new JSONObject();
+   //         jo2.put("patientID", this.patientID);
+   //         jo2.put("username", this.getFirstName());
+   //         jo2.put("pass", this.patientID);
+    //        jo2.put("type", "PATIENT");
+            ja.put(jo2);
+            System.out.println("test2"); 
+            //jo = listCheck(filePath + "users.json");
+            //jo.accumulate("patientID", patientID);
+            output = new BufferedWriter(new FileWriter(file3));
+            output.write(ja.toString());
+
+            output.close();
+            System.out.println("Added to user list"); 
+            
+            
+        } catch (IOException ex) {
+            System.out.println("Error saving file"); 
+        }
+        
     }
     public boolean savePatientVitals(String over12, String weight, String height,String bodyTemp,String bloodP) {
         
@@ -167,11 +230,22 @@ public class Patient {
         return false;
     }
     public List getPList() {
-        jo = listCheck();
+        JSONArray ja = new JSONArray();
+        //ja = listCheck(filePath + patientListFilename);
+        jo = listCheck(filePath + patientListFilename);
         if (jo.isEmpty()) {
             System.out.println("empty list");
+            List list = java.util.Collections.emptyList();
+            return list;
         }
-        JSONArray ja = jo.getJSONArray("patientID");
+        try {
+            System.out.println("grabbing array");
+            ja = jo.getJSONArray("patientID");
+            
+        } catch (JSONException e) {
+            System.out.println("converting to array");
+            ja = jo.toJSONArray(new JSONArray("patientID"));
+        }
         return ja.toList();
     }
     
@@ -187,22 +261,26 @@ public class Patient {
         }
         return jo;
     }
-    private JSONObject listCheck() {
+    private JSONObject listCheck(String pathToFile) {
+        JSONObject jo = new JSONObject();
         try {
-            File file = new File(filePath + patientListFilename);  
+            //File file = new File(filePath + patientListFilename);  
+            File file = new File(pathToFile);  
             boolean bool = file.createNewFile();
             if (bool) {
                 System.out.println("New File created"); 
             }
+                System.out.println("test"); 
             
             if (file.length() < 1) {
                 System.out.println("Empty File: populating"); 
-                JSONObject jo = new JSONObject();
-               // jo.put("patientID", patientID);   //test
-                System.out.println(jo.toString()); 
+               //JSONObject jo = new JSONObject();
+             //   jo.accumulate("patientID", "");   //test
+             //   System.out.println(jo.toString()); 
                 
                 output = new BufferedWriter(new FileWriter(file));
-                output.write(jo.toString());
+            //    output.write(jo.toString());
+                output.write("{\"patientID\":[]}");
                 
                 output.close();
                 return jo;
@@ -214,7 +292,8 @@ public class Patient {
             while (readFile.hasNextLine()) {
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
-            JSONObject jo = new JSONObject(fileDATA);
+            jo = new JSONObject(fileDATA);
+            //jo.accumulate("patientID", "");
             System.out.println(jo.toString());
             return jo;
         } catch (FileNotFoundException e) {
@@ -222,7 +301,7 @@ public class Patient {
         } catch (IOException ex) {
             System.out.println("Error opening file");
         }
-        JSONObject jo = new JSONObject();
+    //    JSONObject jo = new JSONObject();
         return jo;
     }
     private JSONObject fileCheck(String fileName) {
@@ -238,6 +317,7 @@ public class Patient {
             //---------------------------------------
             // check/create file---------------------
             File file = new File(filePath + patientID + "/" + patientID + fileName); //+ "_PatientInfo.txt" or vitals
+            System.out.println(filePath + patientID + "/" + patientID + fileName);
             bool = file.createNewFile();
             if (bool) {
                 System.out.println("New File created"); 
@@ -259,9 +339,11 @@ public class Patient {
             Scanner readFile = new Scanner(file);
             //---------------------------------------
             //read file-----------------------------
+            fileDATA = "";
             while (readFile.hasNextLine()) {
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
+            System.out.println("data: " + fileDATA);
             JSONObject jo = new JSONObject(fileDATA);
             System.out.println(jo.toString());
             return jo;

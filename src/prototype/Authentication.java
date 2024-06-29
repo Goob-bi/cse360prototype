@@ -27,12 +27,15 @@ public class Authentication {
       ADMIN,
       NONE
     }
-    
+    private String userID = "0";
     Authentication(){
         this.type = accountType.NONE;
     }
     public accountType getType(){
         return this.type;
+    }
+    public String getID(){
+        return this.userID;
     }
     public boolean auth(String username, String password) {
         
@@ -55,6 +58,7 @@ public class Authentication {
                 try {
                     userNameFile = jo.get("username").toString();
                     userPassFile = jo.get("pass").toString();
+                    userID = jo.get("patientID").toString();
                     if (userNameFile.matches(username) && userPassFile.matches(password)) {
                         
                         System.out.println("Match Found");

@@ -27,6 +27,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -53,10 +54,29 @@ public class Menus extends Stage{
     public Scene loginScene;
     protected Scene patientIntakeScene, TechView, PatientView, ErrorScene;
     
+    public void setID(String ID) {
+        this.patientID = ID;
+    }
+    protected Button SetupButton(String text) {
+        
+        Button Btn = new Button();
+        Btn.setDisable(false);
+        Btn.setText(text);
+        Btn.setAlignment(Pos.CENTER);
+        Btn.setTextAlignment(TextAlignment.CENTER);
+        Btn.setMinHeight(0);
+        Btn.setMinWidth(200);
+        Btn.setBackground(bkgrndBlue);
+        Btn.setBorder(border);
+        Btn.setOnMouseEntered(e -> Btn.setBackground(bkgrndLBlue));
+        Btn.setOnMouseExited(e -> Btn.setBackground(bkgrndBlue));
+        return Btn;
+    }
     Menus() {
         //nothing burger
     }
-    Menus(Authentication.accountType account) {
+    //Menus(Authentication.accountType account) {
+    Menus(Authentication auth) {
         
         backBtn.setText("Back");
         backBtn.setMinHeight(0);
@@ -66,9 +86,10 @@ public class Menus extends Stage{
         backBtn.setOnMouseEntered(e -> backBtn.setBackground(bkgrndLBlue));
         backBtn.setOnMouseExited(e -> backBtn.setBackground(bkgrndBlue));
         this.hide();
-        
-        this.acctType = account;
-        switch (account) {
+        this.patientID = auth.getID();
+        System.out.println(patientID);
+        this.acctType = auth.getType();
+        switch (acctType) {
             case NURSE:
                 NurseMenu nurse = new NurseMenu();
                 break;
@@ -78,8 +99,12 @@ public class Menus extends Stage{
                 break;
             
             case PATIENT:
-                PatientMenu pMenu = new PatientMenu();
-                break;
+                try {
+                    PatientMenu pMenu = new PatientMenu(patientID);
+                    break;
+                } catch (JSONException e) {
+                    System.out.println("no patient found");
+                }
             
             default: 
                 changeTitle("Error Menu");
