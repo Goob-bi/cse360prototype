@@ -1,5 +1,1 @@
-[{"pass":"doc","patientID":"1","type":"DOCTOR","username":"doc"},
-{"pass":"nurse","patientID":"2","type":"NURSE","username":"nurse"},
-{"pass":"patient","patientID":"3","type":"PATIENT","username":"patient"},
-{"patientID":"johnwest12071997","pass":"johnwest12071997","type":"PATIENT","username":"john"},
-{"patientID":"jackfrost11223333","pass":"jackfrost11223333","type":"PATIENT","username":"jack"}]
+[{"pass":"doc","patientID":"1","type":"DOCTOR","username":"doc"},{"pass":"nurse","patientID":"2","type":"NURSE","username":"nurse"},{"pass":"patient","patientID":"3","type":"PATIENT","username":"patient"},{"patientID":"johnwest12071997","pass":"johnwest12071997","type":"PATIENT","username":"john"},{"patientID":"jackfrost11223333","pass":"jackfrost11223333","type":"PATIENT","username":"jack"},{"patientID":"jeffberry12341234","pass":"jeffberry12341234","type":"PATIENT","username":"jeff"}]
