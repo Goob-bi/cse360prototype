@@ -49,6 +49,7 @@ public class Menus extends Stage{
     protected int column = 0;
     protected Authentication.accountType acctType = Authentication.accountType.NONE;
     protected ListView<String> list = new ListView<String>();
+    protected ListView<String> visitList = new ListView<String>();
     
     protected Patient patient;
     public Scene loginScene;

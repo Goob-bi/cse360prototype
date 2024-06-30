@@ -37,8 +37,10 @@ import org.json.JSONObject;
  * @author andreas lees
  */
 public class NurseMenu extends Menus{  
-    private Scene patientSummaryScene;
+    private Scene patientSummaryScene, patientScene;
     private JSONObject jo;
+    
+    private Visit visit;
     
     
     NurseMenu() {
@@ -148,11 +150,30 @@ public class NurseMenu extends Menus{
             @Override
             public void handle(ActionEvent event) {
                     patientID = list.getSelectionModel().getSelectedItem();
+                    if (patientID == null || patientID.isEmpty()) {
+                        patientID = "";
+                        return;
+                    }
+                    changeTitle("Patient Health");
+      //              changeScene(SummaryMenu()); 
+                    changeScene(patientMenu()); //testing
+                 //vvvvvv testing vvvvvv
+                 /*
+                    patientID = list.getSelectionModel().getSelectedItem();
                     if (patientID == null) {
                         patientID = "";
                     }
-                    changeTitle("Patient Health");
-                    changeScene(SummaryMenu());
+                    visit = new Visit(patientID);
+                    int curVis = visit.getCurrentVisit();
+                    
+                    for (int i = 0; i <= curVis; i++) {
+                        visit.getVisit(i);
+                        
+                    }
+*/
+                //^^^^^^^ testing ^^^^^^^^^^^
+                    
+                 
                     
             }
         });
@@ -168,6 +189,145 @@ public class NurseMenu extends Menus{
         loginScene = new Scene(layout, width, height);
         this.setScene(loginScene);
         this.show();
+     //   return loginScene;
+        
+    }
+    private Scene patientMenu() {
+        this.setTitle("Main Menu");
+        
+        backBtn.setText("Back");
+        backBtn.setMinHeight(0);
+        backBtn.setMinWidth(100);
+        backBtn.setBackground(bkgrndBlue);
+        backBtn.setBorder(border);
+        backBtn.setOnMouseEntered(e -> backBtn.setBackground(bkgrndLBlue));
+        backBtn.setOnMouseExited(e -> backBtn.setBackground(bkgrndBlue));
+//---------------------grid-----------------------------------------------         
+        GridPane layout = new GridPane();
+        layout.setAlignment(Pos.CENTER);
+        //layout.setGridLinesVisible(true);     //debug
+        
+        Label scenetitle = new Label("Welcome to []");
+        layout.setHalignment(scenetitle, HPos.CENTER);
+        layout.add(scenetitle, 0, 0);
+        
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.TOP_CENTER);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.setHgap(5);
+        grid.setVgap(15);
+        //grid.setGridLinesVisible(true);       //debug
+        
+        layout.add(grid, 1, 1);
+        
+//---------------------buttons----------------------------------------------- 
+        
+        
+//Color.LIGHTSKYBLUE
+        Button pIntakeBtn = SetupButton("New Patient");
+
+        
+        Button vitalsViewBtn = SetupButton("Vitals");
+        
+        Button healthViewBtn = SetupButton("Health");
+        
+        
+        Button patientSumBtn = SetupButton("Patient Summary");
+        
+        //collect list of patients
+        patient = new Patient();
+        System.out.println(patient.getPList());
+        visit = new Visit(patientID);
+        
+       ObservableList<String> items = FXCollections.observableArrayList (visit.getVisitList());
+//ObservableList<String> items =FXCollections.observableArrayList (
+//    "Single", "Double", "Suite", "Family App");
+        visitList.setItems(items);
+        visitList.setPrefWidth(200);
+        visitList.setPrefHeight(300);
+        
+        layout.add(visitList, 0, 1);
+        //grid.add(list, column, row);
+        column= 0;
+        grid.add(pIntakeBtn, column, row); 
+        row++;
+        grid.add(vitalsViewBtn, column, row);
+        row++;
+        grid.add(healthViewBtn, column, row);
+        row++;
+        grid.add(patientSumBtn, column, row);
+        
+        //patientIntakeScene, TechView, PatientView
+        pIntakeBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                    //load up main menu
+                    changeTitle("Patient Intake");
+                    changeScene(IntakeMenu());
+                    
+                    
+            }
+            
+        });
+        vitalsViewBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                
+                    //load up main menu
+                    patientID = list.getSelectionModel().getSelectedItem();
+                    if (patientID == null) {
+                        patientID = "";
+                    }
+                    System.out.println(patientID);
+                    changeTitle("Patient Vitals");
+                    changeScene(VitalsMenu());
+                    
+            }
+        });
+        healthViewBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                    patientID = list.getSelectionModel().getSelectedItem();
+                    if (patientID == null) {
+                        patientID = "";
+                    }
+                    changeTitle("Patient Health");
+                    changeScene(HealthMenu());
+                    
+            }
+        });
+        patientSumBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                    patientID = list.getSelectionModel().getSelectedItem();
+                    if (patientID == null) {
+                        patientID = "";
+                    }
+                    changeTitle("Patient Health");
+                    changeScene(SummaryMenu()); 
+                 //vvvvvv testing vvvvvv
+                 /*
+                    patientID = list.getSelectionModel().getSelectedItem();
+                    if (patientID == null) {
+                        patientID = "";
+                    }
+                    visit = new Visit(patientID);
+                    int curVis = visit.getCurrentVisit();
+                    
+                    for (int i = 0; i <= curVis; i++) {
+                        visit.getVisit(i);
+                        
+                    }
+*/
+                //^^^^^^^ testing ^^^^^^^^^^^
+                    
+                 
+                    
+            }
+        });
+        
+        patientScene = new Scene(layout, width, height);
+        return patientScene;
      //   return loginScene;
         
     }
@@ -409,14 +569,21 @@ public class NurseMenu extends Menus{
                     errorLabel.setText("PatientID: " + patientID); 
                     errorLabel.setVisible(true);
                     patient = new Patient(patientID); //create patient
+                    visit = new Visit(patientID);   //create visit
+                    visit.setVisit(visit.getCurrentVisit());
                     if (rb.isSelected()) {
-                        patient.savePatientVitals("no", "n/a", "n/a", 
+                        visit.saveVisitVitals("no", "n/a", "n/a", 
                                 "n/a", "n/a");
+                    //    patient.savePatientVitals("no", "n/a", "n/a", 
+                    //            "n/a", "n/a");
                     } else {
-                        patient.savePatientVitals("yes", weightInput.getText(), heightInput.getText(), 
+                        visit.saveVisitVitals("yes", weightInput.getText(), heightInput.getText(), 
                                 bodyTempInput.getText(), bloodPInput.getText());
+                    //    patient.savePatientVitals("yes", weightInput.getText(), heightInput.getText(), 
+                    //            bodyTempInput.getText(), bloodPInput.getText());
                         
                     }
+                    visit.incrementVisit();
                     
                 }
             }
