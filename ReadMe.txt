@@ -1,2 +1,2 @@
-this project uses java 8 and javafx
-can currently use a login form, patient intake, generate random patient IDs, and save patient data to a json file
+this project uses java 22 and javafx 22.0.1 from https://gluonhq.com/products/javafx/
+can currently use a login form, patient intake, generate patient IDs, save patient/visit data, read patient/visit data, allow multiple patients/visits
