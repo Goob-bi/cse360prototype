@@ -189,8 +189,8 @@ public class NurseMenu extends Menus{
         vitalsViewBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                    patientID = list.getSelectionModel().getSelectedItem();
-                    if (patientID == null || patientID.isEmpty()) {
+                    visitNum = visitList.getSelectionModel().getSelectedItem();
+                    if (visitNum == null || !check.IntCheck(visitNum)) {
                         return;
                     }
                     changeTitle("Patient Vitals");
@@ -200,8 +200,8 @@ public class NurseMenu extends Menus{
         healthViewBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                    patientID = list.getSelectionModel().getSelectedItem();
-                    if (patientID == null || patientID.isEmpty()) {
+                    visitNum = visitList.getSelectionModel().getSelectedItem();
+                    if (visitNum == null || !check.IntCheck(visitNum)) {
                         return;
                     }
                     changeTitle("Patient Health");
@@ -581,7 +581,7 @@ public class NurseMenu extends Menus{
       
             errorLabel.setText("PatientID: " + patientID); 
             errorLabel.setVisible(true);
-            jo = visit.loadVisit(patient.getHealthFile());
+            jo = visit.loadVisit(visit.getHealthFile());
             System.out.println(jo.toString());
                     
         String allergiesInfo = "";

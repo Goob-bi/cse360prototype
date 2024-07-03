@@ -124,6 +124,9 @@ public class Visit {
         return temp;
         
     }
+    public String getHealthFile() {
+        return this.healthName;
+    }
     
     public JSONObject loadVisit(String fileName) {
         if (patientID.isEmpty()) {
@@ -261,6 +264,8 @@ public class Visit {
             while (readFile.hasNextLine()) {
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
+            //CLOSE FILES WHEN DONE WITH THEM DUMMY
+            readFile.close();
             System.out.println("data: " + fileDATA);
             jo = new JSONObject(fileDATA);
             System.out.println(jo.toString());

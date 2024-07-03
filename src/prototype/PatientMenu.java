@@ -27,10 +27,15 @@ import org.json.JSONObject;
 public class PatientMenu extends Menus {
     private Scene patientSummaryScene;
     private JSONObject jo;
+    private Visit visit;
     //---------------Patient Menu-------------------
     PatientMenu(String ID) {
         this.patientID = ID;
         Patient patient = new Patient(patientID);
+        
+        visit = new Visit(patientID);
+        visit.setVisit(visit.getCurrentVisit());
+        
         System.out.println("ID: " + patientID);
         String patientName = patient.getName();
         menu.setText("Hello, " + patientName);   
@@ -158,7 +163,8 @@ public class PatientMenu extends Menus {
         //create patient
         patient = new Patient(patientID); 
         //load patient health
-        jo = patient.loadPatient(patient.getHealthFile());
+    //    jo = patient.loadPatientFile(patient.getHealthFile());
+        jo = visit.loadVisit(visit.getHealthFile());
         //load patient info
     //    jo = patient.loadPatient(patient.getInfoFile());
         //load patient vitals
