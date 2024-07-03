@@ -39,20 +39,14 @@ import org.json.JSONObject;
 public class NurseMenu extends Menus{  
     private Scene patientSummaryScene, patientScene;
     private JSONObject jo;
-    
+    private String visitNum;
     private Visit visit;
-    
+    private InputValidation check = new InputValidation();
+    private Button backVisitBtn = SetupButton("Back");
     
     NurseMenu() {
         this.setTitle("Main Menu");
         
-        backBtn.setText("Back");
-        backBtn.setMinHeight(0);
-        backBtn.setMinWidth(100);
-        backBtn.setBackground(bkgrndBlue);
-        backBtn.setBorder(border);
-        backBtn.setOnMouseEntered(e -> backBtn.setBackground(bkgrndLBlue));
-        backBtn.setOnMouseExited(e -> backBtn.setBackground(bkgrndBlue));
 //---------------------grid-----------------------------------------------         
         GridPane layout = new GridPane();
         layout.setAlignment(Pos.CENTER);
@@ -83,7 +77,7 @@ public class NurseMenu extends Menus{
         Button healthViewBtn = SetupButton("Health");
         
         
-        Button patientSumBtn = SetupButton("Patient Summary");
+        Button patientSumBtn = SetupButton("Goto Visits");
         
         //collect list of patients
         patient = new Patient();
@@ -99,11 +93,12 @@ public class NurseMenu extends Menus{
         layout.add(list, 0, 1);
         //grid.add(list, column, row);
         column= 0;
+        row = 0;
         grid.add(pIntakeBtn, column, row); 
         row++;
-        grid.add(vitalsViewBtn, column, row);
+      //  grid.add(vitalsViewBtn, column, row);
         row++;
-        grid.add(healthViewBtn, column, row);
+      //  grid.add(healthViewBtn, column, row);
         row++;
         grid.add(patientSumBtn, column, row);
         
@@ -152,8 +147,10 @@ public class NurseMenu extends Menus{
                     patientID = list.getSelectionModel().getSelectedItem();
                     if (patientID == null || patientID.isEmpty()) {
                         patientID = "";
+                        System.out.println("no patient selected");
                         return;
                     }
+                    visit = new Visit(patientID);
                     changeTitle("Patient Health");
       //              changeScene(SummaryMenu()); 
                     changeScene(patientMenu()); //testing
@@ -183,6 +180,7 @@ public class NurseMenu extends Menus{
             public void handle(ActionEvent event) {
                 changeTitle("Main Menu");
                 updateList();
+                
                 changeScene(loginScene);
             }
         });
@@ -193,23 +191,20 @@ public class NurseMenu extends Menus{
         
     }
     private Scene patientMenu() {
-        this.setTitle("Main Menu");
+        this.setTitle("Patient Menu");
         
-        backBtn.setText("Back");
-        backBtn.setMinHeight(0);
-        backBtn.setMinWidth(100);
-        backBtn.setBackground(bkgrndBlue);
-        backBtn.setBorder(border);
-        backBtn.setOnMouseEntered(e -> backBtn.setBackground(bkgrndLBlue));
-        backBtn.setOnMouseExited(e -> backBtn.setBackground(bkgrndBlue));
 //---------------------grid-----------------------------------------------         
         GridPane layout = new GridPane();
         layout.setAlignment(Pos.CENTER);
         //layout.setGridLinesVisible(true);     //debug
         
-        Label scenetitle = new Label("Welcome to []");
+        Label scenetitle = new Label("Visits:");
         layout.setHalignment(scenetitle, HPos.CENTER);
         layout.add(scenetitle, 0, 0);
+        
+        Label visitLabel = new Label("Latest visit: " + visit.getCurrentVisit());
+        layout.setHalignment(visitLabel, HPos.CENTER);
+        layout.add(visitLabel, 1, 0);
         
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_CENTER);
@@ -234,28 +229,36 @@ public class NurseMenu extends Menus{
         
         Button patientSumBtn = SetupButton("Patient Summary");
         
+        Button newVisitBtn = SetupButton("New Visit");
+        
         //collect list of patients
         patient = new Patient();
         System.out.println(patient.getPList());
-        visit = new Visit(patientID);
+        //visit = new Visit(patientID);
         
-       ObservableList<String> items = FXCollections.observableArrayList (visit.getVisitList());
+  //     ObservableList<String> items = FXCollections.observableArrayList (visit.getVisitList());
 //ObservableList<String> items =FXCollections.observableArrayList (
 //    "Single", "Double", "Suite", "Family App");
-        visitList.setItems(items);
+   //     visitList.setItems(items);
+        updateVisitList();
         visitList.setPrefWidth(200);
         visitList.setPrefHeight(300);
         
         layout.add(visitList, 0, 1);
         //grid.add(list, column, row);
         column= 0;
-        grid.add(pIntakeBtn, column, row); 
+        row = 0;
+        // grid.add(pIntakeBtn, column, row); 
         row++;
         grid.add(vitalsViewBtn, column, row);
         row++;
         grid.add(healthViewBtn, column, row);
         row++;
         grid.add(patientSumBtn, column, row);
+        row++;
+        grid.add(newVisitBtn, column, row);
+        row++;
+        grid.add(backBtn, column, row);
         
         //patientIntakeScene, TechView, PatientView
         pIntakeBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -299,10 +302,11 @@ public class NurseMenu extends Menus{
         patientSumBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                    patientID = list.getSelectionModel().getSelectedItem();
-                    if (patientID == null) {
-                        patientID = "";
+                    visitNum = visitList.getSelectionModel().getSelectedItem();
+                    if (visitNum == null || check.DateCheck(visitNum)) {
+                        visitNum = "0";
                     }
+                    visit.setVisit(Integer.parseInt(visitNum));
                     changeTitle("Patient Health");
                     changeScene(SummaryMenu()); 
                  //vvvvvv testing vvvvvv
@@ -325,7 +329,28 @@ public class NurseMenu extends Menus{
                     
             }
         });
+        newVisitBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                
+                    //load up main menu
+                    visit.incrementVisit();
+                    updateVisitList();
+                    visitLabel.setText("Latest visit: " + visit.getCurrentVisit());
+                    
+            }
+        });
         
+        backVisitBtn.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                changeTitle("Main Menu");
+                updateList();
+                
+                changeScene(patientScene);
+            }
+        });
         patientScene = new Scene(layout, width, height);
         return patientScene;
      //   return loginScene;
@@ -340,6 +365,17 @@ public class NurseMenu extends Menus{
 //    "Single", "Double", "Suite", "Family App");
         list.setItems(items);
         System.out.println("list updated");
+        
+    }
+    private void updateVisitList() {
+        //collect list of patients
+       // patient = new Patient();
+       System.out.println(visit.getVisitList());
+       ObservableList<String> items = FXCollections.observableArrayList (visit.getVisitList());
+//ObservableList<String> items =FXCollections.observableArrayList (
+//    "Single", "Double", "Suite", "Family App");
+        visitList.setItems(items);
+        System.out.println("visit list updated");
         
     }
     private Scene IntakeMenu() {
@@ -428,7 +464,6 @@ public class NurseMenu extends Menus{
                     errorLabel.setVisible(true);
                 } else {
                     //patientID is fistName, lastName, birthday
-                    InputValidation check = new InputValidation();
                     if (!check.DateCheck(bDayInput.getText()) || !check.NameCheck(firstNameInput.getText()) || !check.NameCheck(lastNameInput.getText())) {
                         System.out.println("Bad format input");
                         errorLabel.setVisible(true);
@@ -449,6 +484,7 @@ public class NurseMenu extends Menus{
                     errorLabel.setVisible(true);
                     
                     patient = new Patient(patientID); //create patient
+                    
                     patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(), 
                             phoneInput.getText(), bDayInput.getText(), insuranceInput.getText());
                     
@@ -568,8 +604,8 @@ public class NurseMenu extends Menus{
                     
                     errorLabel.setText("PatientID: " + patientID); 
                     errorLabel.setVisible(true);
-                    patient = new Patient(patientID); //create patient
-                    visit = new Visit(patientID);   //create visit
+                    //patient = new Patient(patientID); //create patient
+                    //visit = new Visit(patientID);   //create visit
                     visit.setVisit(visit.getCurrentVisit());
                     if (rb.isSelected()) {
                         visit.saveVisitVitals("no", "n/a", "n/a", 
@@ -583,15 +619,15 @@ public class NurseMenu extends Menus{
                     //            bodyTempInput.getText(), bloodPInput.getText());
                         
                     }
-                    visit.incrementVisit();
+                    //visit.incrementVisit();
                     
                 }
             }
         });
         
-        backBtn.setAlignment(Pos.CENTER);
-        grid.setHalignment(backBtn, HPos.CENTER);
-        grid.add(backBtn, 1, 7);
+        backVisitBtn.setAlignment(Pos.CENTER);
+        grid.setHalignment(backVisitBtn, HPos.CENTER);
+        grid.add(backVisitBtn, 1, 7);
         
         layout.add(grid, 0, 1);
         
@@ -669,16 +705,19 @@ public class NurseMenu extends Menus{
                     
                     errorLabel.setText("PatientID: " + patientID); 
                     errorLabel.setVisible(true);
-                    patient = new Patient(patientID); //create patient
-                        patient.savePatientHealth(allergiesInput.getText(), healthConcInput.getText());
+                    //patient = new Patient(patientID); //create patient
+                    //    patient.savePatientHealth(allergiesInput.getText(), healthConcInput.getText());
+                    //visit = new Visit(patientID);   //create visit
+                    visit.setVisit(visit.getCurrentVisit());
+                        visit.saveVisitHealth(allergiesInput.getText(), healthConcInput.getText());
                     
                 }
             }
         });
         
-        backBtn.setAlignment(Pos.CENTER);
-        grid.setHalignment(backBtn, HPos.CENTER);
-        grid.add(backBtn, 1, 7);
+        backVisitBtn.setAlignment(Pos.CENTER);
+        grid.setHalignment(backVisitBtn, HPos.CENTER);
+        grid.add(backVisitBtn, 1, 7);
         
         layout.add(grid, 0, 1);
         
@@ -724,8 +763,9 @@ public class NurseMenu extends Menus{
                     
                     errorLabel.setText("PatientID: " + patientID); 
                     errorLabel.setVisible(true);
-                    patient = new Patient(patientID); //create patient
-                    jo = patient.loadPatient(patient.getHealthFile());
+                    //patient = new Patient(patientID); //create patient
+                    //jo = patient.loadPatient(patient.getHealthFile());
+                    jo = visit.loadVisit(patient.getHealthFile());
                     System.out.println(jo.toString());
         String allergiesInfo = "";
         String healthConcernsInfo = "";
@@ -759,9 +799,9 @@ public class NurseMenu extends Menus{
         
         
         
-        backBtn.setAlignment(Pos.CENTER);
-        grid.setHalignment(backBtn, HPos.CENTER);
-        grid.add(backBtn, 1, 7);
+        backVisitBtn.setAlignment(Pos.CENTER);
+        grid.setHalignment(backVisitBtn, HPos.CENTER);
+        grid.add(backVisitBtn, 1, 7);
         
         layout.add(grid, 0, 1);
         

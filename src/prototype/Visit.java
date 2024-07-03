@@ -24,7 +24,9 @@ import org.json.*;
 public class Visit {
     
     
-    private String filePath = "./src/prototype/patients/";
+    private String rootPath = "./src/prototype/patients/";
+    private String patientDir = "";
+    private String visitDir = "";
     private String vitalName = "_PatientVitals.txt";
     private String healthName = "_PatientHealth.txt";
     private String infoName = "_PatientInfo.txt";
@@ -37,15 +39,18 @@ public class Visit {
     
     Visit(String ID) {
         this.patientID = ID;
+        this.patientDir = rootPath + patientID + "/";
     }
+    
     public void incrementVisit() {
-        this.visitNum++;
+        this.visitNum = getCurrentVisit();
+        visitNum++;
         if (dirCheck(visitNum)) {
             System.out.println("dir exists");
             
         } else {
-            File filePathCtrl = new File(filePath + patientID + "/" + visitNum + "/");
-            boolean bool = filePathCtrl.mkdir();  
+            File rootPathCtrl = new File(rootPath + patientID + "/" + visitNum + "/");
+            boolean bool = rootPathCtrl.mkdir();  
             if(bool){  
                System.out.println("New Visit folder is created successfully");  
             }else{  
@@ -61,7 +66,7 @@ public class Visit {
         }
     }
     public List getVisitList() {
-        File file = new File(filePath + patientID + "/");
+        File file = new File(rootPath + patientID + "/");
         int[] validDirs = new int[1];
         int temp = -1;
         int dir;
@@ -81,7 +86,7 @@ public class Visit {
         return list;
     }
     public int getCurrentVisit() {
-        File file = new File(filePath + patientID + "/");
+        File file = new File(rootPath + patientID + "/");
         int[] validDirs = new int[1];
         int temp = -1;
         int dir;
@@ -142,12 +147,13 @@ public class Visit {
     public boolean saveVisitVitals(String over12, String weight, String height,String bodyTemp,String bloodP) {
         
         jo = fileCheck(vitalName);
+        visitDir = patientDir +  visitNum + "/";
         //if (jo.isEmpty()) {
         //    System.out.println("bad file");
        //     return false;
        // }
         
-        File file = new File(filePath + patientID + "/" + visitNum + "/" + patientID + vitalName);
+        File file = new File(visitDir + patientID + vitalName);
         jo.put("patientID", patientID);
         jo.put("over12", over12);
         jo.put("weight", weight);
@@ -155,7 +161,7 @@ public class Visit {
         jo.put("temp", bodyTemp);
         jo.put("bp", bloodP);
         //save to file
-        System.out.println("Saving file"); 
+        System.out.println("Saving file");  
         System.out.println(jo.toString()); 
 
         try {
@@ -175,12 +181,14 @@ public class Visit {
     public boolean saveVisitHealth(String allergies, String healthConcerns) {
         
         jo = fileCheck(healthName);
+        
+        visitDir = patientDir +  visitNum + "/";
         //if (jo.isEmpty()) {
         //    System.out.println("bad file");
        //     return false;
        // }
         
-        File file = new File(filePath + patientID + "/" + visitNum + "/" + patientID + healthName);
+        File file = new File(visitDir + patientID + healthName);
         jo.put("patientID", patientID);
         jo.put("allergies", allergies);
         jo.put("healthConc", healthConcerns);
@@ -203,35 +211,38 @@ public class Visit {
         return false;
     }
     private boolean dirCheck(int num) {
-        File file = new File(filePath + patientID + "/" + num + "/");
+        visitDir = patientDir +  num + "/";
+        File file = new File(visitDir);
         return file.exists();
         
     }
     private JSONObject fileCheck(String fileName) {
+        
+        visitDir = patientDir +  visitNum + "/";
         try {
             // check/create folder--------------------
-            File filePathCtrl = new File(filePath + patientID);
+            File rootPathCtrl = new File(patientDir);
             JSONObject jo = new JSONObject();
             if (patientID.isEmpty()) {
                 return jo;
             }
-            boolean bool = filePathCtrl.mkdir();  
+            boolean bool = rootPathCtrl.mkdir();  
             if(bool){  
                System.out.println("Patient folder is created successfully");  
             }else{  
-               System.out.println("Error Found: Does the folder already exist?");  
+               System.out.println("Error creating patient folder: Does it already exist?");  
             }  
-            filePathCtrl = new File(filePath + patientID + "/" + visitNum + "/");
-            bool = filePathCtrl.mkdir();  
+            rootPathCtrl = new File(visitDir);
+            bool = rootPathCtrl.mkdir();  
             if(bool){  
                System.out.println("Patient folder is created successfully");  
             }else{  
-               System.out.println("Error Found: Does the folder already exist?");  
+               System.out.println("Error creating visit folder: Does it already exist?");  
             }  
             //---------------------------------------
             // check/create file---------------------
-            File file = new File(filePath + patientID + "/" + visitNum + "/" + patientID + fileName); //+ "_PatientInfo.txt" or vitals
-            System.out.println(filePath + patientID + "/" + visitNum + "/" + patientID + fileName);
+            File file = new File(visitDir + patientID + fileName); //+ "_PatientInfo.txt" or vitals
+            System.out.println(visitDir + patientID + fileName);
             bool = file.createNewFile();
             if (bool) {
                 System.out.println("New File created"); 

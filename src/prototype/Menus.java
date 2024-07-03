@@ -38,7 +38,6 @@ public class Menus extends Stage{
     protected String user = "";
     protected String pass = "";
     protected Stage loginMenu;
-    protected Button backBtn = new Button();
     protected Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
     protected Background bkgrndBlue = new Background(new BackgroundFill(Color.LIGHTSKYBLUE,CornerRadii.EMPTY, Insets.EMPTY));
     protected Background bkgrndLBlue = new Background(new BackgroundFill(Color.AQUA,CornerRadii.EMPTY, Insets.EMPTY));
@@ -50,6 +49,7 @@ public class Menus extends Stage{
     protected Authentication.accountType acctType = Authentication.accountType.NONE;
     protected ListView<String> list = new ListView<String>();
     protected ListView<String> visitList = new ListView<String>();
+    protected Button backBtn = SetupButton("Back", 100);
     
     protected Patient patient;
     public Scene loginScene;
@@ -73,19 +73,27 @@ public class Menus extends Stage{
         Btn.setOnMouseExited(e -> Btn.setBackground(bkgrndBlue));
         return Btn;
     }
+    protected Button SetupButton(String text, int width) {
+        
+        Button Btn = new Button();
+        Btn.setDisable(false);
+        Btn.setText(text);
+        Btn.setAlignment(Pos.CENTER);
+        Btn.setTextAlignment(TextAlignment.CENTER);
+        Btn.setMinHeight(0);
+        Btn.setMinWidth(width);
+        Btn.setBackground(bkgrndBlue);
+        Btn.setBorder(border);
+        Btn.setOnMouseEntered(e -> Btn.setBackground(bkgrndLBlue));
+        Btn.setOnMouseExited(e -> Btn.setBackground(bkgrndBlue));
+        return Btn;
+    }
     Menus() {
         //nothing burger
     }
     //Menus(Authentication.accountType account) {
     Menus(Authentication auth) {
         
-        backBtn.setText("Back");
-        backBtn.setMinHeight(0);
-        backBtn.setMinWidth(100);
-        backBtn.setBackground(bkgrndBlue);
-        backBtn.setBorder(border);
-        backBtn.setOnMouseEntered(e -> backBtn.setBackground(bkgrndLBlue));
-        backBtn.setOnMouseExited(e -> backBtn.setBackground(bkgrndBlue));
         this.hide();
         this.patientID = auth.getID();
         System.out.println(patientID);
