@@ -41,13 +41,6 @@ public class PatientMenu extends Menus {
         menu.setText("Hello, " + patientName);   
         this.setTitle("Main Menu");
         
-        backBtn.setText("Back");
-        backBtn.setMinHeight(0);
-        backBtn.setMinWidth(100);
-        backBtn.setBackground(bkgrndBlue);
-        backBtn.setBorder(border);
-        backBtn.setOnMouseEntered(e -> backBtn.setBackground(bkgrndLBlue));
-        backBtn.setOnMouseExited(e -> backBtn.setBackground(bkgrndBlue));
 //---------------------grid-----------------------------------------------         
         GridPane layout = new GridPane();
         layout.setAlignment(Pos.CENTER);

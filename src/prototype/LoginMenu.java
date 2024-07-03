@@ -6,7 +6,6 @@
  */
 package prototype;
 
-import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -34,20 +33,20 @@ import javafx.stage.Stage;
  * @author andreas lees
  */
 public class LoginMenu extends Stage{
-        private String user = "";
+    private String user = "";
     private String pass = "";
-    private Stage loginMenu;
-    //Control() {
-       // launch();
-    //}
-    public Scene loginScene;
-    
+    private Scene loginScene;
     private Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
     private Background bkgrndBlue = new Background(new BackgroundFill(Color.LIGHTSKYBLUE,CornerRadii.EMPTY, Insets.EMPTY));
     private Background bkgrndLBlue = new Background(new BackgroundFill(Color.AQUA,CornerRadii.EMPTY, Insets.EMPTY));
+    private String patientID = "";
+    private Button backBtn = new Button(); 
+    private Patient patient;
+    private Scene patientIntakeScene;
+    private int width = 600;
+    private int height = 400;
     
     private Button BlueButton(String text) {
-        
         Button blueBtn = new Button();
         blueBtn.setText(text);
         blueBtn.setMinHeight(0);
@@ -60,10 +59,8 @@ public class LoginMenu extends Stage{
         blueBtn.setDisable(false);
         return blueBtn;
     }
+//-------------------------------------------------------------------- 
     LoginMenu() {
-        
-       // launch();
-       
        Authentication authenticate = new Authentication();
 //---------------------grid-----------------------------------------------         
         GridPane layout = new GridPane();
@@ -145,19 +142,15 @@ public class LoginMenu extends Stage{
             }
         });
     }
+//-------------------------------------------------------------------- 
     public void hideScene() {
         this.hide();
     }
     public void showScene() {
         this.show();
     }
+//-------------------------------------------------------------------- 
     
-    protected String patientID = "";
-    protected Button backBtn = new Button(); 
-    protected Patient patient;
-    protected Scene patientIntakeScene;
-    protected int width = 600;
-    protected int height = 400;
     
     private Scene IntakeMenu() {
         

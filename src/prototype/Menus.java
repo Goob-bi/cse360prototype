@@ -5,55 +5,42 @@
  */
 package prototype;
 
-import java.util.Random;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
  * @author andreas lees
  */
 public class Menus extends Stage{
+    private Background bkgrndBlue = new Background(new BackgroundFill(Color.LIGHTSKYBLUE,CornerRadii.EMPTY, Insets.EMPTY));
+    private Background bkgrndLBlue = new Background(new BackgroundFill(Color.AQUA,CornerRadii.EMPTY, Insets.EMPTY));
+    private Authentication.accountType acctType = Authentication.accountType.NONE;
+    
     protected String companyName = "Dr. Hearth's Office";
-    protected String user = "";
-    protected String pass = "";
     protected Stage loginMenu;
     protected Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
-    protected Background bkgrndBlue = new Background(new BackgroundFill(Color.LIGHTSKYBLUE,CornerRadii.EMPTY, Insets.EMPTY));
-    protected Background bkgrndLBlue = new Background(new BackgroundFill(Color.AQUA,CornerRadii.EMPTY, Insets.EMPTY));
     protected String patientID = "";
     protected int width = 600;
     protected int height = 400;
     protected int row = 0;
     protected int column = 0;
-    protected Authentication.accountType acctType = Authentication.accountType.NONE;
     protected ListView<String> list = new ListView<String>();
     protected ListView<String> visitList = new ListView<String>();
     protected Button backBtn = SetupButton("Back", 100);
     
     protected Patient patient;
-    public Scene loginScene;
+    protected Scene loginScene;
     protected Scene patientIntakeScene, TechView, PatientView, ErrorScene;
     
     public void setID(String ID) {
@@ -90,9 +77,9 @@ public class Menus extends Stage{
         return Btn;
     }
     Menus() {
-        //nothing burger
+        //empty constructor, required for child classes to override
     }
-    //Menus(Authentication.accountType account) {
+    
     Menus(Authentication auth) {
         
         this.hide();

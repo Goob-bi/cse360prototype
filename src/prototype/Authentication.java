@@ -8,8 +8,6 @@ package prototype;
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.util.Scanner; // Import the Scanner class to read text files
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.*;
 /**
  *
@@ -20,6 +18,7 @@ public class Authentication {
     
     private String fileDATA ="";
     public accountType type;
+    
     public enum accountType {
       PATIENT,
       DOCTOR,
@@ -28,9 +27,12 @@ public class Authentication {
       NONE
     }
     private String userID = "0";
+    
+//--------------------------------------------------------------------  
     Authentication(){
         this.type = accountType.NONE;
     }
+//--------------------------------------------------------------------  
     public accountType getType(){
         return this.type;
     }
@@ -64,7 +66,7 @@ public class Authentication {
                         System.out.println("Match Found");
                         //-------------------
                         //check what account type it is and set it
-                        this.type = setAcctType(jo);
+                        this.type = getAcctType(jo);
                         System.out.println("Account Type: " + this.type.toString());
                         return true;
                     }
@@ -83,7 +85,8 @@ public class Authentication {
         
     }
     
-    private accountType setAcctType(JSONObject jo) {
+//--------------------------------------------------------------------  
+    private accountType getAcctType(JSONObject jo) {
         String type = jo.get("type").toString();
         switch (type) {
             case "PATIENT":
