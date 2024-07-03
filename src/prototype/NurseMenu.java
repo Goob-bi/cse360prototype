@@ -37,7 +37,7 @@ import org.json.JSONObject;
  * @author andreas lees
  */
 public class NurseMenu extends Menus {
-    private Scene patientSummaryScene, patientScene;
+    private Scene patientSummaryScene, patientScene, patientInfoScene;
     private JSONObject jo;
     private String visitNum;
     private Visit visit;
@@ -109,6 +109,7 @@ public class NurseMenu extends Menus {
                     if (patientID == null || patientID.isEmpty()) {
                         return;
                     }
+                    patient = new Patient(patientID);
                     visit = new Visit(patientID);
                     changeTitle("Patient Health");
                     changeScene(patientMenu());
@@ -164,8 +165,9 @@ public class NurseMenu extends Menus {
         
         Button vitalsViewBtn = SetupButton("Vitals");
         Button healthViewBtn = SetupButton("Health");
-        Button patientSumBtn = SetupButton("Patient Summary");
+        Button patientSumBtn = SetupButton("Visit Summary");
         Button newVisitBtn = SetupButton("New Visit");
+        Button patientInfoBtn = SetupButton("Patient Info");
         
         //collect list of visits
         updateVisitList();
@@ -179,9 +181,11 @@ public class NurseMenu extends Menus {
         row++;
         grid.add(healthViewBtn, column, row);
         row++;
+        grid.add(newVisitBtn, column, row);
+        row++;
         grid.add(patientSumBtn, column, row);
         row++;
-        grid.add(newVisitBtn, column, row);
+        grid.add(patientInfoBtn, column, row);
         row++;
         grid.add(backBtn, column, row);
         
@@ -226,6 +230,13 @@ public class NurseMenu extends Menus {
                     visit.incrementVisit();
                     updateVisitList();
                     visitLabel.setText("Latest visit: " + visit.getCurrentVisit());
+            }
+        });
+        patientInfoBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                changeTitle("Patient Info");
+                changeScene(InfoMenu());
             }
         });
         
@@ -621,6 +632,98 @@ public class NurseMenu extends Menus {
         patientSummaryScene = new Scene(layout, this.width, this.height);
         return patientSummaryScene;
         
+    }
+    private Scene InfoMenu() {
+        //populate with contact info
+        String pID, fname, lname, email, phone, healthHis, insID, bDay;
+        pID = fname = lname = email = phone = healthHis = insID = bDay = "";
+        try {
+            jo = patient.loadPatientFile();
+            //pID = jo.getString("patientID");
+            fname = jo.getString("firstName");
+            lname = jo.getString("lastName");
+            email = jo.getString("email");
+            phone = jo.getString("phone");
+            //healthHis = jo.getString("healthHist");
+            insID = jo.getString("insID");
+            bDay = jo.getString("birthday");
+
+        } catch (JSONException e) {
+            System.out.println("bad file");
+        }
+
+        menu.setText("Patient Intake Form");
+        GridPane layout = new GridPane();
+        menu.setAlignment(Pos.CENTER);
+        layout.setHalignment(menu, HPos.CENTER);
+        layout.setAlignment(Pos.CENTER);
+
+        layout.add(menu, 0, 0);
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        //grid.setGridLinesVisible(true);       //debug
+
+        Label scenetitle = new Label("First Name:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(scenetitle, 0, 1);
+        Label firstNameInput = new Label ();
+        firstNameInput.setText(fname);
+        grid.add(firstNameInput, 1, 1);
+
+        Label errorLabel = new Label();
+        errorLabel.setAlignment(Pos.CENTER);
+        layout.setHalignment(errorLabel, HPos.CENTER);
+        errorLabel.setText("Error: Missing input");
+        errorLabel.setVisible(false);
+        layout.add(errorLabel, 0, 2);
+
+        Label lastNameLbl = new Label("Last Name:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(lastNameLbl, 0, 2);
+        Label lastNameInput = new Label ();
+        lastNameInput.setText(lname);
+        grid.add(lastNameInput, 1, 2);
+
+        Label emailLbl = new Label("Email:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(emailLbl, 0, 3);
+        Label emailInput = new Label ();
+        emailInput.setText(email);
+        grid.add(emailInput, 1, 3);
+
+        Label phoneLbl = new Label("Phone Number:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(phoneLbl, 0, 4);
+        Label phoneInput = new Label ();
+        phoneInput.setText(phone);
+        grid.add(phoneInput, 1, 4);
+
+        Label bDayLbl = new Label("Birthday (DDMMYYYY):");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(bDayLbl, 0, 5);
+        Label bDayInput = new Label ();
+        bDayInput.setText(bDay);
+        grid.add(bDayInput, 1, 5);
+
+        Label insurance = new Label("Insurance ID:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(insurance, 0, 6);
+        Label insuranceInput = new Label ();
+        insuranceInput.setText(insID);
+        grid.add(insuranceInput, 1, 6);
+
+
+        backBtn.setAlignment(Pos.CENTER);
+        grid.setHalignment(backBtn, HPos.CENTER);
+        grid.add(backBtn, 1, 7);
+
+        layout.add(grid, 0, 1);
+        patientInfoScene = new Scene(layout, this.width, this.height);
+        return patientInfoScene;
     }
     
 }
