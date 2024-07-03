@@ -7,30 +7,19 @@ package prototype;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static javafx.scene.layout.GridPane.*;
 
 /**
  *
@@ -65,7 +54,7 @@ public class NurseMenu extends Menus {
         //layout.setGridLinesVisible(true);     //debug
         
         Label scenetitle = new Label("Welcome to " + companyName);
-        layout.setHalignment(scenetitle, HPos.CENTER);
+        setHalignment(scenetitle, HPos.CENTER);
         layout.add(scenetitle, 0, 0);
         
         GridPane grid = new GridPane();
@@ -94,47 +83,34 @@ public class NurseMenu extends Menus {
         grid.add(patientDelBtn, column, row);
         
         
-        pIntakeBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                    changeTitle("Patient Intake");
-                    changeScene(IntakeMenu());
-            }
-            
+        pIntakeBtn.setOnAction(event -> {
+                changeTitle("Patient Intake");
+                changeScene(IntakeMenu());
         });
-        patientBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                    patientID = list.getSelectionModel().getSelectedItem();
-                    if (patientID == null || patientID.isEmpty()) {
-                        return;
-                    }
-                    patient = new Patient(patientID);
-                    visit = new Visit(patientID);
-                    changeTitle("Patient Health");
-                    changeScene(patientMenu());
-            }
+        patientBtn.setOnAction(event -> {
+                patientID = list.getSelectionModel().getSelectedItem();
+                if (patientID == null || patientID.isEmpty()) {
+                    return;
+                }
+                patient = new Patient(patientID);
+                visit = new Visit(patientID);
+                changeTitle("Patient Health");
+                changeScene(patientMenu());
         });
-        patientDelBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                    patientID = list.getSelectionModel().getSelectedItem();
-                    if (patientID == null || patientID.isEmpty()) {
-                        return;
-                    }
-                    patient = new Patient(patientID); //create patient
-                    patient.deletePatient();
-                    visit = null;
-                    updateList();
-            }
-        });
-        backBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                changeTitle("Main Menu");
+        patientDelBtn.setOnAction(event -> {
+                patientID = list.getSelectionModel().getSelectedItem();
+                if (patientID == null || patientID.isEmpty()) {
+                    return;
+                }
+                patient = new Patient(patientID); //create patient
+                patient.deletePatient();
+                visit = null;
                 updateList();
-                changeScene(loginScene);
-            }
+        });
+        backBtn.setOnAction(event -> {
+            changeTitle("Main Menu");
+            updateList();
+            changeScene(loginScene);
         });
         loginScene = new Scene(layout, width, height);
         this.setScene(loginScene);
@@ -149,11 +125,11 @@ public class NurseMenu extends Menus {
         //layout.setGridLinesVisible(true);     //debug
         
         Label scenetitle = new Label("Visits:");
-        layout.setHalignment(scenetitle, HPos.CENTER);
+        setHalignment(scenetitle, HPos.CENTER);
         layout.add(scenetitle, 0, 0);
         
         Label visitLabel = new Label("Latest visit: " + visit.getCurrentVisit());
-        layout.setHalignment(visitLabel, HPos.CENTER);
+        setHalignment(visitLabel, HPos.CENTER);
         layout.add(visitLabel, 1, 0);
         
         GridPane grid = new GridPane();
@@ -190,63 +166,45 @@ public class NurseMenu extends Menus {
         grid.add(backBtn, column, row);
         
         
-        vitalsViewBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                    visitNum = visitList.getSelectionModel().getSelectedItem();
-                    if (visitNum == null || !check.IntCheck(visitNum)) {
-                        return;
-                    }
-                    changeTitle("Patient Vitals");
-                    changeScene(VitalsMenu());
-            }
+        vitalsViewBtn.setOnAction(event -> {
+                visitNum = visitList.getSelectionModel().getSelectedItem();
+                if (visitNum == null || !check.IntCheck(visitNum)) {
+                    return;
+                }
+                changeTitle("Patient Vitals");
+                changeScene(VitalsMenu());
         });
-        healthViewBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                    visitNum = visitList.getSelectionModel().getSelectedItem();
-                    if (visitNum == null || !check.IntCheck(visitNum)) {
-                        return;
-                    }
-                    changeTitle("Patient Health");
-                    changeScene(HealthMenu());
-            }
+        healthViewBtn.setOnAction(event -> {
+                visitNum = visitList.getSelectionModel().getSelectedItem();
+                if (visitNum == null || !check.IntCheck(visitNum)) {
+                    return;
+                }
+                changeTitle("Patient Health");
+                changeScene(HealthMenu());
         });
-        patientSumBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                    visitNum = visitList.getSelectionModel().getSelectedItem();
-                    if (visitNum == null || !check.IntCheck(visitNum)) {
-                        return;
-                    }
-                    visit.setVisit(Integer.parseInt(visitNum));
-                    changeTitle("Patient Health");
-                    changeScene(SummaryMenu()); 
-            }
+        patientSumBtn.setOnAction(event -> {
+                visitNum = visitList.getSelectionModel().getSelectedItem();
+                if (visitNum == null || !check.IntCheck(visitNum)) {
+                    return;
+                }
+                visit.setVisit(Integer.parseInt(visitNum));
+                changeTitle("Patient Health");
+                changeScene(SummaryMenu());
         });
-        newVisitBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                    visit.incrementVisit();
-                    updateVisitList();
-                    visitLabel.setText("Latest visit: " + visit.getCurrentVisit());
-            }
+        newVisitBtn.setOnAction(event -> {
+                visit.incrementVisit();
+                updateVisitList();
+                visitLabel.setText("Latest visit: " + visit.getCurrentVisit());
         });
-        patientInfoBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                changeTitle("Patient Info");
-                changeScene(InfoMenu());
-            }
+        patientInfoBtn.setOnAction(event -> {
+            changeTitle("Patient Info");
+            changeScene(InfoMenu());
         });
         
-        backVisitBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                changeTitle("Main Menu");
-                updateVisitList();
-                changeScene(patientScene);
-            }
+        backVisitBtn.setOnAction(event -> {
+            changeTitle("Main Menu");
+            updateVisitList();
+            changeScene(patientScene);
         });
         patientScene = new Scene(layout, width, height);
         return patientScene;
@@ -256,7 +214,7 @@ public class NurseMenu extends Menus {
         menu.setText("Patient Intake Form");        
         GridPane layout = new GridPane();
         menu.setAlignment(Pos.CENTER);
-        layout.setHalignment(menu, HPos.CENTER);
+        setHalignment(menu, HPos.CENTER);
         layout.setAlignment(Pos.CENTER);
         
         layout.add(menu, 0, 0);
@@ -277,7 +235,7 @@ public class NurseMenu extends Menus {
         
         Label errorLabel = new Label();  
         errorLabel.setAlignment(Pos.CENTER);
-        layout.setHalignment(errorLabel, HPos.CENTER);
+        setHalignment(errorLabel, HPos.CENTER);
         errorLabel.setText("Error: Missing input"); 
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
@@ -320,49 +278,45 @@ public class NurseMenu extends Menus {
         Button saveBtn = SetupButton("Save");
         saveBtn.setMinWidth(100);
         
-        grid.setHalignment(saveBtn, HPos.CENTER);
+        setHalignment(saveBtn, HPos.CENTER);
         grid.add(saveBtn, 2, 7);
-        saveBtn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                if (firstNameInput.getText().isEmpty() || lastNameInput.getText().isEmpty() || emailInput.getText().isEmpty() || 
-                        phoneInput.getText().isEmpty() || bDayInput.getText().isEmpty() || insuranceInput.getText().isEmpty()) {
-                    
-                    System.out.println("missing input"); //debug
-                    errorLabel.setText("Error: Missing input"); 
+        saveBtn.setOnAction(event -> {
+            if (firstNameInput.getText().isEmpty() || lastNameInput.getText().isEmpty() || emailInput.getText().isEmpty() ||
+                    phoneInput.getText().isEmpty() || bDayInput.getText().isEmpty() || insuranceInput.getText().isEmpty()) {
+
+                System.out.println("missing input"); //debug
+                errorLabel.setText("Error: Missing input");
+                errorLabel.setVisible(true);
+            } else {
+                //patientID is fistName, lastName, birthday
+                if (!check.DateCheck(bDayInput.getText()) || !check.NameCheck(firstNameInput.getText()) || !check.NameCheck(lastNameInput.getText())) {
+                    System.out.println("Bad format input");
                     errorLabel.setVisible(true);
-                } else {
-                    //patientID is fistName, lastName, birthday
-                    if (!check.DateCheck(bDayInput.getText()) || !check.NameCheck(firstNameInput.getText()) || !check.NameCheck(lastNameInput.getText())) {
-                        System.out.println("Bad format input");
-                        errorLabel.setVisible(true);
-                        errorLabel.setText("Error: Bad input"); 
-                        return;
-                    }
-                    saveBtn.setDisable(true);
-                    firstNameInput.setDisable(true);
-                    lastNameInput.setDisable(true);
-                    emailInput.setDisable(true);
-                    phoneInput.setDisable(true);
-                    bDayInput.setDisable(true);
-                    insuranceInput.setDisable(true);
-                    patientID = firstNameInput.getText() + lastNameInput.getText() + bDayInput.getText();
-                    //System.out.println(patientID);  //debug
-                    
-                    errorLabel.setText("PatientID: " + patientID); 
-                    errorLabel.setVisible(true);
-                    
-                    patient = new Patient(patientID); //create patient
-                    patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(), 
-                            phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
-                    
+                    errorLabel.setText("Error: Bad input");
+                    return;
                 }
+                saveBtn.setDisable(true);
+                firstNameInput.setDisable(true);
+                lastNameInput.setDisable(true);
+                emailInput.setDisable(true);
+                phoneInput.setDisable(true);
+                bDayInput.setDisable(true);
+                insuranceInput.setDisable(true);
+                patientID = firstNameInput.getText() + lastNameInput.getText() + bDayInput.getText();
+                //System.out.println(patientID);  //debug
+
+                errorLabel.setText("PatientID: " + patientID);
+                errorLabel.setVisible(true);
+
+                patient = new Patient(patientID); //create patient
+                patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(),
+                        phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
+
             }
         });
         
         backBtn.setAlignment(Pos.CENTER);
-        grid.setHalignment(backBtn, HPos.CENTER);
+        setHalignment(backBtn, HPos.CENTER);
         grid.add(backBtn, 1, 7);
         
         layout.add(grid, 0, 1);
@@ -376,7 +330,7 @@ public class NurseMenu extends Menus {
         menu.setText("Patient Vitals");        
         GridPane layout = new GridPane();
         menu.setAlignment(Pos.CENTER);
-        layout.setHalignment(menu, HPos.CENTER);
+        setHalignment(menu, HPos.CENTER);
         layout.setAlignment(Pos.CENTER);
         layout.add(menu, 0, 0);
         
@@ -389,7 +343,7 @@ public class NurseMenu extends Menus {
        
         Label errorLabel = new Label();  
         errorLabel.setAlignment(Pos.CENTER);
-        layout.setHalignment(errorLabel, HPos.CENTER);
+        setHalignment(errorLabel, HPos.CENTER);
         errorLabel.setText("Error: Missing input"); 
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
@@ -420,66 +374,59 @@ public class NurseMenu extends Menus {
 
         RadioButton  rb = new RadioButton ();
         rb.setText("Over 12?");
-        rb.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (rb.isSelected()) {
-                    weightInput.setDisable(true);
-                    heightInput.setDisable(true);
-                    bodyTempInput.setDisable(true);
-                    bloodPInput.setDisable(true);
-                } else {
-                    weightInput.setDisable(false);
-                    heightInput.setDisable(false);
-                    bodyTempInput.setDisable(false);
-                    bloodPInput.setDisable(false);
-                }
+        rb.setOnAction(event -> {
+            if (rb.isSelected()) {
+                weightInput.setDisable(true);
+                heightInput.setDisable(true);
+                bodyTempInput.setDisable(true);
+                bloodPInput.setDisable(true);
+            } else {
+                weightInput.setDisable(false);
+                heightInput.setDisable(false);
+                bodyTempInput.setDisable(false);
+                bloodPInput.setDisable(false);
             }
         });
-        grid.setHalignment(rb, HPos.LEFT);
+        setHalignment(rb, HPos.LEFT);
         grid.add(rb, 0, 7);
         
         Button saveBtn = SetupButton("Save");
         saveBtn.setMinWidth(100);
         
-        grid.setHalignment(saveBtn, HPos.CENTER);
+        setHalignment(saveBtn, HPos.CENTER);
         grid.add(saveBtn, 2, 7);
-        saveBtn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                if (!rb.isSelected() && (weightInput.getText().isEmpty() || heightInput.getText().isEmpty() || 
-                        bodyTempInput.getText().isEmpty() || bloodPInput.getText().isEmpty()) ) {
-                    
-                    System.out.println("missing input"); //debug
-                    errorLabel.setText("Error: Missing input"); 
+        saveBtn.setOnAction(event -> {
+            if (!rb.isSelected() && (weightInput.getText().isEmpty() || heightInput.getText().isEmpty() ||
+                    bodyTempInput.getText().isEmpty() || bloodPInput.getText().isEmpty()) ) {
+
+                System.out.println("missing input"); //debug
+                errorLabel.setText("Error: Missing input");
+                errorLabel.setVisible(true);
+            } else {
+                saveBtn.setDisable(true);
+                //System.out.println(patientID);  //debug
+                if (patientID.isEmpty()) {
+                    System.out.println("no ID");  //debug
+                    errorLabel.setText("Error: No ID");
                     errorLabel.setVisible(true);
+                    return;
+                }
+
+                errorLabel.setText("PatientID: " + patientID);
+                errorLabel.setVisible(true);
+                visit.setVisit(visit.getCurrentVisit());
+                if (rb.isSelected()) {
+                    visit.saveVisitVitals("no", "n/a", "n/a",
+                            "n/a", "n/a");
                 } else {
-                    saveBtn.setDisable(true);
-                    //System.out.println(patientID);  //debug
-                    if (patientID.isEmpty()) {
-                        System.out.println("no ID");  //debug
-                        errorLabel.setText("Error: No ID"); 
-                        errorLabel.setVisible(true);
-                        return;
-                    }
-                    
-                    errorLabel.setText("PatientID: " + patientID); 
-                    errorLabel.setVisible(true);
-                    visit.setVisit(visit.getCurrentVisit());
-                    if (rb.isSelected()) {
-                        visit.saveVisitVitals("no", "n/a", "n/a", 
-                                "n/a", "n/a");
-                    } else {
-                        visit.saveVisitVitals("yes", weightInput.getText(), heightInput.getText(), 
-                                bodyTempInput.getText(), bloodPInput.getText());
-                    }
+                    visit.saveVisitVitals("yes", weightInput.getText(), heightInput.getText(),
+                            bodyTempInput.getText(), bloodPInput.getText());
                 }
             }
         });
         
         backVisitBtn.setAlignment(Pos.CENTER);
-        grid.setHalignment(backVisitBtn, HPos.CENTER);
+        setHalignment(backVisitBtn, HPos.CENTER);
         grid.add(backVisitBtn, 1, 7);
         
         layout.add(grid, 0, 1);
@@ -493,7 +440,7 @@ public class NurseMenu extends Menus {
         menu.setText("Patient Health");        
         GridPane layout = new GridPane();
         menu.setAlignment(Pos.CENTER);
-        layout.setHalignment(menu, HPos.CENTER);
+        setHalignment(menu, HPos.CENTER);
         layout.setAlignment(Pos.CENTER);
         layout.add(menu, 0, 0);
         
@@ -505,7 +452,7 @@ public class NurseMenu extends Menus {
         
         Label errorLabel = new Label();  
         errorLabel.setAlignment(Pos.CENTER);
-        layout.setHalignment(errorLabel, HPos.CENTER);
+        setHalignment(errorLabel, HPos.CENTER);
         errorLabel.setText("Error: Missing input"); 
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
@@ -525,38 +472,34 @@ public class NurseMenu extends Menus {
         Button saveBtn = SetupButton("Save");
         saveBtn.setMinWidth(100);
         
-        grid.setHalignment(saveBtn, HPos.CENTER);
+        setHalignment(saveBtn, HPos.CENTER);
         grid.add(saveBtn, 2, 7);
-        saveBtn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                if (allergiesInput.getText().isEmpty() || healthConcInput.getText().isEmpty()) {
-                    
-                    System.out.println("missing input"); //debug
-                    errorLabel.setText("Error: Missing input"); 
+        saveBtn.setOnAction(event -> {
+            if (allergiesInput.getText().isEmpty() || healthConcInput.getText().isEmpty()) {
+
+                System.out.println("missing input"); //debug
+                errorLabel.setText("Error: Missing input");
+                errorLabel.setVisible(true);
+            } else {
+                saveBtn.setDisable(true);
+                //System.out.println(patientID);  //debug
+                if (patientID.isEmpty()) {
+                    System.out.println("no ID");  //debug
+                    errorLabel.setText("Error: No ID");
                     errorLabel.setVisible(true);
-                } else {
-                    saveBtn.setDisable(true);
-                    //System.out.println(patientID);  //debug
-                    if (patientID.isEmpty()) {
-                        System.out.println("no ID");  //debug
-                        errorLabel.setText("Error: No ID"); 
-                        errorLabel.setVisible(true);
-                        return;
-                    }
-                    
-                    errorLabel.setText("PatientID: " + patientID); 
-                    errorLabel.setVisible(true);
-                    visit.setVisit(visit.getCurrentVisit());
-                        visit.saveVisitHealth(allergiesInput.getText(), healthConcInput.getText());
-                    
+                    return;
                 }
+
+                errorLabel.setText("PatientID: " + patientID);
+                errorLabel.setVisible(true);
+                visit.setVisit(visit.getCurrentVisit());
+                visit.saveVisitHealth(allergiesInput.getText(), healthConcInput.getText());
+
             }
         });
         
         backVisitBtn.setAlignment(Pos.CENTER);
-        grid.setHalignment(backVisitBtn, HPos.CENTER);
+        setHalignment(backVisitBtn, HPos.CENTER);
         grid.add(backVisitBtn, 1, 7);
         
         layout.add(grid, 0, 1);
@@ -571,7 +514,7 @@ public class NurseMenu extends Menus {
         menu.setText("Patient Summary");        
         GridPane layout = new GridPane();
         menu.setAlignment(Pos.CENTER);
-        layout.setHalignment(menu, HPos.CENTER);
+        setHalignment(menu, HPos.CENTER);
         layout.setAlignment(Pos.CENTER);
         
         layout.add(menu, 0, 0);
@@ -585,7 +528,7 @@ public class NurseMenu extends Menus {
         
         Label errorLabel = new Label();  
         errorLabel.setAlignment(Pos.CENTER);
-        layout.setHalignment(errorLabel, HPos.CENTER);
+        setHalignment(errorLabel, HPos.CENTER);
         errorLabel.setText("Error: Missing input"); 
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
@@ -624,7 +567,7 @@ public class NurseMenu extends Menus {
         grid.add(healthConcInput, 1, 3);
         
         backVisitBtn.setAlignment(Pos.CENTER);
-        grid.setHalignment(backVisitBtn, HPos.CENTER);
+        setHalignment(backVisitBtn, HPos.CENTER);
         grid.add(backVisitBtn, 1, 7);
         
         layout.add(grid, 0, 1);
@@ -655,7 +598,7 @@ public class NurseMenu extends Menus {
         menu.setText("Patient Intake Form");
         GridPane layout = new GridPane();
         menu.setAlignment(Pos.CENTER);
-        layout.setHalignment(menu, HPos.CENTER);
+        setHalignment(menu, HPos.CENTER);
         layout.setAlignment(Pos.CENTER);
 
         layout.add(menu, 0, 0);
@@ -676,7 +619,7 @@ public class NurseMenu extends Menus {
 
         Label errorLabel = new Label();
         errorLabel.setAlignment(Pos.CENTER);
-        layout.setHalignment(errorLabel, HPos.CENTER);
+        setHalignment(errorLabel, HPos.CENTER);
         errorLabel.setText("Error: Missing input");
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
@@ -717,9 +660,9 @@ public class NurseMenu extends Menus {
         grid.add(insuranceInput, 1, 6);
 
 
-        backBtn.setAlignment(Pos.CENTER);
-        grid.setHalignment(backBtn, HPos.CENTER);
-        grid.add(backBtn, 1, 7);
+        backVisitBtn.setAlignment(Pos.CENTER);
+        setHalignment(backVisitBtn, HPos.CENTER);
+        grid.add(backVisitBtn, 1, 7);
 
         layout.add(grid, 0, 1);
         patientInfoScene = new Scene(layout, this.width, this.height);
