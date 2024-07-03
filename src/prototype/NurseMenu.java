@@ -36,7 +36,7 @@ import org.json.JSONObject;
  *
  * @author andreas lees
  */
-public class NurseMenu extends Menus{  
+public class NurseMenu extends Menus {
     private Scene patientSummaryScene, patientScene;
     private JSONObject jo;
     private String visitNum;
