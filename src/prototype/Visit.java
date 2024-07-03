@@ -21,7 +21,24 @@ import java.util.List;
 import java.util.Scanner; // Import the Scanner class to read text files
 import org.json.*;
 
-public class Visit {
+interface VisitInterface {
+    //adds a new visit and increments visitNum
+    void incrementVisit();
+    //sets visitNum to num if directory num exists
+    void setVisit(int num);
+    //returns latest visit
+    int getCurrentVisit();
+    //returns the suffix for the health info file
+    String getHealthFile();
+    //loads data from visit number {visitNum} into a JSONObject
+    JSONObject loadVisit(String fileName);
+    //returns a list of visits
+    List getVisitList();
+    boolean saveVisitVitals(String over12, String weight, String height,String bodyTemp,String bloodP);
+    boolean saveVisitHealth(String allergies, String healthConcerns);
+}
+
+public class Visit implements VisitInterface{
     
     
     private String rootPath = "./src/prototype/patients/";
@@ -36,12 +53,15 @@ public class Visit {
     private BufferedWriter output = null;
     private int visitNum = 0;
     private JSONObject jo;
-    
+
+//-------------------constructors-------------------------------------------------
     Visit(String ID) {
         this.patientID = ID;
         this.patientDir = rootPath + patientID + "/";
     }
-    
+//------------------public methods--------------------------------------------------
+
+    @Override
     public void incrementVisit() {
         this.visitNum = getCurrentVisit();
         visitNum++;
@@ -59,12 +79,14 @@ public class Visit {
             
         }
     }
+    @Override
     public void setVisit(int num) {
         if (dirCheck(num)) {
             System.out.println("dir exists");
             this.visitNum = num;
         }
     }
+    @Override
     public List getVisitList() {
         File file = new File(rootPath + patientID + "/");
         List list = java.util.Collections.emptyList();
@@ -83,6 +105,7 @@ public class Visit {
         }
         return list;
     }
+    @Override
     public int getCurrentVisit() {
         File file = new File(rootPath + patientID + "/");
         int temp = 0;
@@ -124,10 +147,12 @@ public class Visit {
         return temp;
         
     }
+    @Override
     public String getHealthFile() {
         return this.healthName;
     }
-    
+
+    @Override
     public JSONObject loadVisit(String fileName) {
         if (patientID.isEmpty()) {
             jo = new JSONObject();
@@ -141,6 +166,7 @@ public class Visit {
         return jo;
         
     }
+    @Override
     public boolean saveVisitVitals(String over12, String weight, String height,String bodyTemp,String bloodP) {
         
         jo = fileCheck(vitalName);
@@ -172,6 +198,7 @@ public class Visit {
         
         return false;
     }
+    @Override
     public boolean saveVisitHealth(String allergies, String healthConcerns) {
         
         jo = fileCheck(healthName);
@@ -199,6 +226,7 @@ public class Visit {
         
         return false;
     }
+//-------------------------private methods-------------------------------------------
     private boolean dirCheck(int num) {
         visitDir = patientDir +  num + "/";
         File file = new File(visitDir);

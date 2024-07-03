@@ -19,19 +19,19 @@ import java.util.List;
 import java.util.Scanner; // Import the Scanner class to read text files
 import org.json.*;
 
-interface In1 {
+interface PatientInterface {
     
     void deletePatient();
     String getInfoFile();
     String getName();
     String getFirstName();
-    boolean savePatient(String firstName, String lastName,String email,String phone,String healthHist,String insID);
+    boolean savePatient(String firstName, String lastName,String email,String phone,String healthHist,String insID, String bDay);
     //returns a list of patients
-    List getPList();
+    List getPatientList();
     JSONObject loadPatientFile();
 }
 
-public class Patient implements In1{
+public class Patient implements PatientInterface{
     
     private final String filePath = "./src/prototype/patients/";
     private final String infoName = "_PatientInfo.txt";
@@ -41,7 +41,7 @@ public class Patient implements In1{
     private BufferedWriter output = null;
     private JSONObject jo;
     
-//--------------------------------------------------------------------  
+//--------------------constructors------------------------------------------------
     Patient(String patientID) {
         this.patientID = patientID;
         System.out.println(this.patientID);
@@ -51,7 +51,7 @@ public class Patient implements In1{
     Patient() {
         this.patientID = "";
     }
-//--------------------------------------------------------------------  
+//-------------------public methods-------------------------------------------------
     @Override
     public void deletePatient() {
         if (patientID == null || patientID.isEmpty()){
@@ -68,8 +68,9 @@ public class Patient implements In1{
                 file.delete();
             }
         }
-            removePatient();
-            removeUser();
+        System.out.println("Deleted!");   //debug
+            removeFromPatientList();
+            removeFromUserList();
     }
     
     @Override
@@ -88,7 +89,7 @@ public class Patient implements In1{
     }
     
     @Override
-    public boolean savePatient(String firstName, String lastName,String email,String phone,String healthHist,String insID) {
+    public boolean savePatient(String firstName, String lastName,String email,String phone,String healthHist,String insID, String bDay) {
         
         jo = fileCheck();
         
@@ -100,9 +101,10 @@ public class Patient implements In1{
         jo.put("phone", phone);
         jo.put("healthHist", healthHist);
         jo.put("insID", insID);
+        jo.put("birthday", bDay);
         //save to file
         System.out.println("Saving file"); 
-        System.out.println(jo.toString()); 
+        //System.out.println(jo.toString());
 
         try {
             output = new BufferedWriter(new FileWriter(file));
@@ -112,10 +114,10 @@ public class Patient implements In1{
             System.out.println("File Saved"); 
             //add to patientList
             System.out.println("Adding to patient list"); 
-            addPatient(jo.get("patientID").toString());
+            addToPatientList();
             //add to userList
             System.out.println("adding to user list"); 
-            addUser();
+            addToUserList();
             return true;
         } catch (IOException ex) {
             System.out.println("Error saving file"); 
@@ -124,7 +126,7 @@ public class Patient implements In1{
         return false;
     }
     @Override
-    public List getPList() {
+    public List getPatientList() {
         JSONArray ja;
         //ja = listCheck(filePath + patientListFilename);
         jo = listCheck(filePath + patientListFilename);
@@ -157,13 +159,13 @@ public class Patient implements In1{
         return jo;
     }
     
-//--------------------------------------------------------------------  
+//------------private methods--------------------------------------------------------
     private void delSubFiles(File file) {
         File[] subFiles = file.listFiles();
         for (int i=0; i < subFiles.length; i++) {
-            System.out.println("Deleting: " + subFiles[i].getPath());   //debug
+            //System.out.println("Deleting: " + subFiles[i].getPath());   //debug
             if (!subFiles[i].delete()) {
-                System.out.println("Couldnt delete, non-empty dir");   //debug
+                //System.out.println("Couldnt delete, non-empty dir");   //debug
                 delSubFiles(subFiles[i]);
                 subFiles[i].delete();
             }
@@ -171,7 +173,7 @@ public class Patient implements In1{
         
     }
     
-    private void addPatient(String patientID) {
+    private void addToPatientList() {
         try {
             JSONObject ja = listCheck(filePath + patientListFilename);
             //System.out.println(ja.toString());
@@ -187,7 +189,7 @@ public class Patient implements In1{
         
     }
     
-    private void removePatient() {
+    private void removeFromPatientList() {
         try {
             
             //JSONArray ja = new JSONArray();
@@ -198,14 +200,14 @@ public class Patient implements In1{
             while (readFile.hasNextLine()) {
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
-            System.out.println(fileDATA);
+            //System.out.println(fileDATA);
             JSONObject jo2 = new JSONObject(fileDATA);
             JSONArray ja = new JSONArray(jo2.getJSONArray("patientID"));
-            System.out.println("test"); 
-            System.out.println(this.patientID);
+            //System.out.println("test");
+            //System.out.println(this.patientID);
             
             for (int i=0; i < ja.length(); i++) {
-                System.out.println(ja.get(i).toString()); 
+                //System.out.println(ja.get(i).toString());
                 if (ja.get(i).toString().matches(patientID)) {
                     ja.remove(i);
                     jo2.put("patientID", ja);
@@ -215,14 +217,14 @@ public class Patient implements In1{
             output.write(jo2.toString());
 
             output.close();
-            System.out.println("Removed from user list"); 
+            System.out.println("Removed from patient list"); 
             
         } catch (IOException ex) {
             System.out.println("Error saving file"); 
         }
         
     }
-    private void addUser() {
+    private void addToUserList() {
         try {
             JSONObject jo2 = new JSONObject();
             jo2.put("patientID", this.patientID);
@@ -238,12 +240,12 @@ public class Patient implements In1{
             while (readFile.hasNextLine()) {
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
-            System.out.println(fileDATA);
+            //System.out.println(fileDATA);
             JSONArray ja = new JSONArray(fileDATA);
-            System.out.println("test"); 
-            System.out.println(this.patientID);
+            //System.out.println("test");
+            //System.out.println(this.patientID);
             ja.put(jo2);
-            System.out.println("test2"); 
+            //System.out.println("test2");
             output = new BufferedWriter(new FileWriter(file3));
             output.write(ja.toString());
 
@@ -256,7 +258,7 @@ public class Patient implements In1{
         }
         
     }
-    private void removeUser() {
+    private void removeFromUserList() {
         try {
             JSONObject jo2;
             
@@ -284,7 +286,7 @@ public class Patient implements In1{
                     break;
                 }
             }
-            System.out.println(ja.toString());
+            //System.out.println(ja.toString());
             output = new BufferedWriter(new FileWriter(file3));
             output.write(ja.toString());
 
@@ -352,7 +354,7 @@ public class Patient implements In1{
             //---------------------------------------
             // check/create file---------------------
             File file = new File(filePath + patientID + "/" + patientID + infoName); //+ "_PatientInfo.txt" or vitals
-            System.out.println(filePath + patientID + "/" + patientID + infoName);
+            //System.out.println(filePath + patientID + "/" + patientID + infoName);
             bool = file.createNewFile();
             if (bool) {
                 System.out.println("New File created"); 
@@ -362,7 +364,7 @@ public class Patient implements In1{
                 System.out.println("Empty File: populating"); 
                 JSONObject jo = new JSONObject();
                // jo.put("patientID", patientID);   //test
-                System.out.println(jo.toString()); 
+               // System.out.println(jo.toString());
                 
                 output = new BufferedWriter(new FileWriter(file));
                 output.write(jo.toString());
@@ -380,9 +382,9 @@ public class Patient implements In1{
             }
             //CLOSE FILES WHEN DONE WITH THEM DUMMY
             readFile.close();
-            System.out.println("data: " + fileDATA);
+            //System.out.println("data: " + fileDATA);
             JSONObject jo = new JSONObject(fileDATA);
-            System.out.println(jo.toString());
+            //System.out.println(jo.toString());
             return jo;
             
         } catch (FileNotFoundException e) {

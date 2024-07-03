@@ -25,14 +25,14 @@ import org.json.JSONObject;
  * @author andreas lees
  */
 public class PatientMenu extends Menus {
-    private Scene patientSummaryScene;
+    private Scene patientSummaryScene, patientInfoScene;
     private JSONObject jo;
     private Visit visit;
+    private InputValidation check = new InputValidation();
     //---------------Patient Menu-------------------
     PatientMenu(String ID) {
         this.patientID = ID;
-        Patient patient = new Patient(patientID);
-        
+        patient = new Patient(patientID);
         visit = new Visit(patientID);
         visit.setVisit(visit.getCurrentVisit());
         
@@ -113,7 +113,138 @@ public class PatientMenu extends Menus {
     }    
     private Scene InfoMenu() {
         //populate with contact info
-        return loginScene;
+        String pID, fname, lname, email, phone, healthHis, insID, bDay;
+        pID = fname = lname = email = phone = healthHis = insID = bDay = "";
+        try {
+            jo = patient.loadPatientFile();
+            pID = jo.getString("patientID");
+            fname = jo.getString("firstName");
+            lname = jo.getString("lastName");
+            email = jo.getString("email");
+            phone = jo.getString("phone");
+            healthHis = jo.getString("healthHist");
+            insID = jo.getString("insID");
+            bDay = jo.getString("birthday");
+
+        } catch (JSONException e) {
+            System.out.println("bad file");
+        }
+
+        menu.setText("Patient Intake Form");
+        GridPane layout = new GridPane();
+        menu.setAlignment(Pos.CENTER);
+        layout.setHalignment(menu, HPos.CENTER);
+        layout.setAlignment(Pos.CENTER);
+
+        layout.add(menu, 0, 0);
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        //grid.setGridLinesVisible(true);       //debug
+
+        Label scenetitle = new Label("First Name:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(scenetitle, 0, 1);
+        TextField firstNameInput = new TextField ();
+        firstNameInput.setText(fname);
+        grid.add(firstNameInput, 1, 1);
+
+        Label errorLabel = new Label();
+        errorLabel.setAlignment(Pos.CENTER);
+        layout.setHalignment(errorLabel, HPos.CENTER);
+        errorLabel.setText("Error: Missing input");
+        errorLabel.setVisible(false);
+        layout.add(errorLabel, 0, 2);
+
+        Label lastNameLbl = new Label("Last Name:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(lastNameLbl, 0, 2);
+        TextField lastNameInput = new TextField ();
+        lastNameInput.setText(lname);
+        grid.add(lastNameInput, 1, 2);
+
+        Label emailLbl = new Label("Email:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(emailLbl, 0, 3);
+        TextField emailInput = new TextField ();
+        emailInput.setText(email);
+        grid.add(emailInput, 1, 3);
+
+        Label phoneLbl = new Label("Phone Number:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(phoneLbl, 0, 4);
+        TextField phoneInput = new TextField ();
+        phoneInput.setText(phone);
+        grid.add(phoneInput, 1, 4);
+
+        Label bDayLbl = new Label("Birthday (DDMMYYYY):");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(bDayLbl, 0, 5);
+        TextField bDayInput = new TextField ();
+        bDayInput.setText(bDay);
+        grid.add(bDayInput, 1, 5);
+
+        Label insurance = new Label("Insurance ID:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(insurance, 0, 6);
+        TextField insuranceInput = new TextField ();
+        insuranceInput.setText(insID);
+        grid.add(insuranceInput, 1, 6);
+
+        Button saveBtn = SetupButton("Save");
+        saveBtn.setMinWidth(100);
+
+        grid.setHalignment(saveBtn, HPos.CENTER);
+        grid.add(saveBtn, 2, 7);
+        saveBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                if (firstNameInput.getText().isEmpty() || lastNameInput.getText().isEmpty() || emailInput.getText().isEmpty() ||
+                        phoneInput.getText().isEmpty() || bDayInput.getText().isEmpty() || insuranceInput.getText().isEmpty()) {
+
+                    System.out.println("missing input"); //debug
+                    errorLabel.setText("Error: Missing input");
+                    errorLabel.setVisible(true);
+                } else {
+                    //patientID is fistName, lastName, birthday
+                    if (!check.DateCheck(bDayInput.getText()) || !check.NameCheck(firstNameInput.getText()) || !check.NameCheck(lastNameInput.getText())) {
+                        System.out.println("Bad format input");
+                        errorLabel.setVisible(true);
+                        errorLabel.setText("Error: Bad input");
+                        return;
+                    }
+                    saveBtn.setDisable(true);
+                    firstNameInput.setDisable(true);
+                    lastNameInput.setDisable(true);
+                    emailInput.setDisable(true);
+                    phoneInput.setDisable(true);
+                    bDayInput.setDisable(true);
+                    insuranceInput.setDisable(true);
+                    patientID = firstNameInput.getText() + lastNameInput.getText() + bDayInput.getText();
+                    //System.out.println(patientID);  //debug
+
+                    errorLabel.setText("PatientID: " + patientID);
+                    errorLabel.setVisible(true);
+
+                    patient = new Patient(patientID); //create patient
+                    patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(),
+                            phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
+
+                }
+            }
+        });
+
+        backBtn.setAlignment(Pos.CENTER);
+        grid.setHalignment(backBtn, HPos.CENTER);
+        grid.add(backBtn, 1, 7);
+
+        layout.add(grid, 0, 1);
+        patientInfoScene = new Scene(layout, this.width, this.height);
+        return patientInfoScene;
     }
     private Scene SummaryMenu() {
         

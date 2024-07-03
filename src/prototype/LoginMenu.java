@@ -270,7 +270,7 @@ public class LoginMenu extends Stage{
                     
                     patient = new Patient(patientID); //create patient
                     patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(), 
-                            phoneInput.getText(), bDayInput.getText(), insuranceInput.getText());
+                            phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
                     
                 }
             }

@@ -48,7 +48,7 @@ public class NurseMenu extends Menus{
     private void updateList() {
         //collect list of patients
         patient = new Patient();
-        ObservableList<String> items = FXCollections.observableArrayList (patient.getPList());
+        ObservableList<String> items = FXCollections.observableArrayList (patient.getPatientList());
         list.setItems(items);
         
     }
@@ -344,7 +344,7 @@ public class NurseMenu extends Menus{
                     
                     patient = new Patient(patientID); //create patient
                     patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(), 
-                            phoneInput.getText(), bDayInput.getText(), insuranceInput.getText());
+                            phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
                     
                 }
             }
