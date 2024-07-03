@@ -304,7 +304,7 @@ public class NurseMenu extends Menus{
             public void handle(ActionEvent event) {
                     visitNum = visitList.getSelectionModel().getSelectedItem();
                     if (visitNum == null || check.DateCheck(visitNum)) {
-                        visitNum = "0";
+                        return;
                     }
                     visit.setVisit(Integer.parseInt(visitNum));
                     changeTitle("Patient Health");

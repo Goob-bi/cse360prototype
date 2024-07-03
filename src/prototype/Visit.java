@@ -115,10 +115,6 @@ public class Visit {
                 }
             }
             System.out.println("largest dir(curr visit) " + temp);
-            
-        }
-        if (temp < 0) {
-            incrementVisit();
         }
         return temp;
         
