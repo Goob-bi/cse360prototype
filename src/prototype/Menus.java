@@ -35,6 +35,7 @@ import org.json.JSONObject;
  * @author andreas lees
  */
 public class Menus extends Stage{
+    protected String companyName = "Dr. Hearth's Office";
     protected String user = "";
     protected String pass = "";
     protected Stage loginMenu;
@@ -96,7 +97,7 @@ public class Menus extends Stage{
         
         this.hide();
         this.patientID = auth.getID();
-        System.out.println(patientID);
+        //System.out.println(patientID);
         this.acctType = auth.getType();
         switch (acctType) {
             case NURSE:

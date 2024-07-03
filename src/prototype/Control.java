@@ -22,17 +22,7 @@ public class Control extends Application {
     @Override
     public void start(Stage primaryStage) {
         InputValidation check = new InputValidation();
-            System.out.println(check.NameCheck(""));
-            System.out.println(check.DateCheck(""));
         LoginMenu authMenu = new LoginMenu();
-        //obsolete code, handled within LoginMenu
-    //    if (!authMenu.isShowing()) {
-    //        Menus login = new Menus();
-    //    }
-        
-        
-        //primaryStage.setScene(login.getScene());
-        //primaryStage.show();
     }
 
     /**

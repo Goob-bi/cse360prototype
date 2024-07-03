@@ -67,16 +67,14 @@ public class Visit {
     }
     public List getVisitList() {
         File file = new File(rootPath + patientID + "/");
-        int[] validDirs = new int[1];
-        int temp = -1;
-        int dir;
         List list = java.util.Collections.emptyList();
         if ( !patientID.isEmpty() && file.exists()) {
             String[] files = file.list(new FilenameFilter() {
+                //check that the directory name is only numeric, might replace
+                // getCurrentVisit() code with this
                 @Override
                 public boolean accept(File current, String name) {
                   return name.matches("[0-9]+");
-                  //return new File(current, name).isDirectory();
                 }
             });
             list = Arrays.asList(files);
@@ -87,27 +85,33 @@ public class Visit {
     }
     public int getCurrentVisit() {
         File file = new File(rootPath + patientID + "/");
-        int[] validDirs = new int[1];
-        int temp = -1;
+        int temp = 0;
         int dir;
+        //if there is a patientID and the directory exists
         if ( !patientID.isEmpty() && file.exists()) {
+            //collect a list of directories in the root path
             String[] files = file.list(new FilenameFilter() {
                 @Override
                 public boolean accept(File current, String name) {
                   return new File(current, name).isDirectory();
                 }
             });
+            //parse through the directory list
             for (int i = 0; i < files.length; i++) {
-            //    System.out.println(files[i]);
-             //   System.out.println("[parsing name]");
+                //check each dir name is only numeric
                 for (int z = 0; z < files[i].length(); z++) {
                     if (!Character.isDigit(files[i].charAt(z))) {
-                        //System.out.println("not digit");
+                        //if something other than a digit is found, try the next
+                        //dir in the list
                         break;
                     }
+                    //if directory name is all numbers, convert from string to an
+                    //integer and set variable dir to that int
                     if (z == files[i].length() - 1) {
                         dir = Integer.parseInt(files[i]);
-                        System.out.println("found valid dir " + dir);
+                        
+                        //if dir > temp, set temp to dir, this way we can find the
+                        //largest number (current visit)
                         if (dir > temp) {
                             temp = dir;
                         }
@@ -116,14 +120,8 @@ public class Visit {
             }
             System.out.println("largest dir(curr visit) " + temp);
         }
+        //if patient ID is empty or no files exist, return 0, there are no visits
         return temp;
-        
-    }
-    public void getVisit(int num) {
-        if (dirCheck(num)) {
-            System.out.println("dir exists");
-            
-        }
         
     }
     
@@ -144,10 +142,7 @@ public class Visit {
         
         jo = fileCheck(vitalName);
         visitDir = patientDir +  visitNum + "/";
-        //if (jo.isEmpty()) {
-        //    System.out.println("bad file");
-       //     return false;
-       // }
+        
         
         File file = new File(visitDir + patientID + vitalName);
         jo.put("patientID", patientID);
@@ -177,12 +172,7 @@ public class Visit {
     public boolean saveVisitHealth(String allergies, String healthConcerns) {
         
         jo = fileCheck(healthName);
-        
         visitDir = patientDir +  visitNum + "/";
-        //if (jo.isEmpty()) {
-        //    System.out.println("bad file");
-       //     return false;
-       // }
         
         File file = new File(visitDir + patientID + healthName);
         jo.put("patientID", patientID);
@@ -212,6 +202,13 @@ public class Visit {
         return file.exists();
         
     }
+    /**
+     * Checks that a specific visit file exists for visitNum. If not, creates the necessary
+     * directories and file, returning an empty JSONObject. If the file is found,
+     * returns a JSONObject containing the file contents.
+     * @param fileName the ending of tthe filename
+     * @return a JSONObject containing the file contents
+     */
     private JSONObject fileCheck(String fileName) {
         
         visitDir = patientDir +  visitNum + "/";

@@ -63,7 +63,7 @@ public class LoginMenu extends Stage{
     LoginMenu() {
         
        // launch();
-       System.out.println("dees");
+       
        Authentication authenticate = new Authentication();
 //---------------------grid-----------------------------------------------         
         GridPane layout = new GridPane();
@@ -117,8 +117,8 @@ public class LoginMenu extends Stage{
                 pass = passInput.getText();
                 confirmBtn.setDisable(true);
                 if (authenticate.auth(user, pass)) {
-                    System.out.println("authenticated");
-                    System.out.println(authenticate.getType());
+                   // System.out.println("authenticated");
+                   // System.out.println(authenticate.getType());
                     //load up main menu
                     hideScene();
                     //loadup menus, loadup different using 

@@ -51,7 +51,7 @@ public class Authentication {
             String userInfo, userNameFile, userPassFile;
             
             for (int i = 0; i < ja.length(); i++) {
-                System.out.println(ja.get(i));
+                //System.out.println(ja.get(i));    //debug
                 userInfo = ja.get(i).toString();
                 JSONObject jo = new JSONObject(userInfo);
                 
