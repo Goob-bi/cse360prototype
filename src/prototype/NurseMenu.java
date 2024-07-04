@@ -81,6 +81,8 @@ public class NurseMenu extends Menus {
         grid.add(patientBtn, column, row);
         row++;
         grid.add(patientDelBtn, column, row);
+        row++;
+        grid.add(logoutBtn, column, row);
         
         
         pIntakeBtn.setOnAction(event -> {

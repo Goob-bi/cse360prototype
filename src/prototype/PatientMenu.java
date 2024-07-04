@@ -75,6 +75,8 @@ public class PatientMenu extends Menus {
         grid.add(pInfoBtn, column, row); 
         row++;
         grid.add(patientSumBtn, column, row);
+        row++;
+        grid.add(logoutBtn, column, row);
         
         pInfoBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -217,14 +219,17 @@ public class PatientMenu extends Menus {
                         errorLabel.setText("Error: Bad input");
                         return;
                     }
-                    saveBtn.setDisable(true);
-                    firstNameInput.setDisable(true);
-                    lastNameInput.setDisable(true);
-                    emailInput.setDisable(true);
-                    phoneInput.setDisable(true);
-                    bDayInput.setDisable(true);
-                    insuranceInput.setDisable(true);
-                    patientID = firstNameInput.getText() + lastNameInput.getText() + bDayInput.getText();
+                    //patient can edit these fields
+                    //saveBtn.setDisable(true);
+                    //firstNameInput.setDisable(true);
+                    //lastNameInput.setDisable(true);
+                    //emailInput.setDisable(true);
+                    //phoneInput.setDisable(true);
+                    //bDayInput.setDisable(true);
+                    //insuranceInput.setDisable(true);
+
+                    //need to only alter current patient file
+                    //patientID = firstNameInput.getText() + lastNameInput.getText() + bDayInput.getText();
                     //System.out.println(patientID);  //debug
 
                     errorLabel.setText("PatientID: " + patientID);

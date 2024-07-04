@@ -84,6 +84,8 @@ public class DoctorMenu extends Menus{
         grid.add(patientBtn, column, row);
         row++;
         grid.add(patientDelBtn, column, row);
+        row++;
+        grid.add(logoutBtn, column, row);
 
 
         pIntakeBtn.setOnAction(event -> {
@@ -115,6 +117,7 @@ public class DoctorMenu extends Menus{
             updateList();
             changeScene(loginScene);
         });
+
         loginScene = new Scene(layout, width, height);
         this.setScene(loginScene);
         this.show();

@@ -5,6 +5,7 @@
  */
 package prototype;
 
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,6 +18,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import org.json.JSONException;
+
+import static javafx.scene.layout.GridPane.setHalignment;
 
 /**
  *
@@ -38,6 +41,7 @@ public class Menus extends Stage{
     protected ListView<String> list = new ListView<String>();
     protected ListView<String> visitList = new ListView<String>();
     protected Button backBtn = SetupButton("Back", 100);
+    protected Button logoutBtn = SetupLogoutButton("Logout", 100);
     
     protected Patient patient;
     protected Scene loginScene;
@@ -59,6 +63,7 @@ public class Menus extends Stage{
         Btn.setBorder(border);
         Btn.setOnMouseEntered(e -> Btn.setBackground(bkgrndLBlue));
         Btn.setOnMouseExited(e -> Btn.setBackground(bkgrndBlue));
+        setHalignment(Btn, HPos.CENTER);
         return Btn;
     }
     protected Button SetupButton(String text, int width) {
@@ -74,7 +79,31 @@ public class Menus extends Stage{
         Btn.setBorder(border);
         Btn.setOnMouseEntered(e -> Btn.setBackground(bkgrndLBlue));
         Btn.setOnMouseExited(e -> Btn.setBackground(bkgrndBlue));
+        setHalignment(Btn, HPos.CENTER);
         return Btn;
+    }
+    protected Button SetupLogoutButton(String text, int width) {
+
+        Button Btn = new Button();
+        Btn.setDisable(false);
+        Btn.setText(text);
+        Btn.setAlignment(Pos.CENTER);
+        Btn.setTextAlignment(TextAlignment.CENTER);
+        Btn.setMinHeight(0);
+        Btn.setMinWidth(width);
+        Btn.setBackground(bkgrndBlue);
+        Btn.setBorder(border);
+        Btn.setOnMouseEntered(e -> Btn.setBackground(bkgrndLBlue));
+        Btn.setOnMouseExited(e -> Btn.setBackground(bkgrndBlue));
+        setHalignment(Btn, HPos.CENTER);
+        Btn.setOnAction(event -> {
+            hideMenu();
+            LoginMenu authMenu = new LoginMenu();
+        });
+        return Btn;
+    }
+    protected void hideMenu() {
+        this.close();
     }
     Menus() {
         //empty constructor, required for child classes to override
@@ -140,7 +169,7 @@ public class Menus extends Stage{
         
         Label userName = new Label("Test:");
         grid.add(userName, 0, 1);
-        grid.add(backBtn, 1, 1);
+        grid.add(logoutBtn, 1, 1);
         
         ErrorScene = new Scene(layout, width, height);
         return ErrorScene;
