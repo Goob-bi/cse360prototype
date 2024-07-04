@@ -69,6 +69,7 @@ public class PatientMenu extends Menus {
         
         
         Button patientSumBtn = SetupButton("Visit Summary");
+        Button messageBtn = SetupButton("Message");
         
         //collect patient info
         patient = new Patient(patientID);
@@ -77,6 +78,8 @@ public class PatientMenu extends Menus {
         grid.add(pInfoBtn, column, row); 
         row++;
         grid.add(patientSumBtn, column, row);
+        row++;
+        grid.add(messageBtn, column, row);
         row++;
         grid.add(logoutBtn, column, row);
         
@@ -100,6 +103,17 @@ public class PatientMenu extends Menus {
                     changeTitle("Patient Health");
                     changeScene(SummaryMenu());
                     
+            }
+        });
+        messageBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (patientID == null) {
+                    patientID = "";
+                }
+                changeTitle("Patient Health");
+                changeScene(new MessageMenu().loginScene);
+
             }
         });
         backBtn.setOnAction(new EventHandler<ActionEvent>() {

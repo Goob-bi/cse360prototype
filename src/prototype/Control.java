@@ -28,6 +28,7 @@ public class Control extends Application {
     public void start(Stage primaryStage) {
         LoginMenu authMenu = new LoginMenu();
 
+
     }
     /**
      * @param args the command line arguments
