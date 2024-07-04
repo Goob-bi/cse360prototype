@@ -31,8 +31,8 @@ public class Menus extends Stage{
     protected Stage loginMenu;
     protected Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
     protected String patientID = "";
-    protected int width = 600;
-    protected int height = 400;
+    protected int width = 800;
+    protected int height = 600;
     protected int row = 0;
     protected int column = 0;
     protected ListView<String> list = new ListView<String>();

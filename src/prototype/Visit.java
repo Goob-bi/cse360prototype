@@ -46,6 +46,8 @@ public class Visit implements VisitInterface{
     private String visitDir = "";
     private String vitalName = "_PatientVitals.txt";
     private String healthName = "_PatientHealth.txt";
+    private String medsName = "_PatientMed.txt";
+    private String physicalName = "_PatientPhysical.txt";
     private String infoName = "_PatientInfo.txt";
     private String patientListFilename = "patientList.txt";
     private String fileDATA = "";
@@ -151,6 +153,15 @@ public class Visit implements VisitInterface{
     public String getHealthFile() {
         return this.healthName;
     }
+    public String getVitalFile() {
+        return this.vitalName;
+    }
+    public String getPhysicalFile() {
+        return this.physicalName;
+    }
+    public String getMedFile() {
+        return this.medsName;
+    }
 
     @Override
     public JSONObject loadVisit(String fileName) {
@@ -224,6 +235,60 @@ public class Visit implements VisitInterface{
             System.out.println("Error saving file"); 
         }
         
+        return false;
+    }
+    public boolean saveVisitMeds(String immunization, String perscription) {
+
+        jo = fileCheck(medsName);
+        visitDir = patientDir +  visitNum + "/";
+
+        File file = new File(visitDir + patientID + medsName);
+        jo.put("patientID", patientID);
+        jo.put("immunization", immunization);
+        jo.put("perscription", perscription);
+        //save to file
+        System.out.println("Saving file");
+        System.out.println(jo.toString());
+
+        try {
+            output = new BufferedWriter(new FileWriter(file));
+            output.write(jo.toString());
+
+            output.close();
+            System.out.println("File Saved");
+
+            return true;
+        } catch (IOException ex) {
+            System.out.println("Error saving file");
+        }
+
+        return false;
+    }
+    public boolean saveVisitPhys(String phyResult, String PhysConcerns) {
+
+        jo = fileCheck(physicalName);
+        visitDir = patientDir +  visitNum + "/";
+
+        File file = new File(visitDir + patientID + physicalName);
+        jo.put("patientID", patientID);
+        jo.put("phyRes", phyResult);
+        jo.put("phyConcerns", PhysConcerns);
+        //save to file
+        System.out.println("Saving file");
+        System.out.println(jo.toString());
+
+        try {
+            output = new BufferedWriter(new FileWriter(file));
+            output.write(jo.toString());
+
+            output.close();
+            System.out.println("File Saved");
+
+            return true;
+        } catch (IOException ex) {
+            System.out.println("Error saving file");
+        }
+
         return false;
     }
 //-------------------------private methods-------------------------------------------
