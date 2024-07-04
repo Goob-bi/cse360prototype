@@ -20,6 +20,8 @@ import javafx.scene.layout.GridPane;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static javafx.scene.layout.GridPane.setHalignment;
+
 /**
  *
  * @author andreas lees
@@ -252,95 +254,184 @@ public class PatientMenu extends Menus {
         return patientInfoScene;
     }
     private Scene SummaryMenu() {
-        
-        menu.setText("Patient Summary");        
+
+        menu.setText("Patient Summary");
         GridPane layout = new GridPane();
         menu.setAlignment(Pos.CENTER);
-        layout.setHalignment(menu, HPos.CENTER);
+        setHalignment(menu, HPos.CENTER);
         layout.setAlignment(Pos.CENTER);
-        
+
         layout.add(menu, 0, 0);
-        
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
         //grid.setGridLinesVisible(true);       //debug
-        
 
-        
-
-        
-        Label errorLabel = new Label();  
+        Label errorLabel = new Label();
         errorLabel.setAlignment(Pos.CENTER);
-        layout.setHalignment(errorLabel, HPos.CENTER);
-        errorLabel.setText("Error: Missing input"); 
+        setHalignment(errorLabel, HPos.CENTER);
+        errorLabel.setText("Error: Missing input");
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
-        
 
-        System.out.println(patientID);  //debug
-        if (patientID.isEmpty()) {
-            System.out.println("no ID");  //debug
-            errorLabel.setText("Error: No ID"); 
-            errorLabel.setVisible(true);
-        }
-
-        errorLabel.setText("PatientID: " + patientID); 
+        errorLabel.setText("PatientID: " + patientID);
         errorLabel.setVisible(true);
-        //create patient
-        patient = new Patient(patientID); 
-        //load patient health
-    //    jo = patient.loadPatientFile(patient.getHealthFile());
+
+        //load health file
         jo = visit.loadVisit(visit.getHealthFile());
-        //load patient info
-    //    jo = patient.loadPatient(patient.getInfoFile());
-        //load patient vitals
-    //    jo = patient.loadPatient(patient.getVitalFile());
-        System.out.println(jo.toString()); //debug
-                    
+        //System.out.println(jo.toString());
         String allergiesInfo = "";
         String healthConcernsInfo = "";
         try {
             allergiesInfo = jo.getString("allergies");
             healthConcernsInfo = jo.getString("healthConc");
-            
+
         } catch (JSONException e) {
             System.out.println("no data");  //debug
-            
         }
-        
+        column = 0;
+        row = 0;
         Label allergies = new Label("Allergies:");
-        grid.add(allergies, 0, 2);
+        grid.add(allergies, column, row);
         Label allergiesInput = new Label();
         allergiesInput.setText(allergiesInfo);
         allergiesInput.setBorder(border);
         allergiesInput.setMinHeight(100);
-        allergiesInput.setMinWidth(100);
-        //allergiesInput.setDisable(true);
-        grid.add(allergiesInput, 1, 2);
-        
+        allergiesInput.setMinWidth(200);
+        row++;
+        grid.add(allergiesInput, column, row);
+
         Label healthConc = new Label("Health Concerns:");
-        grid.add(healthConc, 0, 3);
+        row++;
+        grid.add(healthConc, column, row);
         Label healthConcInput = new Label();
         healthConcInput.setText(healthConcernsInfo);
         healthConcInput.setBorder(border);
         healthConcInput.setMinHeight(100);
-        healthConcInput.setMinWidth(100);
-        grid.add(healthConcInput, 1, 3);
-        
-        
-        
+        healthConcInput.setMinWidth(200);
+        row++;
+        grid.add(healthConcInput, column, row);
+
+        //load physical file
+        jo = visit.loadVisit(visit.getPhysicalFile());
+        //System.out.println(jo.toString());
+        String physicalInfo = "";
+        String physicalConcernsInfo = "";
+        try {
+            physicalInfo = jo.getString("phyRes");
+            physicalConcernsInfo = jo.getString("phyConcerns");
+
+        } catch (JSONException e) {
+            System.out.println("no data");  //debug
+        }
+        column++;
+        row = 0;
+        Label physLbl = new Label("Physical Results:");
+        grid.add(physLbl, column, row);
+        Label physLblInput = new Label();
+        physLblInput.setText(physicalInfo);
+        physLblInput.setBorder(border);
+        physLblInput.setMinHeight(100);
+        physLblInput.setMinWidth(200);
+        row++;
+        grid.add(physLblInput, column, row);
+
+        Label physConcLbl = new Label("Physical Concerns:");
+        row++;
+        grid.add(physConcLbl, column, row);
+        Label physConcLblInput = new Label();
+        physConcLblInput.setText(physicalConcernsInfo);
+        physConcLblInput.setBorder(border);
+        physConcLblInput.setMinHeight(100);
+        physConcLblInput.setMinWidth(200);
+        row++;
+        grid.add(physConcLblInput, column, row);
+
+        //load medication file
+        jo = visit.loadVisit(visit.getMedFile());
+        //System.out.println(jo.toString());
+        String immunizationInfo = "";
+        String prescriptionInfo = "";
+        try {
+            immunizationInfo = jo.getString("immunization");
+            prescriptionInfo = jo.getString("perscription");
+
+        } catch (JSONException e) {
+            System.out.println("no data");  //debug
+        }
+        column++;
+        row = 0;
+        Label immmunLbl = new Label("Physical Results:");
+        grid.add(immmunLbl, column, row);
+        Label immmunLblInput = new Label();
+        immmunLblInput.setText(immunizationInfo);
+        immmunLblInput.setBorder(border);
+        immmunLblInput.setMinHeight(100);
+        immmunLblInput.setMinWidth(200);
+        row++;
+        grid.add(immmunLblInput, column, row);
+
+        Label medLbl = new Label("Physical Concerns:");
+        row++;
+        grid.add(medLbl, column, row);
+        Label medLblInput = new Label();
+        medLblInput.setText(prescriptionInfo);
+        medLblInput.setBorder(border);
+        medLblInput.setMinHeight(100);
+        medLblInput.setMinWidth(200);
+        row++;
+        grid.add(medLblInput, column, row);
+
+        //load vitals file
+        jo = visit.loadVisit(visit.getVitalFile());
+        //System.out.println(jo.toString());
+
+        String over12 =  "";
+        String weight = "";
+        String pHeight = "";
+        String bodyTemp = "";
+        String bloodP = "";
+        try {
+            over12 = jo.getString("over12");
+            weight =  jo.getString("weight");
+            pHeight = jo.getString("height");
+            bodyTemp = jo.getString("temp");
+            bloodP = jo.getString("bp");
+
+        } catch (JSONException e) {
+            System.out.println("no data");  //debug
+        }
+        column++;
+        row = 0;
+        Label vitalLbl = new Label("Vitals:");
+        grid.add(vitalLbl, column, row);
+        Label vitalLblInput = new Label();
+        vitalLblInput.setText(
+                "Over 12: " + over12 + "\n" +
+                        "Weight: " + weight + "\n" +
+                        "Height: " + pHeight + "\n" +
+                        "Body Temp: " + bodyTemp + "\n" +
+                        "Blood Pressure: " + bloodP);
+        vitalLblInput.setBorder(border);
+        vitalLblInput.setMinHeight(100);
+        vitalLblInput.setMinWidth(200);
+        row++;
+        grid.add(vitalLblInput, column, row);
+
+
+
         backBtn.setAlignment(Pos.CENTER);
-        grid.setHalignment(backBtn, HPos.CENTER);
-        grid.add(backBtn, 1, 7);
-        
+        setHalignment(backBtn, HPos.CENTER);
+        layout.add(backBtn, 0, 2);
+
         layout.add(grid, 0, 1);
-        
-        patientSummaryScene = new Scene(layout, this.width, this.height);
+
+        patientSummaryScene = new Scene(layout, this.width + 100, this.height);
         return patientSummaryScene;
-        
+
     }
     
 }

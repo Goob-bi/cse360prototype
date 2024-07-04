@@ -84,7 +84,7 @@ public class Visit implements VisitInterface{
     @Override
     public void setVisit(int num) {
         if (dirCheck(num)) {
-            System.out.println("dir exists");
+            //System.out.println("dir exists");
             this.visitNum = num;
         }
     }
@@ -176,6 +176,51 @@ public class Visit implements VisitInterface{
         }
         return jo;
         
+    }
+    public JSONObject loadVisitHistory() {
+        JSONObject jo = new JSONObject();
+
+        if (patientID.isEmpty()) {
+            return jo;
+        }
+
+        //-----------------------------------
+
+        File file = new File(rootPath + patientID + "/");
+        if ( !patientID.isEmpty() && file.exists()) {
+            String[] files = file.list(new FilenameFilter() {
+                @Override
+                public boolean accept(File current, String name) {
+                    return name.matches("[0-9]+");
+                }
+            });
+            for (int i = 0; i < files.length; i++) {
+                setVisit(Integer.parseInt(files[i]));
+                try {
+                    jo.append("allergies", "[" + visitNum + "] " + loadVisit(healthName).getString("allergies"));
+                    jo.append("healthConc", "[" + visitNum + "] " + loadVisit(healthName).getString("healthConc"));
+                } catch (JSONException e) {
+                    System.out.println("No allergy/health concern data for visit " + visitNum);
+                }
+                try {
+                    jo.append("phyRes", "[" + visitNum + "] " + loadVisit(physicalName).getString("phyRes"));
+                    jo.append("phyConcerns", "[" + visitNum + "] " + loadVisit(physicalName).getString("phyConcerns"));
+                } catch (JSONException e) {
+                    System.out.println("No physical concern data for visit " + visitNum);
+                }
+                try {
+                    jo.append("immunization", "[" + visitNum + "] " + loadVisit(medsName).getString("immunization"));
+                    jo.append("perscription", "[" + visitNum + "] " + loadVisit(medsName).getString("perscription"));
+                } catch (JSONException e) {
+                    System.out.println("No immunization/prescription data for visit " + visitNum);
+                }
+            }
+            System.out.println(jo.toString());
+            return jo;
+
+        }
+        return jo;
+
     }
     @Override
     public boolean saveVisitVitals(String over12, String weight, String height,String bodyTemp,String bloodP) {
@@ -319,19 +364,19 @@ public class Visit implements VisitInterface{
             if(bool){  
                System.out.println("Patient folder is created successfully");  
             }else{  
-               System.out.println("Error creating patient folder: Does it already exist?");  
+               //System.out.println("Error creating patient folder: Does it already exist?");
             }  
             rootPathCtrl = new File(visitDir);
             bool = rootPathCtrl.mkdir();  
             if(bool){  
                System.out.println("Patient folder is created successfully");  
             }else{  
-               System.out.println("Error creating visit folder: Does it already exist?");  
+               //System.out.println("Error creating visit folder: Does it already exist?");
             }  
             //---------------------------------------
             // check/create file---------------------
             File file = new File(visitDir + patientID + fileName); //+ "_PatientInfo.txt" or vitals
-            System.out.println(visitDir + patientID + fileName);
+            //System.out.println(visitDir + patientID + fileName);
             bool = file.createNewFile();
             if (bool) {
                 System.out.println("New File created"); 
@@ -359,9 +404,9 @@ public class Visit implements VisitInterface{
             }
             //CLOSE FILES WHEN DONE WITH THEM DUMMY
             readFile.close();
-            System.out.println("data: " + fileDATA);
+            //System.out.println("data: " + fileDATA);
             jo = new JSONObject(fileDATA);
-            System.out.println(jo.toString());
+            //System.out.println(jo.toString());
             return jo;
             
         } catch (FileNotFoundException e) {

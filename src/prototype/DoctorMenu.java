@@ -19,6 +19,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -150,6 +151,7 @@ public class DoctorMenu extends Menus{
         Button patientSumBtn = SetupButton("Visit Summary");
         Button newVisitBtn = SetupButton("New Visit");
         Button patientInfoBtn = SetupButton("Patient Info");
+        Button patientHistBtn = SetupButton("Patient History");
 
         //collect list of visits
         updateVisitList();
@@ -166,6 +168,8 @@ public class DoctorMenu extends Menus{
         grid.add(patientSumBtn, column, row);
         row++;
         grid.add(patientInfoBtn, column, row);
+        row++;
+        grid.add(patientHistBtn, column, row);
         row++;
         grid.add(backBtn, column, row);
 
@@ -194,6 +198,10 @@ public class DoctorMenu extends Menus{
             visit.setVisit(Integer.parseInt(visitNum));
             changeTitle("Patient Health");
             changeScene(SummaryMenu());
+        });
+        patientHistBtn.setOnAction(event -> {
+            changeTitle("Patient History");
+            changeScene(HistoryMenu());
         });
         patientInfoBtn.setOnAction(event -> {
             changeTitle("Patient Info");
@@ -615,6 +623,172 @@ public class DoctorMenu extends Menus{
         vitalLblInput.setMinWidth(200);
         row++;
         grid.add(vitalLblInput, column, row);
+
+
+
+        backVisitBtn.setAlignment(Pos.CENTER);
+        setHalignment(backVisitBtn, HPos.CENTER);
+        layout.add(backVisitBtn, 0, 2);
+
+        layout.add(grid, 0, 1);
+
+        patientSummaryScene = new Scene(layout, this.width + 100, this.height);
+        return patientSummaryScene;
+
+    }
+    //--------------------------------------------------------------------
+    private Scene HistoryMenu() {
+
+        menu.setText("Patient Summary");
+        GridPane layout = new GridPane();
+        menu.setAlignment(Pos.CENTER);
+        setHalignment(menu, HPos.CENTER);
+        layout.setAlignment(Pos.CENTER);
+
+        layout.add(menu, 0, 0);
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        //grid.setGridLinesVisible(true);       //debug
+
+        Label errorLabel = new Label();
+        errorLabel.setAlignment(Pos.CENTER);
+        setHalignment(errorLabel, HPos.CENTER);
+        errorLabel.setText("Error: Missing input");
+        errorLabel.setVisible(false);
+        layout.add(errorLabel, 0, 2);
+
+        errorLabel.setText("PatientID: " + patientID);
+        errorLabel.setVisible(true);
+
+        //load health file
+        jo = visit.loadVisitHistory();
+        JSONArray ja = new JSONArray();
+        //jo = visit.loadVisit(visit.getPhysicalFile());
+        //System.out.println(jo.toString());
+        String allergiesInfo = "";
+        String healthConcernsInfo = "";
+        try {
+            ja = jo.getJSONArray("allergies");
+            for(int i=0; i < ja.length(); i++) {
+                allergiesInfo = allergiesInfo.concat(ja.getString(i) + "\n");
+            }
+            ja = jo.getJSONArray("healthConc");
+            for(int i=0; i < ja.length(); i++) {
+                healthConcernsInfo = healthConcernsInfo.concat(ja.getString(i) + "\n");
+            }
+
+        } catch (JSONException e) {
+            System.out.println("no data");  //debug
+        }
+        column = 0;
+        row = 0;
+        Label allergies = new Label("Allergies:");
+        grid.add(allergies, column, row);
+        Label allergiesInput = new Label();
+        allergiesInput.setText(allergiesInfo);
+        allergiesInput.setBorder(border);
+        allergiesInput.setMinHeight(100);
+        allergiesInput.setMinWidth(200);
+        row++;
+        grid.add(allergiesInput, column, row);
+
+        Label healthConc = new Label("Health Concerns:");
+        row++;
+        grid.add(healthConc, column, row);
+        Label healthConcInput = new Label();
+        healthConcInput.setText(healthConcernsInfo);
+        healthConcInput.setBorder(border);
+        healthConcInput.setMinHeight(100);
+        healthConcInput.setMinWidth(200);
+        row++;
+        grid.add(healthConcInput, column, row);
+
+        //load physical file
+        //jo = visit.loadVisit(visit.getPhysicalFile());
+        //System.out.println(jo.toString());
+        String physicalInfo = "";
+        String physicalConcernsInfo = "";
+        try {
+            ja = jo.getJSONArray("phyRes");
+            for(int i=0; i < ja.length(); i++) {
+                physicalInfo = physicalInfo.concat(ja.getString(i) + "\n");
+            }
+            ja = jo.getJSONArray("phyConcerns");
+            for(int i=0; i < ja.length(); i++) {
+                physicalConcernsInfo = physicalConcernsInfo.concat(ja.getString(i) + "\n");
+            }
+
+        } catch (JSONException e) {
+            System.out.println("no data");  //debug
+        }
+        column++;
+        row = 0;
+        Label physLbl = new Label("Physical Results:");
+        grid.add(physLbl, column, row);
+        Label physLblInput = new Label();
+        physLblInput.setText(physicalInfo);
+        physLblInput.setBorder(border);
+        physLblInput.setMinHeight(100);
+        physLblInput.setMinWidth(200);
+        row++;
+        grid.add(physLblInput, column, row);
+
+        Label physConcLbl = new Label("Physical Concerns:");
+        row++;
+        grid.add(physConcLbl, column, row);
+        Label physConcLblInput = new Label();
+        physConcLblInput.setText(physicalConcernsInfo);
+        physConcLblInput.setBorder(border);
+        physConcLblInput.setMinHeight(100);
+        physConcLblInput.setMinWidth(200);
+        row++;
+        grid.add(physConcLblInput, column, row);
+
+        //load medication file
+        //jo = visit.loadVisit(visit.getMedFile());
+        //System.out.println(jo.toString());
+        String immunizationInfo = "";
+        String prescriptionInfo = "";
+        try {
+            ja = jo.getJSONArray("immunization");
+            for(int i=0; i < ja.length(); i++) {
+                immunizationInfo = immunizationInfo.concat(ja.getString(i) + "\n");
+            }
+            ja = jo.getJSONArray("perscription");
+            for(int i=0; i < ja.length(); i++) {
+                prescriptionInfo = prescriptionInfo.concat(ja.getString(i) + "\n");
+            }
+
+        } catch (JSONException e) {
+            System.out.println("no data");  //debug
+        }
+        column++;
+        row = 0;
+        Label immmunLbl = new Label("Immunizations:");
+        grid.add(immmunLbl, column, row);
+        Label immmunLblInput = new Label();
+        immmunLblInput.setText(immunizationInfo);
+        immmunLblInput.setBorder(border);
+        immmunLblInput.setMinHeight(100);
+        immmunLblInput.setMinWidth(200);
+        row++;
+        grid.add(immmunLblInput, column, row);
+
+        Label medLbl = new Label("Perscriptions:");
+        row++;
+        grid.add(medLbl, column, row);
+        Label medLblInput = new Label();
+        medLblInput.setText(prescriptionInfo);
+        medLblInput.setBorder(border);
+        medLblInput.setMinHeight(100);
+        medLblInput.setMinWidth(200);
+        row++;
+        grid.add(medLblInput, column, row);
+
 
 
 
