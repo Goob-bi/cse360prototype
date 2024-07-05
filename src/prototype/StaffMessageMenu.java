@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import static javafx.scene.layout.GridPane.setHalignment;
@@ -30,6 +31,7 @@ public class StaffMessageMenu extends Menus {
     private Message msg;
     private JSONObject staffO;
     private String patientID = "";
+    private Label recentMsg = new Label();
     //--------------------------------------------------------------------
     private void updatePatientList() {
         //collect list of patients
@@ -42,6 +44,32 @@ public class StaffMessageMenu extends Menus {
         ObservableList<JSONObject> list = msg.getMessageList();
         msgList.setCellFactory(new MSGCellFactory());
         msgList.setItems(list);
+
+    }
+    private void updateRecentMessage() {
+        String dummyID = "badID";
+        System.out.println("patient id= " + patientID); //debug
+        patientO = new JSONObject();
+        patientO.put("patientID", dummyID);
+        patientO.put("patientName", dummyID);
+        recentMsg.setBorder(border);
+        setHalignment(recentMsg, HPos.CENTER);
+        System.out.println("patient id= " + patientO.getString("patientID")); //debug
+        Message recentMsgO = new Message(patientO);
+        JSONObject jo1 = recentMsgO.getRecentStaffMessage(this.staffID);
+        System.out.println(jo1.toString());
+        String recentMsgTxt = "";
+        try {
+            recentMsgTxt =
+                    jo1.getString("from") + "->" + jo1.getString("to")
+                            + "\n\t" + jo1.getString("msgTitle")
+                            + "\n\t" + jo1.getString("msgBody")
+            ;
+
+        } catch (JSONException e) {
+            recentMsgTxt = "no recent messages";
+        }
+        recentMsg.setText(recentMsgTxt);
 
     }
     //--------------------------------------------------------------------
@@ -62,6 +90,7 @@ public class StaffMessageMenu extends Menus {
         setHalignment(scenetitle, HPos.CENTER);
         layout.add(scenetitle, 0, 0);
 
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_CENTER);
         grid.setPadding(new Insets(25, 25, 25, 25));
@@ -78,6 +107,13 @@ public class StaffMessageMenu extends Menus {
         list.setPrefWidth(200);
         list.setPrefHeight(300);
         layout.add(list, 0, 1);
+
+//--------------------testing
+        Label recentMsgTitle = new Label("Recent Message:");
+        updateRecentMessage();
+        layout.add(recentMsgTitle, 2, 0);
+        layout.add(recentMsg, 2, 1);
+//testing------------------------------------
 
         column= 0;
         row = 0;
@@ -210,6 +246,7 @@ public class StaffMessageMenu extends Menus {
                 msgTitle.setText("");
                 msgBody.setText("");
                 updateMsgList();
+                updateRecentMessage();
             }
             //changeScene(IntakeMenu());
         });

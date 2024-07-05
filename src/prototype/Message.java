@@ -82,6 +82,17 @@ public class Message {
     private JSONArray ja;
 
     //-------------------constructors-------------------------------------------------
+    Message(JSONObject patient) {
+        this.staffO = new JSONObject();
+        this.patientO = patient;
+        this.staffID = "";
+        this.patientID = patientO.getString("patientID");
+        this.patientMsgDir = rootPath + patientID + "/messages/";
+        if (patientID.isEmpty()) {
+            this.patientMsgDir = rootPath + "badID" + "/messages/";
+        }
+
+    }
     Message(JSONObject staff, JSONObject patient) {
     //Message(String staffID, String patientID) {
         this.staffO = staff;
@@ -92,7 +103,6 @@ public class Message {
         if (patientID.isEmpty()) {
             this.patientMsgDir = rootPath + "badID" + "/messages/";
         }
-        fileCheck();
     }
 //------------------public methods--------------------------------------------------
     public void setFromPatient() {
@@ -155,22 +165,19 @@ public class Message {
     }
 
     //returns the name of last modified file(most recent message)
-    public String getRecentMessage() {
+    public JSONObject getRecentMessage() {
+        JSONObject message = new JSONObject();
         File file = new File(patientMsgDir);
         File temp, current;
         int dir;
         //if there is a patientID and the directory exists
         if ( !patientID.isEmpty() && file.exists()) {
             //collect a list of directories in the root path
-            String[] files = file.list(new FilenameFilter() {
-                @Override
-                public boolean accept(File current, String name) {
-                    return new File(current, name).isDirectory();
-                }
-            });
+            String[] files = file.list();
             //parse through the directory list
             if (files.length < 1) {
-                return "";
+                System.out.println("\nfile to short\n");    //debug
+                return message;
             }
             temp = new File(patientMsgDir + files[0]);
             for (int i = 0; i < files.length; i++) {
@@ -187,11 +194,87 @@ public class Message {
                 }
             }
             System.out.println("last modified message " + temp.getName());
-            return temp.getName();
+            Scanner readFile = null;
+            try {
+                readFile = new Scanner(temp);
+            } catch (FileNotFoundException e) {
+                System.out.println("file not found");
+                return message;
+            }
+            //---------------------------------------
+            //read file-----------------------------
+            fileDATA = "";
+            while (readFile.hasNextLine()) {
+                fileDATA = fileDATA.concat(readFile.nextLine());
+            }
+            //CLOSE FILES WHEN DONE WITH THEM DUMMY
+            readFile.close();
+            System.out.println("data: " + fileDATA);
+            ja = new JSONArray(fileDATA);
+            int lastMsg = ja.length() - 1;
+            message = ja.getJSONObject(lastMsg);
+
         }
         //if patient ID is empty or no files exist, return 0, there are no visits
 
-        return "";
+        System.out.println("\nempty id or file not exist\n");    //debug
+        return message;
+
+    }
+    //returns the name of last modified file(most recent message)
+    public JSONObject getRecentStaffMessage(String staffID) {
+        JSONObject message = new JSONObject();
+        File file = new File("./src/prototype/staff/messages/");
+        File temp = null;
+        int dir;
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        //if there is a patientID and the directory exists
+        if ( !patientID.isEmpty()) {
+            //collect a list of directories in the root path
+            String[] files = file.list();
+            //parse through the directory list
+            if (files.length < 1) {
+                System.out.println("\nfile to short\n");    //debug
+                return message;
+            }
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].matches(staffID + msgName)) {
+                    temp = new File("./src/prototype/staff/messages/" + files[i]);
+                    break;
+                }
+            }
+            if (temp == null) {
+                //no match found
+                return message;
+            }
+            System.out.println("last modified message " + temp.getName());
+            Scanner readFile = null;
+            try {
+                readFile = new Scanner(temp);
+            } catch (FileNotFoundException e) {
+                System.out.println("file not found");
+                return message;
+            }
+            //---------------------------------------
+            //read file-----------------------------
+            fileDATA = "";
+            while (readFile.hasNextLine()) {
+                fileDATA = fileDATA.concat(readFile.nextLine());
+            }
+            //CLOSE FILES WHEN DONE WITH THEM DUMMY
+            readFile.close();
+            System.out.println("data: " + fileDATA);
+            ja = new JSONArray(fileDATA);
+            int lastMsg = ja.length() - 1;
+            message = ja.getJSONObject(lastMsg);
+
+        }
+        //if patient ID is empty or no files exist, return 0, there are no visits
+
+        System.out.println("\nempty id or file not exist\n");    //debug
+        return message;
 
     }
 
@@ -251,6 +334,22 @@ public class Message {
 
             output.close();
             System.out.println("File Saved");
+
+            //save to staff message dir
+            file = new File("./src/prototype/staff/");
+            file.mkdir();
+            file = new File("./src/prototype/staff/messages/");
+            file.mkdir();
+            file = new File("./src/prototype/staff/messages/" + staffID + msgName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            output = new BufferedWriter(new FileWriter(file));
+            output.write(ja.toString());
+
+            output.close();
+            System.out.println("File Saved to staff messages");
+
 
             return true;
         } catch (IOException ex) {

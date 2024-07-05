@@ -33,6 +33,12 @@ public class PatientMenu extends Menus {
     private Visit visit;
     private String pName;
     private InputValidation check = new InputValidation();
+    private MessageMenu msgPortal;
+
+    @Override
+    protected void closeExtraWindow() {
+        msgPortal.close();
+    }
     //---------------Patient Menu-------------------
     PatientMenu(String ID) {
         this.patientID = ID;
@@ -42,7 +48,7 @@ public class PatientMenu extends Menus {
         visit.setVisit(visit.getCurrentVisit());
 
 
-        MessageMenu msgPortal = new MessageMenu(this.patientID, patient.getFirstName());
+        msgPortal = new MessageMenu(this.patientID, patient.getFirstName());
         this.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {

@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import static javafx.scene.layout.GridPane.setHalignment;
@@ -29,6 +30,7 @@ public class MessageMenu extends Menus {
     private String staffID;
     private Message msg;
     private JSONObject patientO;
+    private Label recentMsg = new Label();
     //--------------------------------------------------------------------
     private void updateStaffList() {
         //collect list of patients
@@ -46,6 +48,26 @@ public class MessageMenu extends Menus {
         ObservableList<JSONObject> list = msg.getMessageList();
         msgList.setCellFactory(new MSGCellFactory());
         msgList.setItems(list);
+
+    }
+    private void updateRecentMessage() {
+        recentMsg.setBorder(border);
+        setHalignment(recentMsg, HPos.CENTER);
+        Message recentMsgO = new Message(patientO);
+        JSONObject jo1 = recentMsgO.getRecentMessage();
+        System.out.println(jo1.toString());
+        String recentMsgTxt = "";
+        try {
+            recentMsgTxt =
+                    jo1.getString("from") + "->" + jo1.getString("to")
+                            + "\n\t" + jo1.getString("msgTitle")
+                            + "\n\t" + jo1.getString("msgBody")
+            ;
+
+        } catch (JSONException e) {
+            recentMsgTxt = "no recent messages";
+        }
+        recentMsg.setText(recentMsgTxt);
 
     }
     //--------------------------------------------------------------------
@@ -66,6 +88,11 @@ public class MessageMenu extends Menus {
         setHalignment(scenetitle, HPos.CENTER);
         layout.add(scenetitle, 0, 0);
 
+        Label recentMsgTitle = new Label("Recent Message:");
+        updateRecentMessage();
+        layout.add(recentMsgTitle, 2, 0);
+        layout.add(recentMsg, 2, 1);
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_CENTER);
         grid.setPadding(new Insets(25, 25, 25, 25));
@@ -85,7 +112,7 @@ public class MessageMenu extends Menus {
 
         column= 0;
         row = 0;
-        grid.add(pIntakeBtn, column, row);
+        //grid.add(pIntakeBtn, column, row);
         row++;
         grid.add(patientBtn, column, row);
         row++;
@@ -213,6 +240,7 @@ public class MessageMenu extends Menus {
                 msgTitle.setText("");
                 msgBody.setText("");
                 updateMsgList();
+                updateRecentMessage();
             }
             //changeScene(IntakeMenu());
         });

@@ -53,6 +53,10 @@ public class NurseMenu extends Menus {
         ObservableList<String> items = FXCollections.observableArrayList (visit.getVisitList());
         visitList.setItems(items);        
     }
+    @Override
+    protected void closeExtraWindow() {
+        msgPortal.close();
+    }
 //--------------------------------------------------------------------  
     NurseMenu(String ID, String name) {
         this.staffID = ID;

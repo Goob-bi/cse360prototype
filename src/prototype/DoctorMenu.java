@@ -19,6 +19,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.WindowEvent;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +37,9 @@ public class DoctorMenu extends Menus{
     private Visit visit;
     private InputValidation check = new InputValidation();
     private Button backVisitBtn = SetupButton("Back");
+    private StaffMessageMenu msgPortal;
+    private String staffID = "";
+    private String staffName = "";
 
     //--------------------------------------------------------------------
     private void updateList() {
@@ -49,8 +53,14 @@ public class DoctorMenu extends Menus{
         ObservableList<String> items = FXCollections.observableArrayList (visit.getVisitList());
         visitList.setItems(items);
     }
+    @Override
+    protected void closeExtraWindow() {
+        msgPortal.close();
+    }
     //--------------------------------------------------------------------
-    DoctorMenu() {
+    DoctorMenu(String ID, String name) {
+        this.staffID = ID;
+        this.staffName = name;
         this.setTitle("Main Menu");
 
         GridPane layout = new GridPane();
@@ -60,6 +70,14 @@ public class DoctorMenu extends Menus{
         Label scenetitle = new Label("Welcome to " + companyName);
         setHalignment(scenetitle, HPos.CENTER);
         layout.add(scenetitle, 0, 0);
+
+        this.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                msgPortal.close();
+                System.out.println("bye bye");
+            }
+        });
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_CENTER);
@@ -71,6 +89,7 @@ public class DoctorMenu extends Menus{
         Button pIntakeBtn = SetupButton("New Patient");
         Button patientBtn = SetupButton("Goto Visits");
         Button patientDelBtn = SetupButton("Delete Patient");
+        Button messageBtn = SetupButton("Message");
 
         //collect list of patients
         updateList();
@@ -85,6 +104,8 @@ public class DoctorMenu extends Menus{
         grid.add(patientBtn, column, row);
         row++;
         grid.add(patientDelBtn, column, row);
+        row++;
+        grid.add(messageBtn, column, row);
         row++;
         grid.add(logoutBtn, column, row);
 
@@ -112,6 +133,17 @@ public class DoctorMenu extends Menus{
             patient.deletePatient();
             visit = null;
             updateList();
+        });
+        messageBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                msgPortal = new StaffMessageMenu(staffID, staffName);
+                msgPortal.showMenu();
+                //changeTitle("Patient Health");
+                //changeScene(new MessageMenu().loginScene);
+
+
+            }
         });
         backBtn.setOnAction(event -> {
             changeTitle("Main Menu");

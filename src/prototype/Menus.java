@@ -98,6 +98,7 @@ public class Menus extends Stage{
         setHalignment(Btn, HPos.CENTER);
         Btn.setOnAction(event -> {
             hideMenu();
+            closeExtraWindow();
             LoginMenu authMenu = new LoginMenu();
         });
         return Btn;
@@ -105,6 +106,7 @@ public class Menus extends Stage{
     protected void hideMenu() {
         this.close();
     }
+    protected void closeExtraWindow() { }
     Menus() {
         //empty constructor, required for child classes to override
     }
@@ -121,17 +123,13 @@ public class Menus extends Stage{
                 break;
             
             case DOCTOR:
-                DoctorMenu doctor = new DoctorMenu();
+                DoctorMenu doctor = new DoctorMenu(auth.getID(), auth.getName());
                 break;
             
             case PATIENT:
-                try {
-                    System.out.println("ID = " + patientID);
-                    PatientMenu pMenu = new PatientMenu(patientID);
-                    break;
-                } catch (JSONException e) {
-                    System.out.println("no patient found");
-                }
+                System.out.println("ID = " + patientID);
+                PatientMenu pMenu = new PatientMenu(patientID);
+                break;
             
             default: 
                 changeTitle("Error Menu");
