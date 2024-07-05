@@ -35,10 +35,6 @@ public class PatientMenu extends Menus {
     private InputValidation check = new InputValidation();
     private MessageMenu msgPortal;
 
-    @Override
-    protected void closeExtraWindow() {
-        msgPortal.close();
-    }
     //---------------Patient Menu-------------------
     PatientMenu(String ID) {
         this.patientID = ID;

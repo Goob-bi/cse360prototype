@@ -6,8 +6,6 @@
  */
 package prototype;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,6 +26,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+import static javafx.scene.layout.GridPane.setHalignment;
+
 /**
  *
  * @author andreas lees
@@ -35,16 +35,17 @@ import javafx.stage.Stage;
 public class LoginMenu extends Stage{
     private String user = "";
     private String pass = "";
-    private Scene loginScene;
-    private Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
-    private Background bkgrndBlue = new Background(new BackgroundFill(Color.LIGHTSKYBLUE,CornerRadii.EMPTY, Insets.EMPTY));
-    private Background bkgrndLBlue = new Background(new BackgroundFill(Color.AQUA,CornerRadii.EMPTY, Insets.EMPTY));
+    private final Scene loginScene;
+    private final Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+    private final Background bkgrndBlue = new Background(new BackgroundFill(Color.LIGHTSKYBLUE,CornerRadii.EMPTY, Insets.EMPTY));
+    private final Background bkgrndLBlue = new Background(new BackgroundFill(Color.AQUA,CornerRadii.EMPTY, Insets.EMPTY));
     private String patientID = "";
-    private Button backBtn = new Button(); 
+    private final Button backBtn = new Button();
     private Patient patient;
-    private Scene patientIntakeScene;
     private int width = 600;
     private int height = 400;
+    private int row = 0;
+    private int column = 0;
     
     private Button BlueButton(String text) {
         Button blueBtn = new Button();
@@ -61,6 +62,8 @@ public class LoginMenu extends Stage{
     }
 //-------------------------------------------------------------------- 
     LoginMenu() {
+        width = 600;
+        height = 400;
        Authentication authenticate = new Authentication();
 //---------------------grid-----------------------------------------------         
         GridPane layout = new GridPane();
@@ -68,7 +71,7 @@ public class LoginMenu extends Stage{
         //layout.setGridLinesVisible(true);     //debug
         
         Label scenetitle = new Label("Login");
-        layout.setHalignment(scenetitle, HPos.CENTER);
+        setHalignment(scenetitle, HPos.CENTER);
         layout.add(scenetitle, 0, 0);
         
         GridPane grid = new GridPane();
@@ -79,26 +82,34 @@ public class LoginMenu extends Stage{
         //grid.setGridLinesVisible(true);       //debug
         
         layout.add(grid, 0, 1);
-//-----------------------------labels----------------------------------
+
         Label failed = new Label("Incorrect user/pass");
         failed.setVisible(false);
-        grid.add(failed, 0, 3);
-//---------------------text boxes------------------------------------------
+        setHalignment(failed, HPos.CENTER);
+
         TextField userInput = new TextField ();
         userInput.setPromptText("username");
         PasswordField passInput = new PasswordField();
         passInput.setPromptText("password");
-        grid.add(userInput, 0, 0);
-        grid.add(passInput, 0, 1);
-//---------------------buttons----------------------------------------------- 
+
         
         Button confirmBtn = BlueButton("Confirm");
-        grid.setHalignment(confirmBtn, HPos.CENTER);
-        grid.add(confirmBtn, 0, 2);
+        setHalignment(confirmBtn, HPos.CENTER);
         
         Button createAcct = BlueButton("Create Account");
-        grid.setHalignment(createAcct, HPos.CENTER);
-        grid.add(createAcct, 0, 3);
+        setHalignment(createAcct, HPos.CENTER);
+
+        column = 0;
+        row = 0;
+        grid.add(userInput, column, row);
+        row++;
+        grid.add(passInput, column, row);
+        row++;
+        grid.add(confirmBtn, column, row);
+        row++;
+        grid.add(createAcct, column, row);
+        row++;
+        grid.add(failed, column, row);
         
         loginScene = new Scene(layout, 500, 300);
         this.setScene(loginScene);
@@ -106,43 +117,27 @@ public class LoginMenu extends Stage{
         this.setTitle("Prototype");
         this.show();
         
-        confirmBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                failed.setVisible(false);
-                user = userInput.getText();
-                pass = passInput.getText();
-                confirmBtn.setDisable(true);
-                if (authenticate.auth(user, pass)) {
-                   // System.out.println("authenticated");
-                   // System.out.println(authenticate.getType());
-                    //load up main menu
-                    hideScene();
-                    //loadup menus, loadup different using 
-                    //      authenticate.getType()
-                    //need to build constructors
-                 //   Menus login = new Menus();
-                    Menus login = new Menus(authenticate);
-                    login.setID(authenticate.getID());
-                    //MainMenu menu = new MainMenu(authenticate.getType());
-                } else {
-                    System.out.println("authentication failed");
-                    //reset page with error
-                    failed.setVisible(true);
-                    confirmBtn.setDisable(false);
-                    
-                }
+        confirmBtn.setOnAction(event -> {
+            failed.setVisible(false);
+            user = userInput.getText();
+            pass = passInput.getText();
+            confirmBtn.setDisable(true);
+            if (authenticate.auth(user, pass)) {
+                hideScene();
+                Menus login = new Menus(authenticate);
+                login.setID(authenticate.getID());
+            } else {
+                System.out.println("authentication failed");
+                //reset page with error
+                failed.setVisible(true);
+                confirmBtn.setDisable(false);
+
             }
         });
 
-        createAcct.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-
-                    //load up main menu
-                    changeTitle("Patient Intake");
-                    changeScene(IntakeMenu());
-            }
+        createAcct.setOnAction(event -> {
+                changeTitle("Patient Intake");
+                changeScene(IntakeMenu());
         });
     }
 //-------------------------------------------------------------------- 
@@ -156,6 +151,7 @@ public class LoginMenu extends Stage{
     
     
     private Scene IntakeMenu() {
+        Scene patientIntakeScene;
         
         backBtn.setText("Back");
         backBtn.setMinHeight(0);
@@ -169,7 +165,7 @@ public class LoginMenu extends Stage{
         menu.setText("Patient Intake Form");        
         GridPane layout = new GridPane();
         menu.setAlignment(Pos.CENTER);
-        layout.setHalignment(menu, HPos.CENTER);
+        setHalignment(menu, HPos.CENTER);
         layout.setAlignment(Pos.CENTER);
         
         layout.add(menu, 0, 0);
@@ -179,7 +175,6 @@ public class LoginMenu extends Stage{
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
-        //grid.setGridLinesVisible(true);       //debug
         
 
         
@@ -192,7 +187,7 @@ public class LoginMenu extends Stage{
         
         Label errorLabel = new Label();  
         errorLabel.setAlignment(Pos.CENTER);
-        layout.setHalignment(errorLabel, HPos.CENTER);
+        setHalignment(errorLabel, HPos.CENTER);
         errorLabel.setText("Error: Missing input"); 
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
@@ -237,58 +232,49 @@ public class LoginMenu extends Stage{
         Button saveBtn = SetupButton("Save");
         saveBtn.setMinWidth(100);
         
-        grid.setHalignment(saveBtn, HPos.CENTER);
+        setHalignment(saveBtn, HPos.CENTER);
         grid.add(saveBtn, 2, 7);
-        saveBtn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                if (firstNameInput.getText().isEmpty() || lastNameInput.getText().isEmpty() || emailInput.getText().isEmpty() || 
-                        phoneInput.getText().isEmpty() || bDayInput.getText().isEmpty() || insuranceInput.getText().isEmpty()) {
-                    
-                    System.out.println("missing input"); //debug
-                    errorLabel.setText("Error: Missing input"); 
+        saveBtn.setOnAction(event -> {
+            if (firstNameInput.getText().isEmpty() || lastNameInput.getText().isEmpty() || emailInput.getText().isEmpty() ||
+                    phoneInput.getText().isEmpty() || bDayInput.getText().isEmpty() || insuranceInput.getText().isEmpty()) {
+
+                errorLabel.setText("Error: Missing input");
+                errorLabel.setVisible(true);
+            } else {
+                //patientID is fistName, lastName, birthday
+                InputValidation check = new InputValidation();
+                if (!check.DateCheck(bDayInput.getText()) || !check.NameCheck(firstNameInput.getText()) || !check.NameCheck(lastNameInput.getText())) {
+
                     errorLabel.setVisible(true);
-                } else {
-                    //patientID is fistName, lastName, birthday
-                    InputValidation check = new InputValidation();
-                    if (!check.DateCheck(bDayInput.getText()) || !check.NameCheck(firstNameInput.getText()) || !check.NameCheck(lastNameInput.getText())) {
-                        System.out.println("Bad format input");
-                        errorLabel.setVisible(true);
-                        errorLabel.setText("Error: Bad input"); 
-                        return;
-                    }
-                    saveBtn.setDisable(true);
-                    firstNameInput.setDisable(true);
-                    lastNameInput.setDisable(true);
-                    emailInput.setDisable(true);
-                    phoneInput.setDisable(true);
-                    bDayInput.setDisable(true);
-                    insuranceInput.setDisable(true);
-                    patientID = firstNameInput.getText() + lastNameInput.getText() + bDayInput.getText();
-                    System.out.println(patientID);  //debug
-                    
-                    errorLabel.setText("Password: " + patientID); 
-                    errorLabel.setVisible(true);
-                    
-                    patient = new Patient(patientID); //create patient
-                    patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(), 
-                            phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
-                    
+                    errorLabel.setText("Error: Bad input");
+                    return;
                 }
+                saveBtn.setDisable(true);
+                firstNameInput.setDisable(true);
+                lastNameInput.setDisable(true);
+                emailInput.setDisable(true);
+                phoneInput.setDisable(true);
+                bDayInput.setDisable(true);
+                insuranceInput.setDisable(true);
+                patientID = firstNameInput.getText() + lastNameInput.getText() + bDayInput.getText();
+
+
+                errorLabel.setText("Password: " + patientID);
+                errorLabel.setVisible(true);
+
+                patient = new Patient(patientID); //create patient
+                patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(),
+                        phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
+
             }
         });
         
         backBtn.setAlignment(Pos.CENTER);
-        grid.setHalignment(backBtn, HPos.CENTER);
+        setHalignment(backBtn, HPos.CENTER);
         grid.add(backBtn, 1, 7);
-        backBtn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                changeTitle("Main Menu");
-                changeScene(loginScene);
-            }
+        backBtn.setOnAction(event -> {
+            changeTitle("Main Menu");
+            changeScene(loginScene);
         });
         
         layout.add(grid, 0, 1);

@@ -33,13 +33,6 @@ public class StaffMessageMenu extends Menus {
     private String patientID = "";
     private Label recentMsg = new Label();
     //--------------------------------------------------------------------
-    private void updatePatientList() {
-        //collect list of patients
-        patient = new Patient();
-        ObservableList<String> items = FXCollections.observableArrayList (patient.getPatientList());
-        list.setItems(items);
-
-    }
     private void updateMsgList() {
         ObservableList<JSONObject> list = msg.getMessageList();
         msgList.setCellFactory(new MSGCellFactory());

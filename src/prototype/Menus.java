@@ -5,6 +5,8 @@
  */
 package prototype;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,7 +19,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import org.json.JSONException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import static javafx.scene.layout.GridPane.setHalignment;
 
@@ -45,10 +48,25 @@ public class Menus extends Stage{
     
     protected Patient patient;
     protected Scene loginScene;
-    protected Scene patientIntakeScene, TechView, PatientView, ErrorScene;
+    protected Scene patientIntakeScene, patientSummaryScene, patientScene, patientInfoScene, ErrorScene;
+    protected Visit visit;
+    protected JSONObject jo;
+    protected JSONArray ja;
+    protected String visitNum;
+    protected InputValidation check = new InputValidation();
+    protected Button backVisitBtn = SetupButton("Back");
+    protected StaffMessageMenu msgPortal;
+    protected String staffID = "";
+    protected String staffName = "";
     
     public void setID(String ID) {
         this.patientID = ID;
+    }
+    protected void closeExtraWindow() {
+        //close message portal
+        if (!(msgPortal == null)){
+            msgPortal.close();
+        }
     }
     protected Button SetupButton(String text) {
         
@@ -106,7 +124,23 @@ public class Menus extends Stage{
     protected void hideMenu() {
         this.close();
     }
-    protected void closeExtraWindow() { }
+    protected void updatePatientList() {
+        if (list == null){
+            return;
+        }
+        //collect list of patients
+        patient = new Patient();
+        ObservableList<String> items = FXCollections.observableArrayList (patient.getPatientList());
+        list.setItems(items);
+    }
+    protected void updateVisitList() {
+        if (visitList == null){
+            return;
+        }
+        //collect list of visits
+        ObservableList<String> items = FXCollections.observableArrayList (visit.getVisitList());
+        visitList.setItems(items);
+    }
     Menus() {
         //empty constructor, required for child classes to override
     }

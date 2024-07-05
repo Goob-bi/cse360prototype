@@ -317,7 +317,6 @@ public class Message {
 
         for (int i = 0; i < ja.length(); i++) {
             if (ja.getJSONObject(i).getInt("msgID") == messageID) {
-                System.out.println("Message exists");
                 messageID++;
             }
         }
@@ -326,7 +325,6 @@ public class Message {
         ja.put(jo);
         //save to file
         System.out.println("Saving file");
-        //System.out.println(ja.toString());
 
         try {
             output = new BufferedWriter(new FileWriter(file));
@@ -365,21 +363,12 @@ public class Message {
         try {
             // check/create folder--------------------
             File rootPathCtrl = new File(patientMsgDir);
-        //    if (receiverID.isEmpty()) {
-        //        ja = new JSONArray();
-        //        return ja;
-        //    }
-            System.out.println("pID: " + patientID);
-            System.out.println("dir: " + patientMsgDir);
             boolean bool = rootPathCtrl.mkdir();
             if(bool){
                 System.out.println("Patient message folder is created successfully");
-            }else{
-                //System.out.println("Error creating patient folder: Does it already exist?");
             }
             // check/create file---------------------
             File file = new File(messageFile);
-            //System.out.println(messageFile + patientID + fileName);
             bool = file.createNewFile();
             if (bool) {
                 System.out.println("New File created");
@@ -388,11 +377,10 @@ public class Message {
             if (file.length() < 1) {
                 System.out.println("Empty File: populating");
                 ja = new JSONArray();
-                // jo.put("patientID", patientID);   //test
-                System.out.println(ja.toString());
 
+                System.out.println("Empty File: populating");
                 output = new BufferedWriter(new FileWriter(file));
-                output.write(ja.toString());
+                output.write("[]");
 
                 output.close();
                 return ja;

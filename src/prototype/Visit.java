@@ -385,8 +385,6 @@ public class Visit implements VisitInterface{
             if (file.length() < 1) {
                 System.out.println("Empty File: populating"); 
                 jo = new JSONObject();
-               // jo.put("patientID", patientID);   //test
-                System.out.println(jo.toString()); 
                 
                 output = new BufferedWriter(new FileWriter(file));
                 output.write(jo.toString());
@@ -404,9 +402,7 @@ public class Visit implements VisitInterface{
             }
             //CLOSE FILES WHEN DONE WITH THEM DUMMY
             readFile.close();
-            //System.out.println("data: " + fileDATA);
             jo = new JSONObject(fileDATA);
-            //System.out.println(jo.toString());
             return jo;
             
         } catch (FileNotFoundException e) {

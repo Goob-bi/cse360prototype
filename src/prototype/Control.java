@@ -27,8 +27,6 @@ public class Control extends Application {
     @Override
     public void start(Stage primaryStage) {
         LoginMenu authMenu = new LoginMenu();
-
-
     }
     /**
      * @param args the command line arguments

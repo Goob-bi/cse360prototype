@@ -5,8 +5,6 @@
  */
 package prototype;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -15,14 +13,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.WindowEvent;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import static javafx.scene.layout.GridPane.setHalignment;
 
@@ -31,33 +26,11 @@ import static javafx.scene.layout.GridPane.setHalignment;
  * @author andreas lees
  */
 public class DoctorMenu extends Menus{
-    private Scene patientSummaryScene, patientScene, patientInfoScene;
-    private JSONObject jo;
-    private String visitNum;
-    private Visit visit;
-    private InputValidation check = new InputValidation();
-    private Button backVisitBtn = SetupButton("Back");
-    private StaffMessageMenu msgPortal;
-    private String staffID = "";
-    private String staffName = "";
 
     //--------------------------------------------------------------------
-    private void updateList() {
-        //collect list of patients
-        patient = new Patient();
-        ObservableList<String> items = FXCollections.observableArrayList (patient.getPatientList());
-        list.setItems(items);
-
+    DoctorMenu() {
+        //empty constructor, required for child classes to override
     }
-    private void updateVisitList() {
-        ObservableList<String> items = FXCollections.observableArrayList (visit.getVisitList());
-        visitList.setItems(items);
-    }
-    @Override
-    protected void closeExtraWindow() {
-        msgPortal.close();
-    }
-    //--------------------------------------------------------------------
     DoctorMenu(String ID, String name) {
         this.staffID = ID;
         this.staffName = name;
@@ -74,7 +47,7 @@ public class DoctorMenu extends Menus{
         this.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
-                msgPortal.close();
+                closeExtraWindow();
                 System.out.println("bye bye");
             }
         });
@@ -89,10 +62,10 @@ public class DoctorMenu extends Menus{
         Button pIntakeBtn = SetupButton("New Patient");
         Button patientBtn = SetupButton("Goto Visits");
         Button patientDelBtn = SetupButton("Delete Patient");
-        Button messageBtn = SetupButton("Message");
+        Button messageBtn = SetupButton("Message Portal");
 
         //collect list of patients
-        updateList();
+        updatePatientList();
         list.setPrefWidth(200);
         list.setPrefHeight(300);
         layout.add(list, 0, 1);
@@ -132,7 +105,7 @@ public class DoctorMenu extends Menus{
             patient = new Patient(patientID); //create patient
             patient.deletePatient();
             visit = null;
-            updateList();
+            updatePatientList();
         });
         messageBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -147,7 +120,7 @@ public class DoctorMenu extends Menus{
         });
         backBtn.setOnAction(event -> {
             changeTitle("Main Menu");
-            updateList();
+            updatePatientList();
             changeScene(loginScene);
         });
 
@@ -156,7 +129,7 @@ public class DoctorMenu extends Menus{
         this.show();
     }
     //--------------------------------------------------------------------
-    private Scene patientMenu() {
+    protected Scene patientMenu() {
         this.setTitle("Patient Menu");
 
         GridPane layout = new GridPane();
@@ -248,7 +221,7 @@ public class DoctorMenu extends Menus{
         patientScene = new Scene(layout, width, height);
         return patientScene;
     }
-    private Scene InfoMenu() {
+    protected Scene InfoMenu() {
         //populate with contact info
         String pID, fname, lname, email, phone, healthHis, insID, bDay;
         pID = fname = lname = email = phone = healthHis = insID = bDay = "";
@@ -264,7 +237,7 @@ public class DoctorMenu extends Menus{
             bDay = jo.getString("birthday");
 
         } catch (JSONException e) {
-            System.out.println("bad file");
+            System.out.println("[Patient Info] Bad file");
         }
 
         menu.setText("Patient Intake Form");
@@ -381,15 +354,11 @@ public class DoctorMenu extends Menus{
         grid.add(saveBtn, 2, 7);
         saveBtn.setOnAction(event -> {
             if (physicalInput.getText().isEmpty() || physicalConcInput.getText().isEmpty()) {
-
-                System.out.println("missing input"); //debug
                 errorLabel.setText("Error: Missing input");
                 errorLabel.setVisible(true);
             } else {
                 saveBtn.setDisable(true);
-                //System.out.println(patientID);  //debug
                 if (patientID.isEmpty()) {
-                    System.out.println("no ID");  //debug
                     errorLabel.setText("Error: No ID");
                     errorLabel.setVisible(true);
                     return;
@@ -455,15 +424,11 @@ public class DoctorMenu extends Menus{
         grid.add(saveBtn, 2, 7);
         saveBtn.setOnAction(event -> {
             if (immunizationInput.getText().isEmpty() || PerscriptionInput.getText().isEmpty()) {
-
-                System.out.println("missing input"); //debug
                 errorLabel.setText("Error: Missing input");
                 errorLabel.setVisible(true);
             } else {
                 saveBtn.setDisable(true);
-                //System.out.println(patientID);  //debug
                 if (patientID.isEmpty()) {
-                    System.out.println("no ID");  //debug
                     errorLabel.setText("Error: No ID");
                     errorLabel.setVisible(true);
                     return;
@@ -488,7 +453,7 @@ public class DoctorMenu extends Menus{
 
     }
     //--------------------------------------------------------------------
-    private Scene SummaryMenu() {
+    protected Scene SummaryMenu() {
 
         menu.setText("Patient Summary");
         GridPane layout = new GridPane();
@@ -517,7 +482,6 @@ public class DoctorMenu extends Menus{
 
         //load health file
         jo = visit.loadVisit(visit.getHealthFile());
-        //System.out.println(jo.toString());
         String allergiesInfo = "";
         String healthConcernsInfo = "";
         try {
@@ -525,7 +489,7 @@ public class DoctorMenu extends Menus{
             healthConcernsInfo = jo.getString("healthConc");
 
         } catch (JSONException e) {
-            System.out.println("no data");  //debug
+            System.out.println("[Loading Health File] No data");  //debug
         }
         column = 0;
         row = 0;
@@ -552,7 +516,6 @@ public class DoctorMenu extends Menus{
 
         //load physical file
         jo = visit.loadVisit(visit.getPhysicalFile());
-        //System.out.println(jo.toString());
         String physicalInfo = "";
         String physicalConcernsInfo = "";
         try {
@@ -560,7 +523,7 @@ public class DoctorMenu extends Menus{
             physicalConcernsInfo = jo.getString("phyConcerns");
 
         } catch (JSONException e) {
-            System.out.println("no data");  //debug
+            System.out.println("[Loading Physical File] No data");  //debug
         }
         column++;
         row = 0;
@@ -587,7 +550,6 @@ public class DoctorMenu extends Menus{
 
         //load medication file
         jo = visit.loadVisit(visit.getMedFile());
-        //System.out.println(jo.toString());
         String immunizationInfo = "";
         String prescriptionInfo = "";
         try {
@@ -595,7 +557,7 @@ public class DoctorMenu extends Menus{
             prescriptionInfo = jo.getString("perscription");
 
         } catch (JSONException e) {
-            System.out.println("no data");  //debug
+            System.out.println("[Loading Medication File] No data");  //debug
         }
         column++;
         row = 0;
@@ -621,8 +583,9 @@ public class DoctorMenu extends Menus{
         grid.add(medLblInput, column, row);
 
         //load vitals file
+
+        Label vitalLblInput = new Label();
         jo = visit.loadVisit(visit.getVitalFile());
-        //System.out.println(jo.toString());
 
         String over12 =  "";
         String weight = "";
@@ -636,20 +599,20 @@ public class DoctorMenu extends Menus{
             bodyTemp = jo.getString("temp");
             bloodP = jo.getString("bp");
 
+            vitalLblInput.setText(
+                    "Over 12: " + over12 + "\n" +
+                    "Weight: " + weight + "\n" +
+                    "Height: " + pHeight + "\n" +
+                    "Body Temp: " + bodyTemp + "\n" +
+                    "Blood Pressure: " + bloodP);
+
         } catch (JSONException e) {
-            System.out.println("no data");  //debug
+            System.out.println("[Loading Vitals File] No data");  //debug
         }
         column++;
         row = 0;
         Label vitalLbl = new Label("Vitals:");
         grid.add(vitalLbl, column, row);
-        Label vitalLblInput = new Label();
-        vitalLblInput.setText(
-                "Over 12: " + over12 + "\n" +
-                "Weight: " + weight + "\n" +
-                "Height: " + pHeight + "\n" +
-                "Body Temp: " + bodyTemp + "\n" +
-                "Blood Pressure: " + bloodP);
         vitalLblInput.setBorder(border);
         vitalLblInput.setMinHeight(100);
         vitalLblInput.setMinWidth(200);
@@ -669,7 +632,7 @@ public class DoctorMenu extends Menus{
 
     }
     //--------------------------------------------------------------------
-    private Scene HistoryMenu() {
+    protected Scene HistoryMenu() {
 
         menu.setText("Patient Summary");
         GridPane layout = new GridPane();
@@ -698,9 +661,6 @@ public class DoctorMenu extends Menus{
 
         //load health file
         jo = visit.loadVisitHistory();
-        JSONArray ja = new JSONArray();
-        //jo = visit.loadVisit(visit.getPhysicalFile());
-        //System.out.println(jo.toString());
         String allergiesInfo = "";
         String healthConcernsInfo = "";
         try {
@@ -714,7 +674,7 @@ public class DoctorMenu extends Menus{
             }
 
         } catch (JSONException e) {
-            System.out.println("no data");  //debug
+            System.out.println("[Loading Health History] No data");  //debug
         }
         column = 0;
         row = 0;
@@ -740,8 +700,6 @@ public class DoctorMenu extends Menus{
         grid.add(healthConcInput, column, row);
 
         //load physical file
-        //jo = visit.loadVisit(visit.getPhysicalFile());
-        //System.out.println(jo.toString());
         String physicalInfo = "";
         String physicalConcernsInfo = "";
         try {
@@ -755,7 +713,7 @@ public class DoctorMenu extends Menus{
             }
 
         } catch (JSONException e) {
-            System.out.println("no data");  //debug
+            System.out.println("[Loading Physical History] No data");  //debug
         }
         column++;
         row = 0;
@@ -781,8 +739,6 @@ public class DoctorMenu extends Menus{
         grid.add(physConcLblInput, column, row);
 
         //load medication file
-        //jo = visit.loadVisit(visit.getMedFile());
-        //System.out.println(jo.toString());
         String immunizationInfo = "";
         String prescriptionInfo = "";
         try {
@@ -796,7 +752,7 @@ public class DoctorMenu extends Menus{
             }
 
         } catch (JSONException e) {
-            System.out.println("no data");  //debug
+            System.out.println("[Loading Medication History] No data");  //debug
         }
         column++;
         row = 0;
@@ -820,9 +776,6 @@ public class DoctorMenu extends Menus{
         medLblInput.setMinWidth(200);
         row++;
         grid.add(medLblInput, column, row);
-
-
-
 
         backVisitBtn.setAlignment(Pos.CENTER);
         setHalignment(backVisitBtn, HPos.CENTER);

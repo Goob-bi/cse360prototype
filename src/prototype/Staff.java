@@ -24,10 +24,11 @@ public class Staff implements StaffInterface{
     private String fileDATA = "";
     private BufferedWriter output = null;
     private JSONObject jo;
+    private JSONArray ja;
     private Authentication auth = new Authentication();
 
     Staff() {
-        listCheck(staffDir + staffListFilename);
+        ja = listCheck(staffDir + staffListFilename);
         try {
             File file = new File(userDir);
             Scanner readFile = new Scanner(file);
@@ -36,22 +37,19 @@ public class Staff implements StaffInterface{
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
             JSONArray ja = new JSONArray(fileDATA);
-            //----------
-
-            String userInfo, userNameFile, userPassFile, userID;
+            String userInfo, userName, userID;
 
             for (int i = 0; i < ja.length(); i++) {
-                //System.out.println(ja.get(i));    //debug
                 userInfo = ja.get(i).toString();
                 jo = new JSONObject(userInfo);
 
                 try {
-                    userNameFile = jo.get("username").toString();
+                    userName = jo.get("username").toString();
                     userID = jo.get("patientID").toString();
                     if (getAcctType(jo) == Authentication.accountType.DOCTOR || getAcctType(jo) == Authentication.accountType.NURSE) {
 
                         System.out.println("Match Found");
-                        addToStaffList(userID, userNameFile, getAcctType(jo));
+                        addToStaffList(userID, userName, getAcctType(jo));
                     }
                 } catch (Exception e) {
                     System.out.println("Bad File");
@@ -64,12 +62,11 @@ public class Staff implements StaffInterface{
     }
     private void addToStaffList(String patientID, String username, Authentication.accountType acct) {
         try {
-            JSONObject jo2 = new JSONObject();
-            jo2.put("patientID", patientID);
-            jo2.put("username", username);
-            jo2.put("type", acct.toString());
+            jo = new JSONObject();
+            jo.put("patientID", patientID);
+            jo.put("username", username);
+            jo.put("type", acct.toString());
 
-            //JSONArray ja = new JSONArray();
             System.out.println("Adding to staff list");
             File file3 = new File(staffDir + staffListFilename);
             Scanner readFile = new Scanner(file3);
@@ -77,25 +74,18 @@ public class Staff implements StaffInterface{
             while (readFile.hasNextLine()) {
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
-            //System.out.println(fileDATA);
-            JSONArray ja = new JSONArray(fileDATA);
+            ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
                 if (ja.getJSONObject(i).getString("patientID").matches(patientID)) {
                     System.out.println("Already in staff list");
                     return;
                 }
             }
-            //System.out.println("test");
-            //System.out.println(this.patientID);
-            ja.put(jo2);
-            System.out.println(ja.toString());
+            ja.put(jo);
             output = new BufferedWriter(new FileWriter(file3));
             output.write(ja.toString());
-
             output.close();
             System.out.println("Added to staff list");
-
-
         } catch (IOException ex) {
             System.out.println("Error saving file");
         }
@@ -103,23 +93,16 @@ public class Staff implements StaffInterface{
     }
 
     public ObservableList<JSONObject> getStaffList() {
-    //public List getStaffList() {
 
         ObservableList<JSONObject> items = FXCollections.observableArrayList (); //testing
-        JSONArray ja;
-        //ja = listCheck(filePath + patientListFilename);
         ja = listCheck(staffDir + staffListFilename);
         if (ja.isEmpty()) {
-            //System.out.println("empty list"); //debug
-        //    List list = java.util.Collections.emptyList();
             return items;
         }
-        //testingvvvvvvvvvvvvvvvvv
         ArrayList<String> test = new ArrayList<String>();
         for (int i=0; i < ja.length(); i++) {
             jo = ja.getJSONObject(i);
             try {
-                //test.add("[" + jo.getString("patientID") + "]" + jo.getString("type") + ": " + jo.getString("username"));
                 jo.getString("patientID");
                 jo.getString("username");
                 jo.getString("type");
@@ -129,10 +112,6 @@ public class Staff implements StaffInterface{
             }
         }
         return items;
-    //    return test;
-        //testing^^^^^^^^^^^^^^^^^^^^^
-        //System.out.println(ja.toString());
-        //return ja.toList();
     }
 
     private JSONArray listCheck(String pathToFile) {
@@ -143,7 +122,6 @@ public class Staff implements StaffInterface{
             if(bool){
                 System.out.println("Staff folder is created successfully");
             }
-            //File file = new File(filePath + patientListFilename);
             File file = new File(pathToFile);
             bool = file.createNewFile();
             if (bool) {
@@ -152,12 +130,7 @@ public class Staff implements StaffInterface{
 
             if (file.length() < 1) {
                 System.out.println("Empty File: populating");
-                //JSONObject jo = new JSONObject();
-                //   jo.accumulate("patientID", "");   //test
-                //   System.out.println(jo.toString());
-
                 output = new BufferedWriter(new FileWriter(file));
-                //    output.write(jo.toString());
                 output.write("[]");
 
                 output.close();
@@ -165,7 +138,6 @@ public class Staff implements StaffInterface{
             }
             System.out.println("File Found!");
             Scanner readFile = new Scanner(file);
-            //---------------------------------------
             //read file-----------------------------
             fileDATA = "";
             while (readFile.hasNextLine()) {
@@ -173,41 +145,31 @@ public class Staff implements StaffInterface{
             }
             readFile.close();
             ja = new JSONArray(fileDATA);
-            //jo.accumulate("patientID", "");
-            //System.out.println(pathToFile);
-            //System.out.println(fileDATA);
-            //System.out.println("inside  list  check " + jo.toString());    //debug
             return ja;
         } catch (FileNotFoundException e) {
             System.out.println("Error opening file");
         } catch (IOException ex) {
             System.out.println("Error opening file");
         }
-        //    JSONObject jo = new JSONObject();
         return ja;
     }
     private Authentication.accountType getAcctType(JSONObject jo) {
         String type = jo.get("type").toString();
         switch (type) {
             case "PATIENT":
-                // code block
                 return Authentication.accountType.PATIENT;
 
             case "DOCTOR":
-                // code block
                 return Authentication.accountType.DOCTOR;
 
             case "NURSE":
-                // code block
                 return Authentication.accountType.NURSE;
 
 
             case "ADMIN":
-                // code block
                 return Authentication.accountType.ADMIN;
 
             default:
-                // code block
                 return Authentication.accountType.NONE;
         }
     }

@@ -17,7 +17,12 @@ import org.json.*;
 public class Authentication {
     
     private String fileDATA ="";
-    public accountType type;
+    private accountType type;
+    private String userID = "0";
+    private String userName = "";
+    private String userPass = "";
+    private String userFile = "./src/prototype/users.json";
+    private JSONArray ja;
     
     public enum accountType {
       PATIENT,
@@ -26,8 +31,6 @@ public class Authentication {
       ADMIN,
       NONE
     }
-    private String userID = "0";
-    private String userName = "";
     
 //--------------------------------------------------------------------  
     Authentication(){
@@ -44,31 +47,25 @@ public class Authentication {
         return this.userName;
     }
     public boolean auth(String username, String password) {
-        
         try {
-            File file = new File("./src/prototype/users.json");
+            File file = new File(userFile);
             Scanner readFile = new Scanner(file);
             while (readFile.hasNextLine()) {
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
-            JSONArray ja = new JSONArray(fileDATA);
-            //----------
-            
+            ja = new JSONArray(fileDATA);
             String userInfo, userNameFile, userPassFile;
             
             for (int i = 0; i < ja.length(); i++) {
-                //System.out.println(ja.get(i));    //debug
                 userInfo = ja.get(i).toString();
                 JSONObject jo = new JSONObject(userInfo);
                 
                 try {
                     userName = jo.get("username").toString();
-                    userPassFile = jo.get("pass").toString();
+                    userPass = jo.get("pass").toString();
                     userID = jo.get("patientID").toString();
-                    if (userName.matches(username) && userPassFile.matches(password)) {
-                        
+                    if (userName.matches(username) && userPass.matches(password)) {
                         System.out.println("Match Found");
-                        //-------------------
                         //check what account type it is and set it
                         this.type = getAcctType(jo);
                         System.out.println("Account Type: " + this.type.toString());
@@ -78,18 +75,12 @@ public class Authentication {
                     System.out.println("Bad File");
                 }
             }
-            
-            System.out.println("Account Type: " + this.type.toString());
-            return false;
-            
         } catch (FileNotFoundException e) {
             System.out.println("Error opening file");
-            return false;
         }
-        
+        return false;
     }
-    
-//--------------------------------------------------------------------  
+
     private accountType getAcctType(JSONObject jo) {
         String type = jo.get("type").toString();
         switch (type) {
@@ -113,8 +104,7 @@ public class Authentication {
             default: 
                 // code block
                 return accountType.NONE;
-    }
-        
+        }
     }
     
     
