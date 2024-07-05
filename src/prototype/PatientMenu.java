@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.stage.WindowEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +34,14 @@ public class PatientMenu extends Menus {
     private InputValidation check = new InputValidation();
     //---------------Patient Menu-------------------
     PatientMenu(String ID) {
+        MessageMenu msgPortal = new MessageMenu(this.patientID);
+        this.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                msgPortal.close();
+                System.out.println("bye bye");
+            }
+        });
         this.patientID = ID;
         patient = new Patient(patientID);
         visit = new Visit(patientID);
@@ -105,7 +114,6 @@ public class PatientMenu extends Menus {
                     
             }
         });
-        MessageMenu msgPortal = new MessageMenu(this.patientID);
         messageBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
