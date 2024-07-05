@@ -31,10 +31,18 @@ public class PatientMenu extends Menus {
     private Scene patientSummaryScene, patientInfoScene;
     private JSONObject jo;
     private Visit visit;
+    private String pName;
     private InputValidation check = new InputValidation();
     //---------------Patient Menu-------------------
     PatientMenu(String ID) {
-        MessageMenu msgPortal = new MessageMenu(this.patientID);
+        this.patientID = ID;
+        System.out.println("in patient menu id= " + patientID);
+        patient = new Patient(patientID);
+        visit = new Visit(patientID);
+        visit.setVisit(visit.getCurrentVisit());
+
+
+        MessageMenu msgPortal = new MessageMenu(this.patientID, patient.getFirstName());
         this.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
@@ -42,10 +50,6 @@ public class PatientMenu extends Menus {
                 System.out.println("bye bye");
             }
         });
-        this.patientID = ID;
-        patient = new Patient(patientID);
-        visit = new Visit(patientID);
-        visit.setVisit(visit.getCurrentVisit());
         
         System.out.println("ID: " + patientID);
         String patientName = patient.getName();

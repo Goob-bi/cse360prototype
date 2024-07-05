@@ -15,31 +15,27 @@ import org.json.JSONObject;
 
 import static javafx.scene.layout.GridPane.setHalignment;
 
-public class MessageMenu extends Menus {
+public class StaffMessageMenu extends Menus {
     private Scene patientSummaryScene, patientScene, patientInfoScene;
-    private JSONObject jo;
+    private JSONObject patientO;
     private String visitNum;
     private Visit visit;
     private InputValidation check = new InputValidation();
     private Button backVisitBtn = SetupButton("Back");
     private Staff staff;
     protected double x, y;
-    protected ListView<JSONObject> list = new ListView<JSONObject>();
+    //protected ListView<JSONObject> list = new ListView<JSONObject>();
     protected ListView<JSONObject> msgList = new ListView<JSONObject>();
     private String staffID;
     private Message msg;
-    private JSONObject patientO;
+    private JSONObject staffO;
+    private String patientID = "";
     //--------------------------------------------------------------------
-    private void updateStaffList() {
+    private void updatePatientList() {
         //collect list of patients
-        staff = new Staff();
-        //JSONCellFactory jitems = = FXCollections.observableArrayList (staff.getStaffList());
-        //ObservableList<JSONObject> items = FXCollections.observableArrayList (staff.getStaffList());
-        list.setCellFactory(new STAFFCellFactory());
-        list.setItems(staff.getStaffList());
-
-        //ObservableList<String> items = FXCollections.observableArrayList (staff.getStaffList());
-        //list.setItems(items);
+        patient = new Patient();
+        ObservableList<String> items = FXCollections.observableArrayList (patient.getPatientList());
+        list.setItems(items);
 
     }
     private void updateMsgList() {
@@ -49,13 +45,13 @@ public class MessageMenu extends Menus {
 
     }
     //--------------------------------------------------------------------
-    MessageMenu(String patientID, String patientName) {
+    StaffMessageMenu(String staffID, String staffName) {
         width = 600;
         this.hide();
-        this.patientID = patientID;
-        patientO = new JSONObject();
-        patientO.put("patientID", patientID);
-        patientO.put("patientName", patientName);
+        this.staffID = staffID;
+        staffO = new JSONObject();
+        staffO.put("patientID", staffID);
+        staffO.put("username", staffName);
         this.setTitle("Main Menu");
 
         GridPane layout = new GridPane();
@@ -78,7 +74,7 @@ public class MessageMenu extends Menus {
         Button patientDelBtn = SetupButton("Delete Patient");
 
         //collect list of patients
-        updateStaffList();
+        updatePatientList();
         list.setPrefWidth(200);
         list.setPrefHeight(300);
         layout.add(list, 0, 1);
@@ -97,33 +93,34 @@ public class MessageMenu extends Menus {
         pIntakeBtn.setOnAction(event -> {
             changeTitle("Patient Intake");
             if (!list.getSelectionModel().isEmpty()) {
-                System.out.println(list.getSelectionModel().getSelectedItem().getString("patientID"));
+                System.out.println(list.getSelectionModel().getSelectedItem());
             }
             //changeScene(IntakeMenu());
         });
         patientBtn.setOnAction(event -> {
             //update to staffID
             if (!list.getSelectionModel().isEmpty()) {
-                System.out.println(list.getSelectionModel().getSelectedItem().getString("patientID"));
-                String staffID = list.getSelectionModel().getSelectedItem().getString("patientID");
-                System.out.println("staff id= " + staffID); //debug
-                msg = new Message(list.getSelectionModel().getSelectedItem(), patientO);
-                msg.setFromPatient();
-                //msg = new Message(staffID, patientID);
+                System.out.println(list.getSelectionModel().getSelectedItem());
+                patientID = list.getSelectionModel().getSelectedItem();
+                System.out.println("patient id= " + patientID); //debug
+                Patient patient = new Patient(patientID);
+                patientO = new JSONObject();
+                patientO.put("patientID", patient.getID());
+                patientO.put("patientName", patient.getFirstName());
+                System.out.println("staff id= " + staffO.getString("patientID")); //debug
+                msg = new Message(staffO, patientO);
+                msg.setFromStaff();
+                //msg = new Message(staffID, staffID);
                 updateMsgList();
                 changeScene(ViewMessageMenu());
             }
-            //patient = new Patient(patientID);
-            //visit = new Visit(patientID);
+            //patient = new Patient(staffID);
+            //visit = new Visit(staffID);
             //changeTitle("Patient Health");
             //changeScene(patientMenu());
         });
         patientDelBtn.setOnAction(event -> {
-            staffID = list.getSelectionModel().getSelectedItem().getString("patientID");
-            if (staffID == null || staffID.isEmpty()) {
-                return;
-            }
-            //patient = new Patient(patientID); //create patient
+            //patient = new Patient(staffID); //create patient
             //patient.deletePatient();
             //visit = null;
             //updateList();
@@ -218,14 +215,14 @@ public class MessageMenu extends Menus {
         });
         patientBtn.setOnAction(event -> {
 
-            //patient = new Patient(patientID);
-            //visit = new Visit(patientID);
+            //patient = new Patient(staffID);
+            //visit = new Visit(staffID);
             //changeTitle("Patient Health");
             //changeScene(patientMenu());
         });
         patientDelBtn.setOnAction(event -> {
 
-            //patient = new Patient(patientID); //create patient
+            //patient = new Patient(staffID); //create patient
             //patient.deletePatient();
             //visit = null;
             //updateList();

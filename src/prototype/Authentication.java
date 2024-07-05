@@ -27,6 +27,7 @@ public class Authentication {
       NONE
     }
     private String userID = "0";
+    private String userName = "";
     
 //--------------------------------------------------------------------  
     Authentication(){
@@ -38,6 +39,9 @@ public class Authentication {
     }
     public String getID(){
         return this.userID;
+    }
+    public String getName(){
+        return this.userName;
     }
     public boolean auth(String username, String password) {
         
@@ -58,10 +62,10 @@ public class Authentication {
                 JSONObject jo = new JSONObject(userInfo);
                 
                 try {
-                    userNameFile = jo.get("username").toString();
+                    userName = jo.get("username").toString();
                     userPassFile = jo.get("pass").toString();
                     userID = jo.get("patientID").toString();
-                    if (userNameFile.matches(username) && userPassFile.matches(password)) {
+                    if (userName.matches(username) && userPassFile.matches(password)) {
                         
                         System.out.println("Match Found");
                         //-------------------

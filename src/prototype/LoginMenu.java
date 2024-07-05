@@ -123,6 +123,7 @@ public class LoginMenu extends Stage{
                     //need to build constructors
                  //   Menus login = new Menus();
                     Menus login = new Menus(authenticate);
+                    login.setID(authenticate.getID());
                     //MainMenu menu = new MainMenu(authenticate.getType());
                 } else {
                     System.out.println("authentication failed");
@@ -133,9 +134,11 @@ public class LoginMenu extends Stage{
                 }
             }
         });
+
         createAcct.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+
                     //load up main menu
                     changeTitle("Patient Intake");
                     changeScene(IntakeMenu());

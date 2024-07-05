@@ -117,7 +117,7 @@ public class Menus extends Stage{
         this.acctType = auth.getType();
         switch (acctType) {
             case NURSE:
-                NurseMenu nurse = new NurseMenu();
+                NurseMenu nurse = new NurseMenu(auth.getID(), auth.getName());
                 break;
             
             case DOCTOR:
@@ -126,6 +126,7 @@ public class Menus extends Stage{
             
             case PATIENT:
                 try {
+                    System.out.println("ID = " + patientID);
                     PatientMenu pMenu = new PatientMenu(patientID);
                     break;
                 } catch (JSONException e) {

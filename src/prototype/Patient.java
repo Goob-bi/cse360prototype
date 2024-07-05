@@ -87,6 +87,9 @@ public class Patient implements PatientInterface{
         loadPatientFile();
         return jo.getString("firstName");
     }
+    public String getID() {
+        return patientID;
+    }
     
     @Override
     public boolean savePatient(String firstName, String lastName,String email,String phone,String healthHist,String insID, String bDay) {
