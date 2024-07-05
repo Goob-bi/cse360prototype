@@ -59,7 +59,7 @@ public class PatientMenu extends Menus {
         grid.setVgap(15);
         //grid.setGridLinesVisible(true);       //debug
         
-        layout.add(grid, 1, 1);
+        layout.add(grid, 0, 1);
         
 //---------------------buttons----------------------------------------------- 
         
@@ -105,14 +105,17 @@ public class PatientMenu extends Menus {
                     
             }
         });
+        MessageMenu msgPortal = new MessageMenu(this.patientID);
         messageBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 if (patientID == null) {
                     patientID = "";
                 }
-                changeTitle("Patient Health");
-                changeScene(new MessageMenu().loginScene);
+                msgPortal.showMenu();
+                //changeTitle("Patient Health");
+                //changeScene(new MessageMenu().loginScene);
+
 
             }
         });

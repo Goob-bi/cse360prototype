@@ -2,13 +2,16 @@ package prototype;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.DragEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.WindowEvent;
 import org.json.JSONObject;
 
 import static javafx.scene.layout.GridPane.setHalignment;
@@ -21,6 +24,7 @@ public class MessageMenu extends Menus {
     private InputValidation check = new InputValidation();
     private Button backVisitBtn = SetupButton("Back");
     private Staff staff;
+    protected double x, y;
     //--------------------------------------------------------------------
     private void updateList() {
         //collect list of patients
@@ -30,7 +34,11 @@ public class MessageMenu extends Menus {
 
     }
     //--------------------------------------------------------------------
-    MessageMenu() {
+    MessageMenu(String ID) {
+
+        width = 600;
+        this.hide();
+        this.patientID = ID;
         this.setTitle("Main Menu");
 
         GridPane layout = new GridPane();
@@ -66,7 +74,7 @@ public class MessageMenu extends Menus {
         row++;
         //grid.add(patientDelBtn, column, row);
         row++;
-        grid.add(logoutBtn, column, row);
+        grid.add(backBtn, column, row);
 
 
         pIntakeBtn.setOnAction(event -> {
@@ -94,13 +102,32 @@ public class MessageMenu extends Menus {
             updateList();
         });
         backBtn.setOnAction(event -> {
-            changeTitle("Main Menu");
-            updateList();
-            changeScene(loginScene);
+            //changeTitle("Main Menu");
+            //updateList();
+            //changeScene(loginScene);
+            this.hideMenu();
         });
-
         loginScene = new Scene(layout, width, height);
         this.setScene(loginScene);
+        this.show();
+        x = this.getX() + 50;
+        y = this.getY() - 50;
+        this.hide();
+    }
+    public void showMenu() {
+        //update x, y if already showing
+        x = this.getX();
+        y = this.getY();
+        //show menu
+        this.show();
+        this.setX(x);
+        this.setY(y);
+        this.requestFocus();
+    }
+    public void hideMenu() {
+        //save x, y so it gets shown in the same spot
+        x = this.getX();
+        y = this.getY();
         this.hide();
     }
     //--------------------------------------------------------------------

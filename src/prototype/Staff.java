@@ -6,6 +6,7 @@ import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner; // Import the Scanner class to read text files
 import org.json.*;
@@ -107,8 +108,20 @@ public class Staff implements StaffInterface{
             List list = java.util.Collections.emptyList();
             return list;
         }
-        System.out.println(ja.toString());
-        return ja.toList();
+        //testingvvvvvvvvvvvvvvvvv
+        ArrayList<String> test = new ArrayList<String>();
+        for (int i=0; i < ja.length(); i++) {
+            jo = ja.getJSONObject(i);
+            try {
+                test.add("[" + jo.getString("patientID") + "]" + jo.getString("type") + ": " + jo.getString("username"));
+            } catch (JSONException e) {
+                System.out.println("key doesnt exist");
+            }
+        }
+        return test;
+        //testing^^^^^^^^^^^^^^^^^^^^^
+        //System.out.println(ja.toString());
+        //return ja.toList();
     }
 
     private JSONArray listCheck(String pathToFile) {
