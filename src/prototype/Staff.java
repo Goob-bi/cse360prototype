@@ -52,7 +52,7 @@ public class Staff implements StaffInterface{
                         addToStaffList(userID, userName, getAcctType(jo));
                     }
                 } catch (Exception e) {
-                    System.out.println("Bad File");
+                    //System.out.println("bad file");
                 }
             }
         } catch (FileNotFoundException e) {
@@ -136,7 +136,7 @@ public class Staff implements StaffInterface{
                 output.close();
                 return ja;
             }
-            System.out.println("File Found!");
+            
             Scanner readFile = new Scanner(file);
             //read file-----------------------------
             fileDATA = "";

@@ -67,24 +67,18 @@ public class Visit implements VisitInterface{
     public void incrementVisit() {
         this.visitNum = getCurrentVisit();
         visitNum++;
-        if (dirCheck(visitNum)) {
-            System.out.println("dir exists");
-            
-        } else {
+        if (!dirCheck(visitNum)) {
             File rootPathCtrl = new File(rootPath + patientID + "/" + visitNum + "/");
             boolean bool = rootPathCtrl.mkdir();  
             if(bool){  
                System.out.println("New Visit folder is created successfully");  
-            }else{  
-               System.out.println("Error Found: Does the folder already exist?");  
-            }  
+            }
             
         }
     }
     @Override
     public void setVisit(int num) {
         if (dirCheck(num)) {
-            //System.out.println("dir exists");
             this.visitNum = num;
         }
     }
@@ -172,7 +166,7 @@ public class Visit implements VisitInterface{
         }
         jo = fileCheck(fileName);
         if (jo.isEmpty()) {
-            System.out.println("bad file");
+            //System.out.println("bad file");
         }
         return jo;
         
@@ -215,7 +209,6 @@ public class Visit implements VisitInterface{
                     System.out.println("No immunization/prescription data for visit " + visitNum);
                 }
             }
-            System.out.println(jo.toString());
             return jo;
 
         }
@@ -237,8 +230,7 @@ public class Visit implements VisitInterface{
         jo.put("temp", bodyTemp);
         jo.put("bp", bloodP);
         //save to file
-        System.out.println("Saving file");  
-        System.out.println(jo.toString()); 
+        System.out.println("Saving file");
 
         try {
             output = new BufferedWriter(new FileWriter(file));
@@ -265,8 +257,7 @@ public class Visit implements VisitInterface{
         jo.put("allergies", allergies);
         jo.put("healthConc", healthConcerns);
         //save to file
-        System.out.println("Saving file"); 
-        System.out.println(jo.toString()); 
+        System.out.println("Saving file");
 
         try {
             output = new BufferedWriter(new FileWriter(file));
@@ -293,7 +284,6 @@ public class Visit implements VisitInterface{
         jo.put("perscription", perscription);
         //save to file
         System.out.println("Saving file");
-        System.out.println(jo.toString());
 
         try {
             output = new BufferedWriter(new FileWriter(file));
@@ -320,7 +310,6 @@ public class Visit implements VisitInterface{
         jo.put("phyConcerns", PhysConcerns);
         //save to file
         System.out.println("Saving file");
-        System.out.println(jo.toString());
 
         try {
             output = new BufferedWriter(new FileWriter(file));
@@ -363,20 +352,14 @@ public class Visit implements VisitInterface{
             boolean bool = rootPathCtrl.mkdir();  
             if(bool){  
                System.out.println("Patient folder is created successfully");  
-            }else{  
-               //System.out.println("Error creating patient folder: Does it already exist?");
-            }  
+            }
             rootPathCtrl = new File(visitDir);
             bool = rootPathCtrl.mkdir();  
             if(bool){  
                System.out.println("Patient folder is created successfully");  
-            }else{  
-               //System.out.println("Error creating visit folder: Does it already exist?");
-            }  
-            //---------------------------------------
+            }
             // check/create file---------------------
-            File file = new File(visitDir + patientID + fileName); //+ "_PatientInfo.txt" or vitals
-            //System.out.println(visitDir + patientID + fileName);
+            File file = new File(visitDir + patientID + fileName);
             bool = file.createNewFile();
             if (bool) {
                 System.out.println("New File created"); 
@@ -392,7 +375,7 @@ public class Visit implements VisitInterface{
                 output.close();
                 return jo;
             }
-            System.out.println("File Found!");
+            
             Scanner readFile = new Scanner(file);
             //---------------------------------------
             //read file-----------------------------

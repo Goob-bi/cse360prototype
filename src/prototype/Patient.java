@@ -44,8 +44,6 @@ public class Patient implements PatientInterface{
 //--------------------constructors------------------------------------------------
     Patient(String patientID) {
         this.patientID = patientID;
-        System.out.println(this.patientID);
-        //filePath = filePath + this.patientID;
     }
     
     Patient() {
@@ -59,7 +57,6 @@ public class Patient implements PatientInterface{
         }
         File file = new File(filePath + patientID);
         if (file.exists()) {
-            System.out.println("Deleting: " + file.getPath());   //debug
             //check file/dir exists then delete it
             if (!file.delete()) {
                 //if dir contains files
@@ -106,8 +103,7 @@ public class Patient implements PatientInterface{
         jo.put("insID", insID);
         jo.put("birthday", bDay);
         //save to file
-        System.out.println("Saving file"); 
-        //System.out.println(jo.toString());
+        System.out.println("Saving file");
 
         try {
             output = new BufferedWriter(new FileWriter(file));
@@ -116,10 +112,8 @@ public class Patient implements PatientInterface{
             output.close();
             System.out.println("File Saved"); 
             //add to patientList
-            System.out.println("Adding to patient list"); 
             addToPatientList();
             //add to userList
-            System.out.println("adding to user list"); 
             addToUserList();
             return true;
         } catch (IOException ex) {
@@ -131,18 +125,14 @@ public class Patient implements PatientInterface{
     @Override
     public List getPatientList() {
         JSONArray ja;
-        //ja = listCheck(filePath + patientListFilename);
         jo = listCheck(filePath + patientListFilename);
         if (jo.isEmpty()) {
-            //System.out.println("empty list"); //debug
             List list = java.util.Collections.emptyList();
             return list;
         }
         try {
-            //System.out.println("grabbing array"); //debug
             ja = jo.getJSONArray("patientID");
         } catch (JSONException e) {
-            System.out.println("converting to array");    //debug
             ja = jo.toJSONArray(new JSONArray("patientID"));
         }
         return ja.toList();
@@ -157,7 +147,7 @@ public class Patient implements PatientInterface{
         }
         jo = fileCheck();
         if (jo.isEmpty()) {
-            System.out.println("bad file");
+            //System.out.println("bad file");
         }
         return jo;
     }
@@ -166,9 +156,7 @@ public class Patient implements PatientInterface{
     private void delSubFiles(File file) {
         File[] subFiles = file.listFiles();
         for (int i=0; i < subFiles.length; i++) {
-            //System.out.println("Deleting: " + subFiles[i].getPath());   //debug
             if (!subFiles[i].delete()) {
-                //System.out.println("Couldnt delete, non-empty dir");   //debug
                 delSubFiles(subFiles[i]);
                 subFiles[i].delete();
             }
@@ -177,12 +165,10 @@ public class Patient implements PatientInterface{
     }
     
     private void addToPatientList() {
-        //System.out.println(filePath + patientListFilename);
+        System.out.println("Adding to patient list");
         jo = listCheck(filePath + patientListFilename);
-        //System.out.println(jo.toString());
         JSONArray ja;
         try {
-            System.out.println(jo.toString());
             ja = jo.getJSONArray("patientID");
             for (int i = 0; i < ja.length(); i++) {
                 if (ja.getString(i).matches(patientID)) {
@@ -206,8 +192,7 @@ public class Patient implements PatientInterface{
     
     private void removeFromPatientList() {
         try {
-            
-            //JSONArray ja = new JSONArray();
+
             System.out.println("Removing from patient list"); 
             File file3 = new File(filePath + patientListFilename);
             Scanner readFile = new Scanner(file3);
@@ -215,14 +200,10 @@ public class Patient implements PatientInterface{
             while (readFile.hasNextLine()) {
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
-            //System.out.println(fileDATA);
             JSONObject jo2 = new JSONObject(fileDATA);
             JSONArray ja = new JSONArray(jo2.getJSONArray("patientID"));
-            //System.out.println("test");
-            //System.out.println(this.patientID);
             
             for (int i=0; i < ja.length(); i++) {
-                //System.out.println(ja.get(i).toString());
                 if (ja.get(i).toString().matches(patientID)) {
                     ja.remove(i);
                     jo2.put("patientID", ja);
@@ -255,7 +236,6 @@ public class Patient implements PatientInterface{
             while (readFile.hasNextLine()) {
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
-            //System.out.println(fileDATA);
             JSONArray ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
                 if (ja.getJSONObject(i).getString("patientID").matches(patientID)) {
@@ -263,10 +243,7 @@ public class Patient implements PatientInterface{
                     return;
                 }
             }
-            //System.out.println("test");
-            //System.out.println(this.patientID);
             ja.put(jo2);
-            System.out.println(ja.toString());
             output = new BufferedWriter(new FileWriter(file3));
             output.write(ja.toString());
 
@@ -292,22 +269,16 @@ public class Patient implements PatientInterface{
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
             readFile.close();
-            //System.out.println(fileDATA);
             JSONArray ja = new JSONArray(fileDATA);
-           // System.out.println("test"); 
-           // System.out.println(this.patientID);
             
             for (int i=0; i < ja.length(); i++) {
                 jo2 = new JSONObject(ja.get(i).toString());
-            //System.out.println(jo2.toString());
-                   // System.out.println(jo2.getString("patientID")); 
                 if (jo2.has("patientID") && jo2.getString("patientID").matches(patientID)) {
                     System.out.println("Match found"); 
                     ja.remove(i);
                     break;
                 }
             }
-            //System.out.println(ja.toString());
             output = new BufferedWriter(new FileWriter(file3));
             output.write(ja.toString());
 
@@ -323,7 +294,6 @@ public class Patient implements PatientInterface{
     private JSONObject listCheck(String pathToFile) {
         jo = new JSONObject();
         try {
-            //File file = new File(filePath + patientListFilename);  
             File file = new File(pathToFile);  
             boolean bool = file.createNewFile();
             if (bool) {
@@ -331,21 +301,16 @@ public class Patient implements PatientInterface{
             }
             
             if (file.length() < 1) {
-                System.out.println("Empty File: populating"); 
-               //JSONObject jo = new JSONObject();
-             //   jo.accumulate("patientID", "");   //test
-             //   System.out.println(jo.toString()); 
+                System.out.println("Empty File: populating");
                 
                 output = new BufferedWriter(new FileWriter(file));
-            //    output.write(jo.toString());
                 output.write("{\"patientID\":[]}");
                 
                 output.close();
                 return jo;
             }
-            System.out.println("File Found!");
+            
             Scanner readFile = new Scanner(file);
-            //---------------------------------------
             //read file-----------------------------
             fileDATA = "";
             while (readFile.hasNextLine()) {
@@ -353,10 +318,6 @@ public class Patient implements PatientInterface{
             }
             readFile.close();
             jo = new JSONObject(fileDATA);
-            //jo.accumulate("patientID", "");
-            //System.out.println(pathToFile);
-            //System.out.println(fileDATA);
-            //System.out.println("inside  list  check " + jo.toString());    //debug
             return jo;
         } catch (FileNotFoundException e) {
             System.out.println("Error opening file");
@@ -373,13 +334,9 @@ public class Patient implements PatientInterface{
             boolean bool = filePathCtrl.mkdir();  
             if(bool){  
                System.out.println("Folder is created successfully");  
-            }else{  
-               System.out.println("Error Found: Does the folder already exist?");  
-            }  
-            //---------------------------------------
+            }
             // check/create file---------------------
-            File file = new File(filePath + patientID + "/" + patientID + infoName); //+ "_PatientInfo.txt" or vitals
-            //System.out.println(filePath + patientID + "/" + patientID + infoName);
+            File file = new File(filePath + patientID + "/" + patientID + infoName);
             bool = file.createNewFile();
             if (bool) {
                 System.out.println("New File created"); 
@@ -388,8 +345,6 @@ public class Patient implements PatientInterface{
             if (file.length() < 1) {
                 System.out.println("Empty File: populating"); 
                 JSONObject jo = new JSONObject();
-               // jo.put("patientID", patientID);   //test
-               // System.out.println(jo.toString());
                 
                 output = new BufferedWriter(new FileWriter(file));
                 output.write(jo.toString());
@@ -397,7 +352,7 @@ public class Patient implements PatientInterface{
                 output.close();
                 return jo;
             }
-            System.out.println("File Found!");
+            
             Scanner readFile = new Scanner(file);
             //---------------------------------------
             //read file-----------------------------
@@ -407,9 +362,7 @@ public class Patient implements PatientInterface{
             }
             //CLOSE FILES WHEN DONE WITH THEM DUMMY
             readFile.close();
-            //System.out.println("data: " + fileDATA);
             JSONObject jo = new JSONObject(fileDATA);
-            //System.out.println(jo.toString());
             return jo;
             
         } catch (FileNotFoundException e) {

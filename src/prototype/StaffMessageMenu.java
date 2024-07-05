@@ -41,16 +41,13 @@ public class StaffMessageMenu extends Menus {
     }
     private void updateRecentMessage() {
         String dummyID = "badID";
-        System.out.println("patient id= " + patientID); //debug
         patientO = new JSONObject();
         patientO.put("patientID", dummyID);
         patientO.put("patientName", dummyID);
         recentMsg.setBorder(border);
         setHalignment(recentMsg, HPos.CENTER);
-        System.out.println("patient id= " + patientO.getString("patientID")); //debug
         Message recentMsgO = new Message(patientO);
         JSONObject jo1 = recentMsgO.getRecentStaffMessage(this.staffID);
-        System.out.println(jo1.toString());
         String recentMsgTxt = "";
         try {
             recentMsgTxt =
@@ -73,13 +70,13 @@ public class StaffMessageMenu extends Menus {
         staffO = new JSONObject();
         staffO.put("patientID", staffID);
         staffO.put("username", staffName);
-        this.setTitle("Main Menu");
+        this.setTitle("Staff Message Portal");
 
         GridPane layout = new GridPane();
         layout.setAlignment(Pos.CENTER);
         //layout.setGridLinesVisible(true);     //debug
 
-        Label scenetitle = new Label("Welcome to " + companyName);
+        Label scenetitle = new Label("Patient List");
         setHalignment(scenetitle, HPos.CENTER);
         layout.add(scenetitle, 0, 0);
 
@@ -91,9 +88,7 @@ public class StaffMessageMenu extends Menus {
         grid.setVgap(15);
         layout.add(grid, 1, 1);
 
-        Button pIntakeBtn = SetupButton("New Patient");
         Button patientBtn = SetupButton("Goto Messages");
-        Button patientDelBtn = SetupButton("Delete Patient");
 
         //collect list of patients
         updatePatientList();
@@ -101,64 +96,42 @@ public class StaffMessageMenu extends Menus {
         list.setPrefHeight(300);
         layout.add(list, 0, 1);
 
-//--------------------testing
         Label recentMsgTitle = new Label("Recent Message:");
         updateRecentMessage();
-        layout.add(recentMsgTitle, 2, 0);
-        layout.add(recentMsg, 2, 1);
-//testing------------------------------------
 
         column= 0;
         row = 0;
-        grid.add(pIntakeBtn, column, row);
+        grid.add(recentMsgTitle, column, row);
+        row++;
+        grid.add(recentMsg, column, row);
         row++;
         grid.add(patientBtn, column, row);
-        row++;
-        //grid.add(patientDelBtn, column, row);
         row++;
         grid.add(backBtn, column, row);
 
 
-        pIntakeBtn.setOnAction(event -> {
-            changeTitle("Patient Intake");
-            if (!list.getSelectionModel().isEmpty()) {
-                System.out.println(list.getSelectionModel().getSelectedItem());
-            }
-            //changeScene(IntakeMenu());
-        });
         patientBtn.setOnAction(event -> {
             //update to staffID
             if (!list.getSelectionModel().isEmpty()) {
-                System.out.println(list.getSelectionModel().getSelectedItem());
                 patientID = list.getSelectionModel().getSelectedItem();
-                System.out.println("patient id= " + patientID); //debug
                 Patient patient = new Patient(patientID);
                 patientO = new JSONObject();
                 patientO.put("patientID", patient.getID());
                 patientO.put("patientName", patient.getFirstName());
-                System.out.println("staff id= " + staffO.getString("patientID")); //debug
                 msg = new Message(staffO, patientO);
                 msg.setFromStaff();
                 //msg = new Message(staffID, staffID);
                 updateMsgList();
                 changeScene(ViewMessageMenu());
             }
-            //patient = new Patient(staffID);
-            //visit = new Visit(staffID);
-            //changeTitle("Patient Health");
-            //changeScene(patientMenu());
-        });
-        patientDelBtn.setOnAction(event -> {
-            //patient = new Patient(staffID); //create patient
-            //patient.deletePatient();
-            //visit = null;
-            //updateList();
         });
         backBtn.setOnAction(event -> {
-            //changeTitle("Main Menu");
-            //updateList();
-            //changeScene(loginScene);
             this.hideMenu();
+        });
+        backVisitBtn.setOnAction(event -> {
+            changeTitle("Staff Message Portal");
+            //updateList();
+            changeScene(loginScene);
         });
         loginScene = new Scene(layout, width, height);
         this.setScene(loginScene);
@@ -192,7 +165,7 @@ public class StaffMessageMenu extends Menus {
         layout.setAlignment(Pos.CENTER);
         //layout.setGridLinesVisible(true);     //debug
 
-        Label scenetitle = new Label("Welcome to " + companyName);
+        Label scenetitle = new Label("Message History");
         setHalignment(scenetitle, HPos.CENTER);
         layout.add(scenetitle, 0, 0);
 
@@ -209,8 +182,6 @@ public class StaffMessageMenu extends Menus {
         msgBody.setPromptText("Message");
 
         Button pIntakeBtn = SetupButton("Send Message");
-        Button patientBtn = SetupButton("Goto Visits");
-        Button patientDelBtn = SetupButton("Delete Patient");
 
         //collect list of messages
         updateMsgList();
@@ -226,11 +197,7 @@ public class StaffMessageMenu extends Menus {
         row++;
         grid.add(pIntakeBtn, column, row);
         row++;
-        //grid.add(patientBtn, column, row);
-        row++;
-        //grid.add(patientDelBtn, column, row);
-        row++;
-        grid.add(backBtn, column, row);
+        grid.add(backVisitBtn, column, row);
 
 
         pIntakeBtn.setOnAction(event -> {
@@ -242,25 +209,6 @@ public class StaffMessageMenu extends Menus {
                 updateRecentMessage();
             }
             //changeScene(IntakeMenu());
-        });
-        patientBtn.setOnAction(event -> {
-
-            //patient = new Patient(staffID);
-            //visit = new Visit(staffID);
-            //changeTitle("Patient Health");
-            //changeScene(patientMenu());
-        });
-        patientDelBtn.setOnAction(event -> {
-
-            //patient = new Patient(staffID); //create patient
-            //patient.deletePatient();
-            //visit = null;
-            //updateList();
-        });
-        backBtn.setOnAction(event -> {
-            //changeTitle("Main Menu");
-            //updateList();
-            changeScene(loginScene);
         });
         Scene viewMsgScene = new Scene(layout, width, height);
         return viewMsgScene;

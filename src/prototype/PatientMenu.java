@@ -62,8 +62,8 @@ public class PatientMenu extends Menus {
         GridPane layout = new GridPane();
         layout.setAlignment(Pos.CENTER);
         //layout.setGridLinesVisible(true);     //debug
-        
-        Label scenetitle = new Label("Welcome to []");
+
+        Label scenetitle = new Label("Welcome to " + companyName);
         layout.setHalignment(scenetitle, HPos.CENTER);
         layout.add(scenetitle, 0, 0);
         
@@ -83,7 +83,7 @@ public class PatientMenu extends Menus {
         Button pInfoBtn = SetupButton("Contact Info");
         
         
-        Button patientSumBtn = SetupButton("Visit Summary");
+        Button patientSumBtn = SetupButton("Last Visit Summary");
         Button messageBtn = SetupButton("Message");
         
         //collect patient info
@@ -306,7 +306,7 @@ public class PatientMenu extends Menus {
         setHalignment(errorLabel, HPos.CENTER);
         errorLabel.setText("Error: Missing input");
         errorLabel.setVisible(false);
-        layout.add(errorLabel, 0, 2);
+        layout.add(errorLabel, 0, 3);
 
         errorLabel.setText("PatientID: " + patientID);
         errorLabel.setVisible(true);

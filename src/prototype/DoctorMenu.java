@@ -85,7 +85,7 @@ public class DoctorMenu extends Menus{
 
         pIntakeBtn.setOnAction(event -> {
             changeTitle("Patient Intake");
-            //changeScene(IntakeMenu());
+            changeScene(IntakeMenu());
         });
         patientBtn.setOnAction(event -> {
             patientID = list.getSelectionModel().getSelectedItem();
@@ -127,6 +127,133 @@ public class DoctorMenu extends Menus{
         loginScene = new Scene(layout, width, height);
         this.setScene(loginScene);
         this.show();
+    }
+    protected Scene IntakeMenu() {
+        Scene patientIntakeScene;
+
+
+        Label menu = new Label();
+        menu.setText("Patient Intake Form");
+        GridPane layout = new GridPane();
+        menu.setAlignment(Pos.CENTER);
+        setHalignment(menu, HPos.CENTER);
+        layout.setAlignment(Pos.CENTER);
+
+        layout.add(menu, 0, 0);
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+
+
+
+        Label scenetitle = new Label("First Name:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(scenetitle, 0, 1);
+        TextField firstNameInput = new TextField ();
+        firstNameInput.setText("");
+        grid.add(firstNameInput, 1, 1);
+
+        Label errorLabel = new Label();
+        errorLabel.setAlignment(Pos.CENTER);
+        setHalignment(errorLabel, HPos.CENTER);
+        errorLabel.setText("Error: Missing input");
+        errorLabel.setVisible(false);
+        layout.add(errorLabel, 0, 2);
+
+
+
+        Label lastName = new Label("Last Name:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(lastName, 0, 2);
+        TextField lastNameInput = new TextField ();
+        lastNameInput.setText("");
+        grid.add(lastNameInput, 1, 2);
+
+        Label email = new Label("Email:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(email, 0, 3);
+        TextField emailInput = new TextField ();
+        emailInput.setText("");
+        grid.add(emailInput, 1, 3);
+
+        Label phone = new Label("Phone Number:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(phone, 0, 4);
+        TextField phoneInput = new TextField ();
+        phoneInput.setText("");
+        grid.add(phoneInput, 1, 4);
+
+        Label bDay = new Label("Birthday (DDMMYYYY):");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(bDay, 0, 5);
+        TextField bDayInput = new TextField ();
+        bDayInput.setText("");
+        grid.add(bDayInput, 1, 5);
+
+        Label insurance = new Label("Insurance ID:");
+        scenetitle.setAlignment(Pos.CENTER);
+        grid.add(insurance, 0, 6);
+        TextField insuranceInput = new TextField ();
+        insuranceInput.setText("");
+        grid.add(insuranceInput, 1, 6);
+
+        Button saveBtn = SetupButton("Save");
+        saveBtn.setMinWidth(100);
+
+        setHalignment(saveBtn, HPos.CENTER);
+        grid.add(saveBtn, 2, 7);
+        saveBtn.setOnAction(event -> {
+            if (firstNameInput.getText().isEmpty() || lastNameInput.getText().isEmpty() || emailInput.getText().isEmpty() ||
+                    phoneInput.getText().isEmpty() || bDayInput.getText().isEmpty() || insuranceInput.getText().isEmpty()) {
+
+                errorLabel.setText("Error: Missing input");
+                errorLabel.setVisible(true);
+            } else {
+                //patientID is fistName, lastName, birthday
+                InputValidation check = new InputValidation();
+                if (!check.DateCheck(bDayInput.getText()) || !check.NameCheck(firstNameInput.getText()) || !check.NameCheck(lastNameInput.getText())) {
+
+                    errorLabel.setVisible(true);
+                    errorLabel.setText("Error: Bad input");
+                    return;
+                }
+                saveBtn.setDisable(true);
+                firstNameInput.setDisable(true);
+                lastNameInput.setDisable(true);
+                emailInput.setDisable(true);
+                phoneInput.setDisable(true);
+                bDayInput.setDisable(true);
+                insuranceInput.setDisable(true);
+                patientID = firstNameInput.getText() + lastNameInput.getText() + bDayInput.getText();
+
+
+                errorLabel.setText("Password: " + patientID);
+                errorLabel.setVisible(true);
+
+                patient = new Patient(patientID); //create patient
+                patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(),
+                        phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
+
+            }
+        });
+
+        backBtn.setAlignment(Pos.CENTER);
+        setHalignment(backBtn, HPos.CENTER);
+        grid.add(backBtn, 1, 7);
+        backBtn.setOnAction(event -> {
+            updatePatientList();
+            changeTitle("Main Menu");
+            changeScene(loginScene);
+        });
+
+        layout.add(grid, 0, 1);
+
+        patientIntakeScene = new Scene(layout, width, height);
+        return patientIntakeScene;
+
     }
     //--------------------------------------------------------------------
     protected Scene patientMenu() {
