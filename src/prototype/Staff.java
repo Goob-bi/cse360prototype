@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner; // Import the Scanner class to read text files
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.json.*;
 
 interface StaffInterface {
@@ -99,26 +102,34 @@ public class Staff implements StaffInterface{
 
     }
 
-    public List getStaffList() {
+    public ObservableList<JSONObject> getStaffList() {
+    //public List getStaffList() {
+
+        ObservableList<JSONObject> items = FXCollections.observableArrayList (); //testing
         JSONArray ja;
         //ja = listCheck(filePath + patientListFilename);
         ja = listCheck(staffDir + staffListFilename);
         if (ja.isEmpty()) {
             //System.out.println("empty list"); //debug
-            List list = java.util.Collections.emptyList();
-            return list;
+        //    List list = java.util.Collections.emptyList();
+            return items;
         }
         //testingvvvvvvvvvvvvvvvvv
         ArrayList<String> test = new ArrayList<String>();
         for (int i=0; i < ja.length(); i++) {
             jo = ja.getJSONObject(i);
             try {
-                test.add("[" + jo.getString("patientID") + "]" + jo.getString("type") + ": " + jo.getString("username"));
+                //test.add("[" + jo.getString("patientID") + "]" + jo.getString("type") + ": " + jo.getString("username"));
+                jo.getString("patientID");
+                jo.getString("username");
+                jo.getString("type");
+                items.add(jo);
             } catch (JSONException e) {
                 System.out.println("key doesnt exist");
             }
         }
-        return test;
+        return items;
+    //    return test;
         //testing^^^^^^^^^^^^^^^^^^^^^
         //System.out.println(ja.toString());
         //return ja.toList();

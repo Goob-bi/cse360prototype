@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.WindowEvent;
@@ -25,12 +26,19 @@ public class MessageMenu extends Menus {
     private Button backVisitBtn = SetupButton("Back");
     private Staff staff;
     protected double x, y;
+    protected ListView<JSONObject> list = new ListView<JSONObject>();
+    private String staffID;
     //--------------------------------------------------------------------
     private void updateList() {
         //collect list of patients
         staff = new Staff();
-        ObservableList<String> items = FXCollections.observableArrayList (staff.getStaffList());
-        list.setItems(items);
+        //JSONCellFactory jitems = = FXCollections.observableArrayList (staff.getStaffList());
+        //ObservableList<JSONObject> items = FXCollections.observableArrayList (staff.getStaffList());
+        list.setCellFactory(new JSONCellFactory());
+        list.setItems(staff.getStaffList());
+
+        //ObservableList<String> items = FXCollections.observableArrayList (staff.getStaffList());
+        //list.setItems(items);
 
     }
     //--------------------------------------------------------------------
@@ -68,7 +76,7 @@ public class MessageMenu extends Menus {
 
         column= 0;
         row = 0;
-        //grid.add(pIntakeBtn, column, row);
+        grid.add(pIntakeBtn, column, row);
         row++;
         //grid.add(patientBtn, column, row);
         row++;
@@ -79,27 +87,31 @@ public class MessageMenu extends Menus {
 
         pIntakeBtn.setOnAction(event -> {
             changeTitle("Patient Intake");
+            if (!list.getSelectionModel().isEmpty()) {
+                System.out.println(list.getSelectionModel().getSelectedItem().getString("patientID"));
+            }
             //changeScene(IntakeMenu());
         });
         patientBtn.setOnAction(event -> {
-            patientID = list.getSelectionModel().getSelectedItem();
-            if (patientID == null || patientID.isEmpty()) {
+            //update to staffID
+            staffID = list.getSelectionModel().getSelectedItem().getString("patientID");
+            if (staffID == null || staffID.isEmpty()) {
                 return;
             }
-            patient = new Patient(patientID);
-            visit = new Visit(patientID);
-            changeTitle("Patient Health");
+            //patient = new Patient(patientID);
+            //visit = new Visit(patientID);
+            //changeTitle("Patient Health");
             //changeScene(patientMenu());
         });
         patientDelBtn.setOnAction(event -> {
-            patientID = list.getSelectionModel().getSelectedItem();
-            if (patientID == null || patientID.isEmpty()) {
+            staffID = list.getSelectionModel().getSelectedItem().getString("patientID");
+            if (staffID == null || staffID.isEmpty()) {
                 return;
             }
-            patient = new Patient(patientID); //create patient
-            patient.deletePatient();
-            visit = null;
-            updateList();
+            //patient = new Patient(patientID); //create patient
+            //patient.deletePatient();
+            //visit = null;
+            //updateList();
         });
         backBtn.setOnAction(event -> {
             //changeTitle("Main Menu");
