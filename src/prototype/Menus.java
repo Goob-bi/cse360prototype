@@ -135,6 +135,9 @@ public class Menus extends Stage{
         //collect list of patients
         patient = new Patient(WORKINGPATH);
         ObservableList<String> items = FXCollections.observableArrayList (patient.getPatientList());
+        //eventually convert to jsonObjects
+        //list.setCellFactory(new STAFFCellFactory());
+
         list.setItems(items);
     }
     protected void updateVisitList() {
@@ -143,6 +146,8 @@ public class Menus extends Stage{
         }
         //collect list of visits
         ObservableList<String> items = FXCollections.observableArrayList (visit.getVisitList());
+        //eventually convert to jsonObjects
+        //visitList.setCellFactory(new STAFFCellFactory());
         visitList.setItems(items);
     }
     Menus() {

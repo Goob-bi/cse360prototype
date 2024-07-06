@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 import javafx.util.Callback;
 
-public class STAFFCellFactory implements Callback<ListView<JSONObject>, ListCell<JSONObject>> {
+public class STAFFCellFactory implements Callback<ListView<JSONObject>, ListCell<JSONObject>>{
     @Override
     public ListCell<JSONObject> call(ListView<JSONObject> param) {
         return new ListCell<>(){
@@ -24,7 +24,9 @@ public class STAFFCellFactory implements Callback<ListView<JSONObject>, ListCell
                 } else if (jo.getString("type").matches("NURSE")){
                     setText("Nurse " + jo.getString("username"));
                 } else {
-                    setText(jo.getString("patientID") + " " + jo.getString("username"));
+                    setText(jo.getString("patientID"));
+                    //need to update how patient list is handled before i make it pretty
+                    //setText(jo.getString("patientID") + " " + jo.getString("username"));
                 }
             }
         };
