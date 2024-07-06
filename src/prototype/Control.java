@@ -24,6 +24,21 @@ public class Control extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
+        String[] argList = this.getParameters().getRaw().toArray(new String[0]);
+      //  for (int i=0; i < argList.length; i++) {
+      //      System.out.println("Arg "+i + " : " + argList[i]);
+      //  }
+        if (!(argList.length < 1) && argList[0].matches("-test")) {
+            setupStorage("[{\"pass\":\"doc\",\"patientID\":\"1\",\"type\":\"DOCTOR\",\"username\":\"doc\"}," +
+                    "{\"pass\":\"nurse\",\"patientID\":\"2\",\"type\":\"NURSE\",\"username\":\"nurse\"}," +
+                    "{\"pass\":\"patient\",\"patientID\":\"3\",\"type\":\"PATIENT\",\"username\":\"patient\"}," +
+                    "{\"pass\":\"admin\",\"patientID\":\"4\",\"type\":\"ADMIN\",\"username\":\"admin\"}]");
+        } else {
+            setupStorage("[{\"pass\":\"admin\",\"patientID\":\"4\",\"type\":\"ADMIN\",\"username\":\"admin\"}]");
+        }
+    }
+    private void setupStorage(String users) {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         workingDir = System.getProperty("user.dir");
         File file = new File(workingDir + "/storage/");
@@ -33,10 +48,7 @@ public class Control extends Application {
         try {
             if (file.createNewFile()) {
                 output = new BufferedWriter(new FileWriter(file));
-                output.write("[{\"pass\":\"doc\",\"patientID\":\"1\",\"type\":\"DOCTOR\",\"username\":\"doc\"}," +
-                        "{\"pass\":\"nurse\",\"patientID\":\"2\",\"type\":\"NURSE\",\"username\":\"nurse\"}," +
-                        "{\"pass\":\"patient\",\"patientID\":\"3\",\"type\":\"PATIENT\",\"username\":\"patient\"}," +
-                        "{\"pass\":\"doc\",\"patientID\":\"4\",\"type\":\"DOCTOR\",\"username\":\"Lees\"}]");
+                output.write(users);
 
                 output.close();
                 System.out.println("File Saved");
@@ -46,7 +58,9 @@ public class Control extends Application {
             throw new RuntimeException(e);
         }
         LoginMenu authMenu = new LoginMenu(workingDir);
+
     }
+
     /**
      * @param args the command line arguments
      */

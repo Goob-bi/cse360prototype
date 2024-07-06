@@ -206,6 +206,9 @@ public class Menus extends Stage{
         //System.out.println(patientID);
         this.acctType = auth.getType();
         switch (acctType) {
+            case ADMIN:
+                AdminMenu admin = new AdminMenu(WORKINGPATH);
+                break;
             case NURSE:
                 NurseMenu nurse = new NurseMenu(auth.getID(), auth.getName(), WORKINGPATH);
                 break;
