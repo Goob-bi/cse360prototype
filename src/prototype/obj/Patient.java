@@ -97,7 +97,12 @@ public Patient(String patientID, String path) {
     @Override
     public String getFirstName() {
         loadPatientFile();
-        return jo.getString("firstName");
+        try {
+            return jo.getString("firstName");
+        } catch (JSONException e) {
+            System.out.println("bad patient name");
+            return "";
+        }
     }
     public String getID() {
         return patientID;
