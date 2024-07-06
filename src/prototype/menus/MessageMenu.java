@@ -76,7 +76,10 @@ public class MessageMenu extends Menus {
     }
     //--------------------------------------------------------------------
     MessageMenu(String patientID, String patientName, String path) {
+        WORKINGPATH = path;
+        recentMsg.setPadding(new Insets(2, 2, 2, 2));
         width = 700;
+        height = 500;
         this.hide();
         this.patientID = patientID;
         patientO = new JSONObject();

@@ -141,7 +141,7 @@ public class Menus extends Stage{
         Lbl.setTextAlignment(TextAlignment.LEFT);
         Lbl.setBorder(border);
         Lbl.setMinHeight(100);
-        Lbl.setMinWidth(200);
+        Lbl.setMinWidth(100);
         Lbl.setMaxWidth(200);
         Lbl.setWrapText(true);  //test
         setHalignment(Lbl, HPos.CENTER);
@@ -153,7 +153,7 @@ public class Menus extends Stage{
         Lbl.setTextAlignment(TextAlignment.CENTER);
         Lbl.setAlignment(Pos.CENTER);
         //Lbl.setBorder(border);
-        Lbl.setMinWidth(200);
+        Lbl.setMinWidth(100);
         Lbl.setWrapText(true);  //test
         setHalignment(Lbl, HPos.CENTER);
         return Lbl;
@@ -163,7 +163,7 @@ public class Menus extends Stage{
         msgBody.setPromptText("Input data");
         msgBody.setWrapText(true);
         msgBody.setMinHeight(100);
-        msgBody.setMinWidth(200);
+        msgBody.setMinWidth(100);
         return msgBody;
     }
     protected void hideMenu() {

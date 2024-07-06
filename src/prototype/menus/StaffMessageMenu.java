@@ -67,7 +67,9 @@ public class StaffMessageMenu extends Menus {
     //--------------------------------------------------------------------
     StaffMessageMenu(String staffID, String staffName, String path) {
         WORKINGPATH = path;
+        recentMsg.setPadding(new Insets(2, 2, 2, 2));
         width = 700;
+        height = 500;
         this.hide();
         this.staffID = staffID;
         staffO = new JSONObject();
