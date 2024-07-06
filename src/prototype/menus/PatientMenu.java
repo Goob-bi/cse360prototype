@@ -50,7 +50,6 @@ public class PatientMenu extends Menus {
 
 
         msgPortal = new MessageMenu(this.patientID, patient.getFirstName(), WORKINGPATH);
-        msgPortal.setWorkingPath(WORKINGPATH);
         this.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
@@ -134,7 +133,6 @@ public class PatientMenu extends Menus {
                     patientID = "";
                 }
                 msgPortal.showMenu();
-                msgPortal.setWorkingPath(WORKINGPATH);
                 //changeTitle("Patient Health");
                 //changeScene(new MessageMenu().loginScene);
 

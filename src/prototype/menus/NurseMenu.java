@@ -9,11 +9,9 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import prototype.obj.Patient;
 
 import static javafx.scene.layout.GridPane.*;
 
@@ -26,7 +24,6 @@ public class NurseMenu extends DoctorMenu {
 //--------------------------------------------------------------------
     public NurseMenu(String ID, String name, String path){
         super(ID, name, path);
-        System.out.println("nurse menu \n" +WORKINGPATH);
     }
 //--------------------------------------------------------------------
     @Override
@@ -52,8 +49,8 @@ public class NurseMenu extends DoctorMenu {
         grid.setVgap(15);
         layout.add(grid, 1, 1);
         
-        Button vitalsViewBtn = SetupButton("Vitals");
-        Button healthViewBtn = SetupButton("Health");
+        Button vitalsViewBtn = SetupButton("Enter Vitals");
+        Button healthViewBtn = SetupButton("Enter Health Data");
         Button patientSumBtn = SetupButton("Visit Summary");
         Button newVisitBtn = SetupButton("New Visit");
         Button patientInfoBtn = SetupButton("Patient Info");
@@ -67,34 +64,43 @@ public class NurseMenu extends DoctorMenu {
         
         column = 0;
         row = 0;
+        grid.add(newVisitBtn, column, row);
+        row++;
         grid.add(vitalsViewBtn, column, row);
         row++;
         grid.add(healthViewBtn, column, row);
         row++;
-        grid.add(newVisitBtn, column, row);
         row++;
         grid.add(patientSumBtn, column, row);
         row++;
-        grid.add(patientInfoBtn, column, row);
-        row++;
         grid.add(patientHistBtn, column, row);
+        row++;
+        grid.add(patientInfoBtn, column, row);
         row++;
         grid.add(backBtn, column, row);
         
         
         vitalsViewBtn.setOnAction(event -> {
-                visitNum = visitList.getSelectionModel().getSelectedItem();
-                if (visitNum == null || !check.IntCheck(visitNum)) {
-                    return;
-                }
+                //edit any visit
+        //        visitNum = visitList.getSelectionModel().getSelectedItem();
+        //       if (visitNum == null || !check.IntCheck(visitNum)) {
+        //            return;
+        //        }
+
+            //edit only current visit
+                visitNum = Integer.toString(visit.getCurrentVisit());
                 changeTitle("Patient Vitals");
                 changeScene(VitalsMenu());
         });
         healthViewBtn.setOnAction(event -> {
-                visitNum = visitList.getSelectionModel().getSelectedItem();
-                if (visitNum == null || !check.IntCheck(visitNum)) {
-                    return;
-                }
+                    //edit any visit
+            //        visitNum = visitList.getSelectionModel().getSelectedItem();
+            //       if (visitNum == null || !check.IntCheck(visitNum)) {
+            //            return;
+            //        }
+
+                //edit only current visit
+            visitNum = Integer.toString(visit.getCurrentVisit());
                 changeTitle("Patient Health");
                 changeScene(HealthMenu());
         });
@@ -112,9 +118,19 @@ public class NurseMenu extends DoctorMenu {
             changeScene(HistoryMenu());
         });
         newVisitBtn.setOnAction(event -> {
+            //stop creating new visit if missing data
+            if (!visit.checkMissingData()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Data missing! Visit may still be in progress.", ButtonType.OK);
+                alert.showAndWait();
+
+                if (alert.getResult() == ButtonType.OK) { }
+
+            } else {
                 visit.incrementVisit();
                 updateVisitList();
                 visitLabel.setText("Latest visit: " + visit.getCurrentVisit());
+
+            }
         });
         patientInfoBtn.setOnAction(event -> {
             changeTitle("Patient Info");
@@ -154,25 +170,25 @@ public class NurseMenu extends DoctorMenu {
         
         Label weight = new Label("Weight:");
         grid.add(weight, 0, 2);
-        TextField weightInput = new TextField ();
+        TextField weightInput = new TextField();
         weightInput.setText("");
         grid.add(weightInput, 1, 2);
         
         Label height = new Label("Height:");
         grid.add(height, 0, 3);
-        TextField heightInput = new TextField ();
+        TextField heightInput = new TextField();
         heightInput.setText("");
         grid.add(heightInput, 1, 3);
         
         Label bodyTemp = new Label("Body Temp:");
         grid.add(bodyTemp, 0, 4);
-        TextField bodyTempInput = new TextField ();
+        TextField bodyTempInput = new TextField();
         bodyTempInput.setText("");
         grid.add(bodyTempInput, 1, 4);
         
         Label bloodP = new Label("Blood Pressure:");
         grid.add(bloodP, 0, 5);
-        TextField bloodPInput = new TextField ();
+        TextField bloodPInput = new TextField();
         bloodPInput.setText("");
         grid.add(bloodPInput, 1, 5);
 
@@ -260,13 +276,13 @@ public class NurseMenu extends DoctorMenu {
         
         Label allergies = new Label("Allergies:");
         grid.add(allergies, 0, 2);
-        TextField allergiesInput = new TextField ();
+        TextArea allergiesInput = SetupDataInput();
         allergiesInput.setText("");
         grid.add(allergiesInput, 1, 2);
         
         Label healthConc = new Label("Health Concerns:");
         grid.add(healthConc, 0, 3);
-        TextField healthConcInput = new TextField ();
+        TextArea healthConcInput = SetupDataInput();
         healthConcInput.setText("");
         grid.add(healthConcInput, 1, 3);
         

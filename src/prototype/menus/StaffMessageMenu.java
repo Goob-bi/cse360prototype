@@ -5,11 +5,9 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.TextAlignment;
 import org.json.JSONException;
 import org.json.JSONObject;
 import prototype.data.InputValidation;
@@ -36,7 +34,7 @@ public class StaffMessageMenu extends Menus {
     private Message msg;
     private JSONObject staffO;
     private String patientID = "";
-    private Label recentMsg = new Label();
+    private Label recentMsg = SetupDataLabel("");
     //--------------------------------------------------------------------
     private void updateMsgList() {
         ObservableList<JSONObject> list = msg.getMessageList();
@@ -49,16 +47,13 @@ public class StaffMessageMenu extends Menus {
         patientO = new JSONObject();
         patientO.put("patientID", dummyID);
         patientO.put("patientName", dummyID);
-        recentMsg.setBorder(border);
-        setHalignment(recentMsg, HPos.CENTER);
         Message recentMsgO = new Message(patientO, WORKINGPATH);
-        recentMsgO.setWorkingPath(WORKINGPATH);
         JSONObject jo1 = recentMsgO.getRecentStaffMessage(this.staffID);
         String recentMsgTxt = "";
         try {
             recentMsgTxt =
-                    jo1.getString("from") + "->" + jo1.getString("to")
-                            + "\n\t" + jo1.getString("msgTitle")
+                    "[" + jo1.getString("from") + "->" + jo1.getString("to") + "]"
+                            + "\n " + jo1.getString("msgTitle")
                             + "\n\t" + jo1.getString("msgBody")
             ;
 
@@ -66,12 +61,13 @@ public class StaffMessageMenu extends Menus {
             recentMsgTxt = "no recent messages";
         }
         recentMsg.setText(recentMsgTxt);
+        recentMsg.setAlignment(Pos.CENTER);
 
     }
     //--------------------------------------------------------------------
     StaffMessageMenu(String staffID, String staffName, String path) {
-        setWorkingPath(path);
-        width = 600;
+        WORKINGPATH = path;
+        width = 700;
         this.hide();
         this.staffID = staffID;
         staffO = new JSONObject();
@@ -83,8 +79,7 @@ public class StaffMessageMenu extends Menus {
         layout.setAlignment(Pos.CENTER);
         //layout.setGridLinesVisible(true);     //debug
 
-        Label scenetitle = new Label("Patient List");
-        setHalignment(scenetitle, HPos.CENTER);
+        Label scenetitle = SetupTitleLabel("Patient List");
         layout.add(scenetitle, 0, 0);
 
 
@@ -103,7 +98,7 @@ public class StaffMessageMenu extends Menus {
         list.setPrefHeight(300);
         layout.add(list, 0, 1);
 
-        Label recentMsgTitle = new Label("Recent Message:");
+        Label recentMsgTitle = SetupTitleLabel("Recent Message:");
         updateRecentMessage();
 
         column= 0;
@@ -122,12 +117,10 @@ public class StaffMessageMenu extends Menus {
             if (!list.getSelectionModel().isEmpty()) {
                 patientID = list.getSelectionModel().getSelectedItem().getString("patientID");
                 Patient patient = new Patient(patientID, WORKINGPATH);
-                patient.setWorkingPath(WORKINGPATH);
                 patientO = new JSONObject();
                 patientO.put("patientID", patient.getID());
                 patientO.put("patientName", patient.getFirstName());
                 msg = new Message(staffO, patientO, WORKINGPATH);
-                msg.setWorkingPath(WORKINGPATH);
                 msg.setFromStaff();
                 //msg = new Message(staffID, staffID);
                 updateMsgList();
@@ -174,8 +167,7 @@ public class StaffMessageMenu extends Menus {
         layout.setAlignment(Pos.CENTER);
         //layout.setGridLinesVisible(true);     //debug
 
-        Label scenetitle = new Label("Message History");
-        setHalignment(scenetitle, HPos.CENTER);
+        Label scenetitle = SetupTitleLabel("Message History");
         layout.add(scenetitle, 0, 0);
 
         GridPane grid = new GridPane();
@@ -186,9 +178,13 @@ public class StaffMessageMenu extends Menus {
         layout.add(grid, 1, 1);
 
         TextField msgTitle = new TextField();
-        msgTitle.setPromptText("Title");
-        TextField msgBody = new TextField();
+        msgTitle.setPromptText("Subject");
+        //TextField msgBody = new TextField();
+        TextArea msgBody = new TextArea();
         msgBody.setPromptText("Message");
+        msgBody.setWrapText(true);
+        msgBody.setMinHeight(100);
+        msgBody.setMinWidth(200);
 
         Button pIntakeBtn = SetupButton("Send Message");
 

@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -67,6 +68,7 @@ public class Menus extends Stage{
     protected StaffMessageMenu msgPortal;
     protected String staffID = "";
     protected String staffName = "";
+    protected Label menu = SetupTitleLabel("");
     
     public void setID(String ID) {
         this.patientID = ID;
@@ -78,9 +80,7 @@ public class Menus extends Stage{
         }
     }
     protected String WORKINGPATH = "";
-    public void setWorkingPath(String path) {
-        this.WORKINGPATH = path;
-    }
+
     protected Button SetupButton(String text) {
         
         Button Btn = new Button();
@@ -134,6 +134,38 @@ public class Menus extends Stage{
         });
         return Btn;
     }
+    protected Label SetupDataLabel(String text) {
+        Label Lbl = new Label();
+        Lbl.setText(text);
+        //Lbl.setAlignment(Pos.CENTER);
+        Lbl.setTextAlignment(TextAlignment.LEFT);
+        Lbl.setBorder(border);
+        Lbl.setMinHeight(100);
+        Lbl.setMinWidth(200);
+        Lbl.setMaxWidth(200);
+        Lbl.setWrapText(true);  //test
+        setHalignment(Lbl, HPos.CENTER);
+        return Lbl;
+    }
+    protected Label SetupTitleLabel(String text) {
+        Label Lbl = new Label();
+        Lbl.setText(text);
+        Lbl.setTextAlignment(TextAlignment.CENTER);
+        Lbl.setAlignment(Pos.CENTER);
+        //Lbl.setBorder(border);
+        Lbl.setMinWidth(200);
+        Lbl.setWrapText(true);  //test
+        setHalignment(Lbl, HPos.CENTER);
+        return Lbl;
+    }
+    protected TextArea SetupDataInput() {
+        TextArea msgBody = new TextArea();
+        msgBody.setPromptText("Input data");
+        msgBody.setWrapText(true);
+        msgBody.setMinHeight(100);
+        msgBody.setMinWidth(200);
+        return msgBody;
+    }
     protected void hideMenu() {
         this.close();
     }
@@ -149,7 +181,6 @@ public class Menus extends Stage{
 
     //    list.setItems(items);
         patient = new Patient(WORKINGPATH);
-        patient.setWorkingPath(WORKINGPATH);
         list.setCellFactory(new STAFFCellFactory());
         list.setItems(patient.getPatientList());
     }
@@ -177,12 +208,10 @@ public class Menus extends Stage{
         switch (acctType) {
             case NURSE:
                 NurseMenu nurse = new NurseMenu(auth.getID(), auth.getName(), WORKINGPATH);
-                nurse.setWorkingPath(WORKINGPATH);
                 break;
             
             case DOCTOR:
                 DoctorMenu doctor = new DoctorMenu(auth.getID(), auth.getName(), WORKINGPATH);
-                doctor.setWorkingPath(WORKINGPATH);
                 break;
             
             case PATIENT:
@@ -193,7 +222,6 @@ public class Menus extends Stage{
                     this.show();
                 }
                 PatientMenu pMenu = new PatientMenu(patientID, WORKINGPATH);
-                pMenu.setWorkingPath(WORKINGPATH);
                 break;
             
             default: 
@@ -210,8 +238,7 @@ public class Menus extends Stage{
     protected void changeScene(Scene newScene) {
         this.setScene(newScene);
     }
-//--------------------menu creation-------------------    
-    Label menu = new Label();
+//--------------------menu creation-------------------
     
     private Scene ErrorMenu() {
         menu.setText("Error Menu");

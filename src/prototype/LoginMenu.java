@@ -135,7 +135,6 @@ public LoginMenu(String path) {
             if (authenticate.auth(user, pass)) {
                 hideScene();
                 Menus login = new Menus(authenticate, WORKINGPATH);
-                login.setWorkingPath(WORKINGPATH);
                 login.setID(authenticate.getID());
             } else {
                 System.out.println("authentication failed");

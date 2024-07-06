@@ -11,9 +11,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.WindowEvent;
 import org.json.JSONException;
@@ -29,10 +27,10 @@ import static javafx.scene.layout.GridPane.setHalignment;
  * @author andreas lees
  */
 public class DoctorMenu extends Menus{
+    protected String userName = "";
     @Override
     protected void updatePatientList() {
         patient = new Patient(WORKINGPATH);
-        patient.setWorkingPath(WORKINGPATH);
         list.setCellFactory(new STAFFCellFactory());
         list.setItems(patient.getPatientList());
     }
@@ -44,13 +42,15 @@ public class DoctorMenu extends Menus{
         WORKINGPATH = path;
         this.staffID = ID;
         this.staffName = name;
+
+        updatePatientList();
+        msgPortal = new StaffMessageMenu(staffID, staffName, WORKINGPATH);
         this.setTitle("Main Menu");
 
         GridPane layout = new GridPane();
         layout.setAlignment(Pos.CENTER);
 
-        Label scenetitle = new Label("Welcome to " + companyName);
-        setHalignment(scenetitle, HPos.CENTER);
+        Label scenetitle = SetupTitleLabel("Welcome to " + companyName);
         layout.add(scenetitle, 0, 0);
 
         this.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -87,6 +87,7 @@ public class DoctorMenu extends Menus{
         row++;
         grid.add(patientDelBtn, column, row);
         row++;
+        row++;
         grid.add(messageBtn, column, row);
         row++;
         grid.add(logoutBtn, column, row);
@@ -105,9 +106,8 @@ public class DoctorMenu extends Menus{
                 return;
             }
             patient = new Patient(patientID, WORKINGPATH);
-            patient.setWorkingPath(WORKINGPATH);
             visit = new Visit(patientID, WORKINGPATH);
-            visit.setWorkingPath(WORKINGPATH);
+            visit.checkMissingData();
             changeTitle("Patient Health");
             changeScene(patientMenu());
         });
@@ -116,20 +116,23 @@ public class DoctorMenu extends Menus{
                 return;
             }
             patientID = list.getSelectionModel().getSelectedItem().getString("patientID");
+            userName = list.getSelectionModel().getSelectedItem().getString("username");
             if (patientID == null || patientID.isEmpty()) {
                 return;
             }
-            patient = new Patient(patientID, WORKINGPATH); //create patient
-            patient.setWorkingPath(WORKINGPATH);
-            patient.deletePatient();
-            visit = null;
-            updatePatientList();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete " + userName + " ?\nID: " + patientID, ButtonType.NO, ButtonType.YES);
+            alert.showAndWait();
+
+            if (alert.getResult() == ButtonType.YES) {
+                patient = new Patient(patientID, WORKINGPATH); //create patient
+                patient.deletePatient();
+                visit = null;
+                updatePatientList();
+            }
         });
         messageBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                msgPortal = new StaffMessageMenu(staffID, staffName, WORKINGPATH);
-                msgPortal.setWorkingPath(WORKINGPATH);
                 msgPortal.showMenu();
 
             }
@@ -148,11 +151,8 @@ public class DoctorMenu extends Menus{
         Scene patientIntakeScene;
 
 
-        Label menu = new Label();
-        menu.setText("Patient Intake Form");
+        Label menu = SetupTitleLabel("Patient Intake Form");
         GridPane layout = new GridPane();
-        menu.setAlignment(Pos.CENTER);
-        setHalignment(menu, HPos.CENTER);
         layout.setAlignment(Pos.CENTER);
 
         layout.add(menu, 0, 0);
@@ -165,61 +165,51 @@ public class DoctorMenu extends Menus{
 
 
 
-        Label scenetitle = new Label("First Name:");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label scenetitle = SetupTitleLabel("First Name:");
         grid.add(scenetitle, 0, 1);
-        TextField firstNameInput = new TextField ();
+        TextField firstNameInput = new TextField();
         firstNameInput.setText("");
         grid.add(firstNameInput, 1, 1);
 
-        Label errorLabel = new Label();
-        errorLabel.setAlignment(Pos.CENTER);
-        setHalignment(errorLabel, HPos.CENTER);
-        errorLabel.setText("Error: Missing input");
+        Label errorLabel = SetupTitleLabel("Error: Missing input");
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
 
 
 
-        Label lastName = new Label("Last Name:");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label lastName = SetupTitleLabel("Last Name:");
         grid.add(lastName, 0, 2);
-        TextField lastNameInput = new TextField ();
+        TextField lastNameInput = new TextField();
         lastNameInput.setText("");
         grid.add(lastNameInput, 1, 2);
 
-        Label email = new Label("Email:");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label email = SetupTitleLabel("Email:");
         grid.add(email, 0, 3);
-        TextField emailInput = new TextField ();
+        TextField emailInput = new TextField();
         emailInput.setText("");
         grid.add(emailInput, 1, 3);
 
-        Label phone = new Label("Phone Number:");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label phone = SetupTitleLabel("Phone Number:");
         grid.add(phone, 0, 4);
-        TextField phoneInput = new TextField ();
+        TextField phoneInput = new TextField();
         phoneInput.setText("");
         grid.add(phoneInput, 1, 4);
 
-        Label bDay = new Label("Birthday (DD/MM/YYYY):");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label bDay = SetupTitleLabel("Birthday (DD/MM/YYYY):");
         grid.add(bDay, 0, 5);
-        TextField bDayInput = new TextField ();
+        TextField bDayInput = new TextField();
         bDayInput.setText("");
         grid.add(bDayInput, 1, 5);
 
-        Label insurance = new Label("Insurance ID:");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label insurance = SetupTitleLabel("Insurance ID:");
         grid.add(insurance, 0, 6);
-        TextField insuranceInput = new TextField ();
+        TextField insuranceInput = new TextField();
         insuranceInput.setText("");
         grid.add(insuranceInput, 1, 6);
 
         Button saveBtn = SetupButton("Save");
         saveBtn.setMinWidth(100);
 
-        setHalignment(saveBtn, HPos.CENTER);
         grid.add(saveBtn, 2, 7);
         saveBtn.setOnAction(event -> {
             if (firstNameInput.getText().isEmpty() || lastNameInput.getText().isEmpty() || emailInput.getText().isEmpty() ||
@@ -250,7 +240,6 @@ public class DoctorMenu extends Menus{
                 errorLabel.setVisible(true);
 
                 patient = new Patient(patientID, WORKINGPATH); //create patient
-                patient.setWorkingPath(WORKINGPATH);
                 patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(),
                         phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
 
@@ -273,12 +262,10 @@ public class DoctorMenu extends Menus{
         layout.setAlignment(Pos.CENTER);
         //layout.setGridLinesVisible(true);     //debug
 
-        Label scenetitle = new Label("Visits:");
-        setHalignment(scenetitle, HPos.CENTER);
+        Label scenetitle = SetupTitleLabel("Visits:");
         layout.add(scenetitle, 0, 0);
 
-        Label visitLabel = new Label("Latest visit: " + visit.getCurrentVisit());
-        setHalignment(visitLabel, HPos.CENTER);
+        Label visitLabel = SetupTitleLabel("Latest visit: " + visit.getCurrentVisit());
         layout.add(visitLabel, 1, 0);
 
         GridPane grid = new GridPane();
@@ -288,8 +275,8 @@ public class DoctorMenu extends Menus{
         grid.setVgap(15);
         layout.add(grid, 1, 1);
 
-        Button physicalViewBtn = SetupButton("Physical");
-        Button medViewBtn = SetupButton("Medications");
+        Button physicalViewBtn = SetupButton("Enter Physical Data");
+        Button medViewBtn = SetupButton("Enter Medications");
         Button patientSumBtn = SetupButton("Visit Summary");
         Button newVisitBtn = SetupButton("New Visit");
         Button patientInfoBtn = SetupButton("Patient Info");
@@ -307,28 +294,37 @@ public class DoctorMenu extends Menus{
         row++;
         grid.add(medViewBtn, column, row);
         row++;
+        row++;
         grid.add(patientSumBtn, column, row);
         row++;
-        grid.add(patientInfoBtn, column, row);
-        row++;
         grid.add(patientHistBtn, column, row);
+        row++;
+        grid.add(patientInfoBtn, column, row);
         row++;
         grid.add(backBtn, column, row);
 
 
         physicalViewBtn.setOnAction(event -> {
-            visitNum = visitList.getSelectionModel().getSelectedItem();
-            if (visitNum == null || !check.IntCheck(visitNum)) {
-                return;
-            }
+            //edit any visit
+            //        visitNum = visitList.getSelectionModel().getSelectedItem();
+            //       if (visitNum == null || !check.IntCheck(visitNum)) {
+            //            return;
+            //        }
+
+            //edit only current visit
+            visitNum = Integer.toString(visit.getCurrentVisit());
             changeTitle("Patient Physical");
             changeScene(PhysicalMenu());
         });
         medViewBtn.setOnAction(event -> {
-            visitNum = visitList.getSelectionModel().getSelectedItem();
-            if (visitNum == null || !check.IntCheck(visitNum)) {
-                return;
-            }
+            //edit any visit
+            //        visitNum = visitList.getSelectionModel().getSelectedItem();
+            //       if (visitNum == null || !check.IntCheck(visitNum)) {
+            //            return;
+            //        }
+
+            //edit only current visit
+            visitNum = Integer.toString(visit.getCurrentVisit());
             changeTitle("Patient Medications");
             changeScene(MedicationMenu());
         });
@@ -350,11 +346,11 @@ public class DoctorMenu extends Menus{
             changeScene(InfoMenu());
         });
 
- //       backVisitBtn.setOnAction(event -> {
- //           changeTitle("Main Menu");
-  //          //updateVisitList();
-  //          changeScene(patientScene);
-   //     });
+        backVisitBtn.setOnAction(event -> {
+            changeTitle("Main Menu");
+            updateVisitList();
+            changeScene(patientScene);
+        });
         patientScene = new Scene(layout, width, height);
         return patientScene;
     }
@@ -377,7 +373,7 @@ public class DoctorMenu extends Menus{
             System.out.println("[Patient Info] Bad file");
         }
 
-        menu.setText("Patient Intake Form");
+        menu.setText("Patient Contact Information");
         GridPane layout = new GridPane();
         menu.setAlignment(Pos.CENTER);
         setHalignment(menu, HPos.CENTER);
@@ -392,58 +388,41 @@ public class DoctorMenu extends Menus{
         grid.setPadding(new Insets(25, 25, 25, 25));
         //grid.setGridLinesVisible(true);       //debug
 
-        Label scenetitle = new Label("First Name:");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label scenetitle = SetupTitleLabel("First Name:");
         grid.add(scenetitle, 0, 1);
-        Label firstNameInput = new Label ();
-        firstNameInput.setText(fname);
+        Label firstNameInput = SetupTitleLabel(fname);
         grid.add(firstNameInput, 1, 1);
 
-        Label errorLabel = new Label();
-        errorLabel.setAlignment(Pos.CENTER);
-        setHalignment(errorLabel, HPos.CENTER);
-        errorLabel.setText("Error: Missing input");
+        Label errorLabel = SetupTitleLabel("Error: Missing input");
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
 
-        Label lastNameLbl = new Label("Last Name:");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label lastNameLbl = SetupTitleLabel("Last Name:");
         grid.add(lastNameLbl, 0, 2);
-        Label lastNameInput = new Label ();
-        lastNameInput.setText(lname);
+        Label lastNameInput = SetupTitleLabel(lname);
         grid.add(lastNameInput, 1, 2);
 
-        Label emailLbl = new Label("Email:");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label emailLbl = SetupTitleLabel("Email:");
         grid.add(emailLbl, 0, 3);
-        Label emailInput = new Label ();
-        emailInput.setText(email);
+        Label emailInput = SetupTitleLabel(email);
         grid.add(emailInput, 1, 3);
 
-        Label phoneLbl = new Label("Phone Number:");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label phoneLbl = SetupTitleLabel("Phone Number:");
         grid.add(phoneLbl, 0, 4);
-        Label phoneInput = new Label ();
-        phoneInput.setText(phone);
+        Label phoneInput = SetupTitleLabel(phone);
         grid.add(phoneInput, 1, 4);
 
-        Label bDayLbl = new Label("Birthday (DDMMYYYY):");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label bDayLbl = SetupTitleLabel("Birthday (DDMMYYYY):");
         grid.add(bDayLbl, 0, 5);
-        Label bDayInput = new Label ();
-        bDayInput.setText(bDay);
+        Label bDayInput = SetupTitleLabel(bDay);
         grid.add(bDayInput, 1, 5);
 
-        Label insurance = new Label("Insurance ID:");
-        scenetitle.setAlignment(Pos.CENTER);
+        Label insurance = SetupTitleLabel("Insurance ID:");
         grid.add(insurance, 0, 6);
-        Label insuranceInput = new Label ();
-        insuranceInput.setText(insID);
+        Label insuranceInput = SetupTitleLabel(insID);
         grid.add(insuranceInput, 1, 6);
 
 
-        backVisitBtn.setAlignment(Pos.CENTER);
-        setHalignment(backVisitBtn, HPos.CENTER);
         grid.add(backVisitBtn, 1, 7);
 
         layout.add(grid, 0, 1);
@@ -465,22 +444,19 @@ public class DoctorMenu extends Menus{
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        Label errorLabel = new Label();
-        errorLabel.setAlignment(Pos.CENTER);
-        setHalignment(errorLabel, HPos.CENTER);
-        errorLabel.setText("Error: Missing input");
+        Label errorLabel = SetupTitleLabel("Error: Missing input");
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
 
-        Label physical = new Label("Physical Results:");
+        Label physical = SetupTitleLabel("Physical Results:");
         grid.add(physical, 0, 2);
-        TextField physicalInput = new TextField ();
+        TextArea physicalInput = SetupDataInput();
         physicalInput.setText("");
         grid.add(physicalInput, 1, 2);
 
-        Label physicalConc = new Label("Physical Concerns:");
+        Label physicalConc = SetupTitleLabel("Physical Concerns:");
         grid.add(physicalConc, 0, 3);
-        TextField physicalConcInput = new TextField ();
+        TextArea physicalConcInput = SetupDataInput();
         physicalConcInput.setText("");
         grid.add(physicalConcInput, 1, 3);
 
@@ -534,23 +510,20 @@ public class DoctorMenu extends Menus{
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        Label errorLabel = new Label();
-        errorLabel.setAlignment(Pos.CENTER);
-        setHalignment(errorLabel, HPos.CENTER);
-        errorLabel.setText("Error: Missing input");
+        Label errorLabel = SetupTitleLabel("Error: Missing input");
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
 
-        Label immunization = new Label("Immunization performed:");
+        Label immunization = SetupTitleLabel("Immunization performed:");
         grid.add(immunization, 0, 2);
-        TextField immunizationInput = new TextField ();
+        TextArea immunizationInput = SetupDataInput();
         immunizationInput.setText("");
         grid.add(immunizationInput, 1, 2);
         //maybe add a text field for date of immunization?
 
-        Label Perscription = new Label("Perscriptions:");
+        Label Perscription = SetupTitleLabel("Perscriptions:");
         grid.add(Perscription, 0, 3);
-        TextField PerscriptionInput = new TextField ();
+        TextArea PerscriptionInput = SetupDataInput();
         PerscriptionInput.setText("");
         grid.add(PerscriptionInput, 1, 3);
 
@@ -607,10 +580,7 @@ public class DoctorMenu extends Menus{
         grid.setPadding(new Insets(25, 25, 25, 25));
         //grid.setGridLinesVisible(true);       //debug
 
-        Label errorLabel = new Label();
-        errorLabel.setAlignment(Pos.CENTER);
-        setHalignment(errorLabel, HPos.CENTER);
-        errorLabel.setText("Error: Missing input");
+        Label errorLabel = SetupTitleLabel("Error: Missing input");
         errorLabel.setVisible(false);
         layout.add(errorLabel, 0, 2);
 
@@ -630,24 +600,16 @@ public class DoctorMenu extends Menus{
         }
         column = 0;
         row = 0;
-        Label allergies = new Label("Allergies:");
+        Label allergies = SetupTitleLabel("Allergies:");
         grid.add(allergies, column, row);
-        Label allergiesInput = new Label();
-        allergiesInput.setText(allergiesInfo);
-        allergiesInput.setBorder(border);
-        allergiesInput.setMinHeight(100);
-        allergiesInput.setMinWidth(200);
+        Label allergiesInput = SetupDataLabel(allergiesInfo);
         row++;
         grid.add(allergiesInput, column, row);
 
-        Label healthConc = new Label("Health Concerns:");
+        Label healthConc = SetupTitleLabel("Health Concerns:");
         row++;
         grid.add(healthConc, column, row);
-        Label healthConcInput = new Label();
-        healthConcInput.setText(healthConcernsInfo);
-        healthConcInput.setBorder(border);
-        healthConcInput.setMinHeight(100);
-        healthConcInput.setMinWidth(200);
+        Label healthConcInput = SetupDataLabel(healthConcernsInfo);
         row++;
         grid.add(healthConcInput, column, row);
 
@@ -664,24 +626,16 @@ public class DoctorMenu extends Menus{
         }
         column++;
         row = 0;
-        Label physLbl = new Label("Physical Results:");
+        Label physLbl = SetupTitleLabel("Physical Results:");
         grid.add(physLbl, column, row);
-        Label physLblInput = new Label();
-        physLblInput.setText(physicalInfo);
-        physLblInput.setBorder(border);
-        physLblInput.setMinHeight(100);
-        physLblInput.setMinWidth(200);
+        Label physLblInput = SetupDataLabel(physicalInfo);
         row++;
         grid.add(physLblInput, column, row);
 
-        Label physConcLbl = new Label("Physical Concerns:");
+        Label physConcLbl = SetupTitleLabel("Physical Concerns:");
         row++;
         grid.add(physConcLbl, column, row);
-        Label physConcLblInput = new Label();
-        physConcLblInput.setText(physicalConcernsInfo);
-        physConcLblInput.setBorder(border);
-        physConcLblInput.setMinHeight(100);
-        physConcLblInput.setMinWidth(200);
+        Label physConcLblInput = SetupDataLabel(physicalConcernsInfo);
         row++;
         grid.add(physConcLblInput, column, row);
 
@@ -698,30 +652,22 @@ public class DoctorMenu extends Menus{
         }
         column++;
         row = 0;
-        Label immmunLbl = new Label("Physical Results:");
+        Label immmunLbl = SetupTitleLabel("Immunizations:");
         grid.add(immmunLbl, column, row);
-        Label immmunLblInput = new Label();
-        immmunLblInput.setText(immunizationInfo);
-        immmunLblInput.setBorder(border);
-        immmunLblInput.setMinHeight(100);
-        immmunLblInput.setMinWidth(200);
+        Label immmunLblInput = SetupDataLabel(immunizationInfo);
         row++;
         grid.add(immmunLblInput, column, row);
 
-        Label medLbl = new Label("Physical Concerns:");
+        Label medLbl = SetupTitleLabel("Prescriptions:");
         row++;
         grid.add(medLbl, column, row);
-        Label medLblInput = new Label();
-        medLblInput.setText(prescriptionInfo);
-        medLblInput.setBorder(border);
-        medLblInput.setMinHeight(100);
-        medLblInput.setMinWidth(200);
+        Label medLblInput = SetupDataLabel(prescriptionInfo);
         row++;
         grid.add(medLblInput, column, row);
 
         //load vitals file
 
-        Label vitalLblInput = new Label();
+        Label vitalLblInput = SetupDataLabel("");
         jo = visit.loadVisit(visit.getVitalFile());
 
         String over12 =  "";
@@ -748,7 +694,7 @@ public class DoctorMenu extends Menus{
         }
         column++;
         row = 0;
-        Label vitalLbl = new Label("Vitals:");
+        Label vitalLbl = SetupTitleLabel("Vitals:");
         grid.add(vitalLbl, column, row);
         vitalLblInput.setBorder(border);
         vitalLblInput.setMinHeight(100);
@@ -786,15 +732,9 @@ public class DoctorMenu extends Menus{
         grid.setPadding(new Insets(25, 25, 25, 25));
         //grid.setGridLinesVisible(true);       //debug
 
-        Label errorLabel = new Label();
-        errorLabel.setAlignment(Pos.CENTER);
-        setHalignment(errorLabel, HPos.CENTER);
-        errorLabel.setText("Error: Missing input");
-        errorLabel.setVisible(false);
+        Label errorLabel = SetupTitleLabel("PatientID: " + patientID);
         layout.add(errorLabel, 0, 2);
 
-        errorLabel.setText("PatientID: " + patientID);
-        errorLabel.setVisible(true);
 
         //load health file
         jo = visit.loadVisitHistory();
@@ -815,24 +755,16 @@ public class DoctorMenu extends Menus{
         }
         column = 0;
         row = 0;
-        Label allergies = new Label("Allergies:");
+        Label allergies = SetupTitleLabel("Allergies:");
         grid.add(allergies, column, row);
-        Label allergiesInput = new Label();
-        allergiesInput.setText(allergiesInfo);
-        allergiesInput.setBorder(border);
-        allergiesInput.setMinHeight(100);
-        allergiesInput.setMinWidth(200);
+        Label allergiesInput = SetupDataLabel(allergiesInfo);
         row++;
         grid.add(allergiesInput, column, row);
 
-        Label healthConc = new Label("Health Concerns:");
+        Label healthConc = SetupTitleLabel("Health Concerns:");
         row++;
         grid.add(healthConc, column, row);
-        Label healthConcInput = new Label();
-        healthConcInput.setText(healthConcernsInfo);
-        healthConcInput.setBorder(border);
-        healthConcInput.setMinHeight(100);
-        healthConcInput.setMinWidth(200);
+        Label healthConcInput = SetupDataLabel(healthConcernsInfo);
         row++;
         grid.add(healthConcInput, column, row);
 
@@ -854,24 +786,16 @@ public class DoctorMenu extends Menus{
         }
         column++;
         row = 0;
-        Label physLbl = new Label("Physical Results:");
+        Label physLbl = SetupTitleLabel("Physical Results:");
         grid.add(physLbl, column, row);
-        Label physLblInput = new Label();
-        physLblInput.setText(physicalInfo);
-        physLblInput.setBorder(border);
-        physLblInput.setMinHeight(100);
-        physLblInput.setMinWidth(200);
+        Label physLblInput = SetupDataLabel(physicalInfo);
         row++;
         grid.add(physLblInput, column, row);
 
-        Label physConcLbl = new Label("Physical Concerns:");
+        Label physConcLbl = SetupTitleLabel("Physical Concerns:");
         row++;
         grid.add(physConcLbl, column, row);
-        Label physConcLblInput = new Label();
-        physConcLblInput.setText(physicalConcernsInfo);
-        physConcLblInput.setBorder(border);
-        physConcLblInput.setMinHeight(100);
-        physConcLblInput.setMinWidth(200);
+        Label physConcLblInput = SetupDataLabel(physicalConcernsInfo);
         row++;
         grid.add(physConcLblInput, column, row);
 
@@ -893,24 +817,16 @@ public class DoctorMenu extends Menus{
         }
         column++;
         row = 0;
-        Label immmunLbl = new Label("Immunizations:");
+        Label immmunLbl = SetupTitleLabel("Immunizations:");
         grid.add(immmunLbl, column, row);
-        Label immmunLblInput = new Label();
-        immmunLblInput.setText(immunizationInfo);
-        immmunLblInput.setBorder(border);
-        immmunLblInput.setMinHeight(100);
-        immmunLblInput.setMinWidth(200);
+        Label immmunLblInput = SetupDataLabel(immunizationInfo);
         row++;
         grid.add(immmunLblInput, column, row);
 
-        Label medLbl = new Label("Perscriptions:");
+        Label medLbl = SetupTitleLabel("Perscriptions:");
         row++;
         grid.add(medLbl, column, row);
-        Label medLblInput = new Label();
-        medLblInput.setText(prescriptionInfo);
-        medLblInput.setBorder(border);
-        medLblInput.setMinHeight(100);
-        medLblInput.setMinWidth(200);
+        Label medLblInput = SetupDataLabel(prescriptionInfo);
         row++;
         grid.add(medLblInput, column, row);
 

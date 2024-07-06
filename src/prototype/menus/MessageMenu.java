@@ -5,10 +5,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,8 +62,8 @@ public class MessageMenu extends Menus {
         String recentMsgTxt = "";
         try {
             recentMsgTxt =
-                    jo1.getString("from") + "->" + jo1.getString("to")
-                            + "\n\t" + jo1.getString("msgTitle")
+                    "[" + jo1.getString("from") + "->" + jo1.getString("to") + "]"
+                            + "\n " + jo1.getString("msgTitle")
                             + "\n\t" + jo1.getString("msgBody")
             ;
 
@@ -74,12 +71,12 @@ public class MessageMenu extends Menus {
             recentMsgTxt = "no recent messages";
         }
         recentMsg.setText(recentMsgTxt);
+        recentMsg.setAlignment(Pos.CENTER);
 
     }
     //--------------------------------------------------------------------
     MessageMenu(String patientID, String patientName, String path) {
-        setWorkingPath(path);
-        width = 600;
+        width = 700;
         this.hide();
         this.patientID = patientID;
         patientO = new JSONObject();
@@ -187,9 +184,13 @@ public class MessageMenu extends Menus {
         layout.add(grid, 1, 1);
 
         TextField msgTitle = new TextField();
-        msgTitle.setPromptText("Title");
-        TextField msgBody = new TextField();
+        msgTitle.setPromptText("Subject");
+        //TextField msgBody = new TextField();
+        TextArea msgBody = new TextArea();
         msgBody.setPromptText("Message");
+        msgBody.setWrapText(true);
+        msgBody.setMinHeight(100);
+        msgBody.setMinWidth(200);
 
         Button pIntakeBtn = SetupButton("Send Message");
 

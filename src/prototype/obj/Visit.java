@@ -70,9 +70,51 @@ public Visit(String ID, String path) {
         if (getCurrentVisit() < 1) {
             incrementVisit();
         }
+
     }
 //------------------public methods--------------------------------------------------
+    public boolean checkMissingData() {
+        jo = loadVisit(getHealthFile());
+        try {
+            jo.getString("allergies");
+            jo.getString("healthConc");
 
+        } catch (JSONException e) {
+            System.out.println("[Loading Health File] No data");  //debug
+            return false;
+        }
+        jo = loadVisit(getPhysicalFile());
+        try {
+            jo.getString("phyRes");
+            jo.getString("phyConcerns");
+
+        } catch (JSONException e) {
+            System.out.println("[Loading Physical File] No data");  //debug
+            return false;
+        }
+        jo = loadVisit(getMedFile());
+        try {
+            jo.getString("immunization");
+            jo.getString("perscription");
+
+        } catch (JSONException e) {
+            System.out.println("[Loading Medication File] No data");  //debug
+            return false;
+        }
+        jo = loadVisit(getVitalFile());
+        try {
+            jo.getString("over12");
+            jo.getString("weight");
+            jo.getString("height");
+            jo.getString("temp");
+            jo.getString("bp");
+        } catch (JSONException e) {
+            System.out.println("[Loading Vitals File] No data");  //debug
+            return false;
+        }
+        return true;
+
+    }
     @Override
     public void incrementVisit() {
         this.visitNum = getCurrentVisit();

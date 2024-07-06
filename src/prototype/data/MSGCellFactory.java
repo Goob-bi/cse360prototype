@@ -20,9 +20,10 @@ public class MSGCellFactory implements Callback<ListView<JSONObject>, ListCell<J
                 if (empty || jo == null) {
                     setText(null);
                 } else {
+
                     setText(
-                            jo.getString("from") + "->" + jo.getString("to")
-                            + "\n\t" + jo.getString("msgTitle")
+                            "[" + jo.getString("from") + "->" + jo.getString("to") + "]"
+                            + "\n " + jo.getString("msgTitle")
                             + "\n\t" + jo.getString("msgBody")
 
                     );

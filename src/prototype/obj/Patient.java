@@ -49,7 +49,6 @@ public class Patient implements PatientInterface{
     
 //--------------------constructors------------------------------------------------
 public Patient(String patientID, String path) {
-        System.out.println("double \n"+path);
         this.patientID = patientID;
         setWorkingPath(path);
         buildPatientList();
@@ -57,7 +56,6 @@ public Patient(String patientID, String path) {
     
     public Patient(String path) {
         this.patientID = "";
-        System.out.println("single \n"+path);
         setWorkingPath(path);
         buildPatientList();
     }
