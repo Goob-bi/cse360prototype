@@ -46,7 +46,8 @@ public class StaffMessageMenu extends Menus {
         patientO.put("patientName", dummyID);
         recentMsg.setBorder(border);
         setHalignment(recentMsg, HPos.CENTER);
-        Message recentMsgO = new Message(patientO);
+        Message recentMsgO = new Message(patientO, WORKINGPATH);
+        recentMsgO.setWorkingPath(WORKINGPATH);
         JSONObject jo1 = recentMsgO.getRecentStaffMessage(this.staffID);
         String recentMsgTxt = "";
         try {
@@ -63,7 +64,8 @@ public class StaffMessageMenu extends Menus {
 
     }
     //--------------------------------------------------------------------
-    StaffMessageMenu(String staffID, String staffName) {
+    StaffMessageMenu(String staffID, String staffName, String path) {
+        setWorkingPath(path);
         width = 600;
         this.hide();
         this.staffID = staffID;
@@ -114,11 +116,13 @@ public class StaffMessageMenu extends Menus {
             //update to staffID
             if (!list.getSelectionModel().isEmpty()) {
                 patientID = list.getSelectionModel().getSelectedItem();
-                Patient patient = new Patient(patientID);
+                Patient patient = new Patient(patientID, WORKINGPATH);
+                patient.setWorkingPath(WORKINGPATH);
                 patientO = new JSONObject();
                 patientO.put("patientID", patient.getID());
                 patientO.put("patientName", patient.getFirstName());
-                msg = new Message(staffO, patientO);
+                msg = new Message(staffO, patientO, WORKINGPATH);
+                msg.setWorkingPath(WORKINGPATH);
                 msg.setFromStaff();
                 //msg = new Message(staffID, staffID);
                 updateMsgList();

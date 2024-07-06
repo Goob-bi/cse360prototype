@@ -36,15 +36,19 @@ public class PatientMenu extends Menus {
     private MessageMenu msgPortal;
 
     //---------------Patient Menu-------------------
-    PatientMenu(String ID) {
+    PatientMenu(String ID, String path) {
+        WORKINGPATH = path;
         this.patientID = ID;
         System.out.println("in patient menu id= " + patientID);
-        patient = new Patient(patientID);
-        visit = new Visit(patientID);
+        patient = new Patient(patientID, WORKINGPATH);
+        patient.setWorkingPath(WORKINGPATH);
+        visit = new Visit(patientID, WORKINGPATH);
+        visit.setWorkingPath(WORKINGPATH);
         visit.setVisit(visit.getCurrentVisit());
 
 
-        msgPortal = new MessageMenu(this.patientID, patient.getFirstName());
+        msgPortal = new MessageMenu(this.patientID, patient.getFirstName(), WORKINGPATH);
+        msgPortal.setWorkingPath(WORKINGPATH);
         this.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
@@ -87,7 +91,8 @@ public class PatientMenu extends Menus {
         Button messageBtn = SetupButton("Message");
         
         //collect patient info
-        patient = new Patient(patientID);
+        patient = new Patient(patientID, WORKINGPATH);
+        patient.setWorkingPath(WORKINGPATH);
         
         column= 0;
         grid.add(pInfoBtn, column, row); 
@@ -127,6 +132,7 @@ public class PatientMenu extends Menus {
                     patientID = "";
                 }
                 msgPortal.showMenu();
+                msgPortal.setWorkingPath(WORKINGPATH);
                 //changeTitle("Patient Health");
                 //changeScene(new MessageMenu().loginScene);
 
@@ -268,7 +274,8 @@ public class PatientMenu extends Menus {
                     errorLabel.setText("PatientID: " + patientID);
                     errorLabel.setVisible(true);
 
-                    patient = new Patient(patientID); //create patient
+                    patient = new Patient(patientID, WORKINGPATH); //create patient
+                    patient.setWorkingPath(WORKINGPATH);
                     patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(),
                             phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
 

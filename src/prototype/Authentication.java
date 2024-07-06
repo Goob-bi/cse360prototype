@@ -31,9 +31,16 @@ public class Authentication {
       ADMIN,
       NONE
     }
-    
+
+    private String WORKINGPATH = "";
+    public void setWorkingPath(String path) {
+        this.WORKINGPATH = path;
+        this.userFile = WORKINGPATH + "/users.json";
+    }
 //--------------------------------------------------------------------  
-    Authentication(){
+    Authentication(String path){
+        WORKINGPATH = path;
+        this.userFile = WORKINGPATH + "/users.json";
         this.type = accountType.NONE;
     }
 //--------------------------------------------------------------------  
@@ -76,7 +83,8 @@ public class Authentication {
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening user file");
+            System.out.println(userFile);   //debug
         }
         return false;
     }

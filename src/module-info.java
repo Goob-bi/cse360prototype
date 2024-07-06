@@ -4,4 +4,5 @@ module cse360prototype {
     requires transitive javafx.graphics;
 
     opens prototype to javafx.graphics;
+    exports prototype;
 }

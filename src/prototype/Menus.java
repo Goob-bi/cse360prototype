@@ -68,6 +68,10 @@ public class Menus extends Stage{
             msgPortal.close();
         }
     }
+    protected String WORKINGPATH = "";
+    public void setWorkingPath(String path) {
+        this.WORKINGPATH = path;
+    }
     protected Button SetupButton(String text) {
         
         Button Btn = new Button();
@@ -117,7 +121,7 @@ public class Menus extends Stage{
         Btn.setOnAction(event -> {
             hideMenu();
             closeExtraWindow();
-            LoginMenu authMenu = new LoginMenu();
+            LoginMenu authMenu = new LoginMenu(WORKINGPATH);
         });
         return Btn;
     }
@@ -129,7 +133,7 @@ public class Menus extends Stage{
             return;
         }
         //collect list of patients
-        patient = new Patient();
+        patient = new Patient(WORKINGPATH);
         ObservableList<String> items = FXCollections.observableArrayList (patient.getPatientList());
         list.setItems(items);
     }
@@ -145,7 +149,8 @@ public class Menus extends Stage{
         //empty constructor, required for child classes to override
     }
     
-    Menus(Authentication auth) {
+    Menus(Authentication auth, String path) {
+        WORKINGPATH = path;
         
         this.hide();
         this.patientID = auth.getID();
@@ -153,16 +158,19 @@ public class Menus extends Stage{
         this.acctType = auth.getType();
         switch (acctType) {
             case NURSE:
-                NurseMenu nurse = new NurseMenu(auth.getID(), auth.getName());
+                NurseMenu nurse = new NurseMenu(auth.getID(), auth.getName(), WORKINGPATH);
+                nurse.setWorkingPath(WORKINGPATH);
                 break;
             
             case DOCTOR:
-                DoctorMenu doctor = new DoctorMenu(auth.getID(), auth.getName());
+                DoctorMenu doctor = new DoctorMenu(auth.getID(), auth.getName(), WORKINGPATH);
+                doctor.setWorkingPath(WORKINGPATH);
                 break;
             
             case PATIENT:
                 System.out.println("ID = " + patientID);
-                PatientMenu pMenu = new PatientMenu(patientID);
+                PatientMenu pMenu = new PatientMenu(patientID, WORKINGPATH);
+                pMenu.setWorkingPath(WORKINGPATH);
                 break;
             
             default: 

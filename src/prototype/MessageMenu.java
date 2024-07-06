@@ -34,7 +34,8 @@ public class MessageMenu extends Menus {
     //--------------------------------------------------------------------
     private void updateStaffList() {
         //collect list of patients
-        staff = new Staff();
+        staff = new Staff(WORKINGPATH);
+        staff.setWorkingPath(WORKINGPATH);
         //JSONCellFactory jitems = = FXCollections.observableArrayList (staff.getStaffList());
         //ObservableList<JSONObject> items = FXCollections.observableArrayList (staff.getStaffList());
         list.setCellFactory(new STAFFCellFactory());
@@ -53,7 +54,8 @@ public class MessageMenu extends Menus {
     private void updateRecentMessage() {
         recentMsg.setBorder(border);
         setHalignment(recentMsg, HPos.CENTER);
-        Message recentMsgO = new Message(patientO);
+        Message recentMsgO = new Message(patientO, WORKINGPATH);
+        recentMsgO.setWorkingPath(WORKINGPATH);
         JSONObject jo1 = recentMsgO.getRecentMessage();
         String recentMsgTxt = "";
         try {
@@ -70,7 +72,8 @@ public class MessageMenu extends Menus {
 
     }
     //--------------------------------------------------------------------
-    MessageMenu(String patientID, String patientName) {
+    MessageMenu(String patientID, String patientName, String path) {
+        setWorkingPath(path);
         width = 600;
         this.hide();
         this.patientID = patientID;
@@ -121,7 +124,8 @@ public class MessageMenu extends Menus {
             //update to staffID
             if (!list.getSelectionModel().isEmpty()) {
                 String staffID = list.getSelectionModel().getSelectedItem().getString("patientID");
-                msg = new Message(list.getSelectionModel().getSelectedItem(), patientO);
+                msg = new Message(list.getSelectionModel().getSelectedItem(), patientO, WORKINGPATH);
+                msg.setWorkingPath(WORKINGPATH);
                 msg.setFromPatient();
                 updateMsgList();
                 changeScene(ViewMessageMenu());

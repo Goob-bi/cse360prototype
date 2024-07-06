@@ -33,7 +33,7 @@ interface PatientInterface {
 
 public class Patient implements PatientInterface{
     
-    private final String filePath = "./src/prototype/patients/";
+    private String filePath = "./src/prototype/patients/";
     private final String infoName = "_PatientInfo.txt";
     private final String patientListFilename = "patientList.txt";
     private String fileDATA = "";
@@ -42,14 +42,23 @@ public class Patient implements PatientInterface{
     private JSONObject jo;
     
 //--------------------constructors------------------------------------------------
-    Patient(String patientID) {
+    Patient(String patientID, String path) {
+        System.out.println("double \n"+path);
         this.patientID = patientID;
+        setWorkingPath(path);
     }
     
-    Patient() {
+    Patient(String path) {
         this.patientID = "";
+        System.out.println("single \n"+path);
+        setWorkingPath(path);
     }
 //-------------------public methods-------------------------------------------------
+    protected String WORKINGPATH = "";
+    public void setWorkingPath(String path) {
+        this.WORKINGPATH = path;
+        this.filePath = WORKINGPATH + "/patients/";
+    }
     @Override
     public void deletePatient() {
         if (patientID == null || patientID.isEmpty()){
@@ -230,7 +239,7 @@ public class Patient implements PatientInterface{
             
             //JSONArray ja = new JSONArray();
             System.out.println("Adding to user list"); 
-            File file3 = new File("./src/prototype/users.json");
+            File file3 = new File(WORKINGPATH + "/users.json");
             Scanner readFile = new Scanner(file3);
             String fileDATA = "";
             while (readFile.hasNextLine()) {
@@ -262,7 +271,7 @@ public class Patient implements PatientInterface{
             
             //JSONArray ja = new JSONArray();
             System.out.println("Removing from user list"); 
-            File file3 = new File("./src/prototype/users.json");
+            File file3 = new File(WORKINGPATH + "/users.json");
             Scanner readFile = new Scanner(file3);
             String fileDATA = "";
             while (readFile.hasNextLine()) {
@@ -293,8 +302,10 @@ public class Patient implements PatientInterface{
     }
     private JSONObject listCheck(String pathToFile) {
         jo = new JSONObject();
+        File file = new File(filePath);
+        file.mkdirs();
         try {
-            File file = new File(pathToFile);  
+            file = new File(pathToFile);
             boolean bool = file.createNewFile();
             if (bool) {
                 System.out.println("New File created"); 
@@ -320,9 +331,9 @@ public class Patient implements PatientInterface{
             jo = new JSONObject(fileDATA);
             return jo;
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening patient file1");
         } catch (IOException ex) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening patient file2");
         }
     //    JSONObject jo = new JSONObject();
         return jo;
@@ -366,9 +377,9 @@ public class Patient implements PatientInterface{
             return jo;
             
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening patient file3");
         } catch (IOException ex) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening patient file4");
         }
         JSONObject jo = new JSONObject();
         return jo;

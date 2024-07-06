@@ -60,11 +60,23 @@ public class LoginMenu extends Stage{
         blueBtn.setDisable(false);
         return blueBtn;
     }
-//-------------------------------------------------------------------- 
-    LoginMenu() {
+    private Authentication authenticate;// = new Authentication(WORKINGPATH);
+    private String WORKINGPATH = "";
+    public void setWorkingPath(String path) {
+        this.WORKINGPATH = path;
+
+        authenticate.setWorkingPath(WORKINGPATH);
+    }
+//--------------------------------------------------------------------
+    LoginMenu(String path) {
+        WORKINGPATH = path;
+        authenticate = new Authentication(WORKINGPATH);
         width = 600;
         height = 400;
-       Authentication authenticate = new Authentication();
+       //Authentication authenticate = new Authentication();
+
+       System.out.println(WORKINGPATH);
+       authenticate.setWorkingPath(WORKINGPATH);
 //---------------------grid-----------------------------------------------         
         GridPane layout = new GridPane();
         layout.setAlignment(Pos.CENTER);
@@ -124,7 +136,8 @@ public class LoginMenu extends Stage{
             confirmBtn.setDisable(true);
             if (authenticate.auth(user, pass)) {
                 hideScene();
-                Menus login = new Menus(authenticate);
+                Menus login = new Menus(authenticate, WORKINGPATH);
+                login.setWorkingPath(WORKINGPATH);
                 login.setID(authenticate.getID());
             } else {
                 System.out.println("authentication failed");
@@ -262,7 +275,8 @@ public class LoginMenu extends Stage{
                 errorLabel.setText("Password: " + patientID);
                 errorLabel.setVisible(true);
 
-                patient = new Patient(patientID); //create patient
+                patient = new Patient(patientID, WORKINGPATH); //create patient
+                patient.setWorkingPath(WORKINGPATH);
                 patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(),
                         phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
 

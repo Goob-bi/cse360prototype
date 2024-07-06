@@ -18,16 +18,21 @@ interface StaffInterface {
 
 }
 public class Staff implements StaffInterface{
-    private final String userDir = "./src/prototype/users.json";
-    private final String staffDir = "./src/prototype/staff/";
+    private String userDir = "./src/prototype/users.json";
+    private String staffDir = "./src/prototype/staff/";
     private final String staffListFilename = "staffList.txt";
     private String fileDATA = "";
     private BufferedWriter output = null;
     private JSONObject jo;
     private JSONArray ja;
-    private Authentication auth = new Authentication();
+    private Authentication auth;// = new Authentication(WORKINGPATH);
 
-    Staff() {
+    private String WORKINGPATH = "";
+    public void setWorkingPath(String path) {
+        this.WORKINGPATH = path;
+        this.userDir = WORKINGPATH + "/users.json";
+        this.staffDir = WORKINGPATH + "/staff/";
+
         ja = listCheck(staffDir + staffListFilename);
         try {
             File file = new File(userDir);
@@ -56,7 +61,44 @@ public class Staff implements StaffInterface{
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening staff file");
+        }
+    }
+
+    Staff(String path) {
+        WORKINGPATH = path;
+        auth = new Authentication(WORKINGPATH);
+        this.userDir = WORKINGPATH + "/users.json";
+        this.staffDir = WORKINGPATH + "/staff/";
+        ja = listCheck(staffDir + staffListFilename);
+        try {
+            File file = new File(userDir);
+            Scanner readFile = new Scanner(file);
+            fileDATA = "";
+            while (readFile.hasNextLine()) {
+                fileDATA = fileDATA.concat(readFile.nextLine());
+            }
+            JSONArray ja = new JSONArray(fileDATA);
+            String userInfo, userName, userID;
+
+            for (int i = 0; i < ja.length(); i++) {
+                userInfo = ja.get(i).toString();
+                jo = new JSONObject(userInfo);
+
+                try {
+                    userName = jo.get("username").toString();
+                    userID = jo.get("patientID").toString();
+                    if (getAcctType(jo) == Authentication.accountType.DOCTOR || getAcctType(jo) == Authentication.accountType.NURSE) {
+
+                        System.out.println("Match Found");
+                        addToStaffList(userID, userName, getAcctType(jo));
+                    }
+                } catch (Exception e) {
+                    //System.out.println("bad file");
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error opening staff file");
         }
 
     }
@@ -147,9 +189,9 @@ public class Staff implements StaffInterface{
             ja = new JSONArray(fileDATA);
             return ja;
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening staff file");
         } catch (IOException ex) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening staff file");
         }
         return ja;
     }

@@ -31,7 +31,8 @@ public class DoctorMenu extends Menus{
     DoctorMenu() {
         //empty constructor, required for child classes to override
     }
-    DoctorMenu(String ID, String name) {
+    DoctorMenu(String ID, String name, String path) {
+        WORKINGPATH = path;
         this.staffID = ID;
         this.staffName = name;
         this.setTitle("Main Menu");
@@ -92,8 +93,10 @@ public class DoctorMenu extends Menus{
             if (patientID == null || patientID.isEmpty()) {
                 return;
             }
-            patient = new Patient(patientID);
-            visit = new Visit(patientID);
+            patient = new Patient(patientID, WORKINGPATH);
+            patient.setWorkingPath(WORKINGPATH);
+            visit = new Visit(patientID, WORKINGPATH);
+            visit.setWorkingPath(WORKINGPATH);
             changeTitle("Patient Health");
             changeScene(patientMenu());
         });
@@ -102,7 +105,8 @@ public class DoctorMenu extends Menus{
             if (patientID == null || patientID.isEmpty()) {
                 return;
             }
-            patient = new Patient(patientID); //create patient
+            patient = new Patient(patientID, WORKINGPATH); //create patient
+            patient.setWorkingPath(WORKINGPATH);
             patient.deletePatient();
             visit = null;
             updatePatientList();
@@ -110,7 +114,8 @@ public class DoctorMenu extends Menus{
         messageBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                msgPortal = new StaffMessageMenu(staffID, staffName);
+                msgPortal = new StaffMessageMenu(staffID, staffName, WORKINGPATH);
+                msgPortal.setWorkingPath(WORKINGPATH);
                 msgPortal.showMenu();
                 //changeTitle("Patient Health");
                 //changeScene(new MessageMenu().loginScene);
@@ -233,7 +238,8 @@ public class DoctorMenu extends Menus{
                 errorLabel.setText("Password: " + patientID);
                 errorLabel.setVisible(true);
 
-                patient = new Patient(patientID); //create patient
+                patient = new Patient(patientID, WORKINGPATH); //create patient
+                patient.setWorkingPath(WORKINGPATH);
                 patient.savePatient(firstNameInput.getText(), lastNameInput.getText(), emailInput.getText(),
                         phoneInput.getText(), bDayInput.getText(), insuranceInput.getText(), bDayInput.getText());
 
@@ -244,6 +250,7 @@ public class DoctorMenu extends Menus{
         setHalignment(backBtn, HPos.CENTER);
         grid.add(backBtn, 1, 7);
         backBtn.setOnAction(event -> {
+            System.out.print("updating patient list");
             updatePatientList();
             changeTitle("Main Menu");
             changeScene(loginScene);

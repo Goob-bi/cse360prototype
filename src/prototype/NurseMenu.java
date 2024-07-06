@@ -24,8 +24,9 @@ import static javafx.scene.layout.GridPane.*;
 public class NurseMenu extends DoctorMenu {
 
 //--------------------------------------------------------------------
-    public NurseMenu(String ID, String name){
-        super(ID, name);
+    public NurseMenu(String ID, String name, String path){
+        super(ID, name, path);
+        System.out.println("nurse menu \n" +WORKINGPATH);
     }
 //--------------------------------------------------------------------
     @Override

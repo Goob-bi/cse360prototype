@@ -6,27 +6,47 @@
 package prototype;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  *
  * @author andreas lees
  */
 public class Control extends Application {
-
+    private String workingDir;
+    private BufferedWriter output = null;
 
 
     @Override
     public void start(Stage primaryStage) {
-        LoginMenu authMenu = new LoginMenu();
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        workingDir = System.getProperty("user.dir");
+        File file = new File(workingDir + "/storage/");
+        file.mkdirs();
+        workingDir = file.getPath();
+        file = new File(workingDir + "/users.json");
+        try {
+            if (file.createNewFile()) {
+                output = new BufferedWriter(new FileWriter(file));
+                output.write("[{\"pass\":\"doc\",\"patientID\":\"1\",\"type\":\"DOCTOR\",\"username\":\"doc\"}," +
+                        "{\"pass\":\"nurse\",\"patientID\":\"2\",\"type\":\"NURSE\",\"username\":\"nurse\"}," +
+                        "{\"pass\":\"patient\",\"patientID\":\"3\",\"type\":\"PATIENT\",\"username\":\"patient\"}," +
+                        "{\"pass\":\"doc\",\"patientID\":\"4\",\"type\":\"DOCTOR\",\"username\":\"Lees\"}]");
+
+                output.close();
+                System.out.println("File Saved");
+
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        LoginMenu authMenu = new LoginMenu(workingDir);
+        authMenu.setWorkingPath(workingDir);
     }
     /**
      * @param args the command line arguments

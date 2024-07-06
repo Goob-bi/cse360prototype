@@ -81,8 +81,19 @@ public class Message {
     private JSONObject jo;
     private JSONArray ja;
 
+    private String WORKINGPATH = "";
+    public void setWorkingPath(String path) {
+        this.WORKINGPATH = path;
+        this.rootPath = WORKINGPATH + "/patients/";
+        this.patientMsgDir = rootPath + patientID + "/messages/";
+        if (patientID.isEmpty()) {
+            this.patientMsgDir = rootPath + "badID" + "/messages/";
+        }
+    }
+
     //-------------------constructors-------------------------------------------------
-    Message(JSONObject patient) {
+    Message(JSONObject patient, String path) {
+        setWorkingPath(path);
         this.staffO = new JSONObject();
         this.patientO = patient;
         this.staffID = "";
@@ -93,8 +104,9 @@ public class Message {
         }
 
     }
-    Message(JSONObject staff, JSONObject patient) {
+    Message(JSONObject staff, JSONObject patient, String path) {
     //Message(String staffID, String patientID) {
+        setWorkingPath(path);
         this.staffO = staff;
         this.patientO = patient;
         this.staffID = staffO.getString("patientID");
@@ -126,7 +138,8 @@ public class Message {
             fileList = Arrays.asList(files);
 
             //get a list of staff (JSONObjects)
-            Staff staff = new Staff();
+            Staff staff = new Staff(WORKINGPATH);
+            staff.setWorkingPath(WORKINGPATH);
             List<JSONObject> staffList = staff.getStaffList();
             System.out.println("filelist: "+fileList.toString());
             System.out.println(staffList.size());
@@ -224,7 +237,7 @@ public class Message {
     //returns the name of last modified file(most recent message)
     public JSONObject getRecentStaffMessage(String staffID) {
         JSONObject message = new JSONObject();
-        File file = new File("./src/prototype/staff/messages/");
+        File file = new File(WORKINGPATH + "/staff/messages/");
         File temp = null;
         int dir;
         if (!file.exists()) {
@@ -235,13 +248,13 @@ public class Message {
             //collect a list of directories in the root path
             String[] files = file.list();
             //parse through the directory list
-            if (files.length < 1) {
+            if (files == null || files.length < 1) {
                 System.out.println("\nfile to short\n");    //debug
                 return message;
             }
             for (int i = 0; i < files.length; i++) {
                 if (files[i].matches(staffID + msgName)) {
-                    temp = new File("./src/prototype/staff/messages/" + files[i]);
+                    temp = new File(WORKINGPATH + "/staff/messages/" + files[i]);
                     break;
                 }
             }
@@ -249,7 +262,7 @@ public class Message {
                 //no match found
                 return message;
             }
-            System.out.println("last modified message " + temp.getName());
+            //System.out.println("last modified message " + temp.getName());
             Scanner readFile = null;
             try {
                 readFile = new Scanner(temp);
@@ -265,7 +278,6 @@ public class Message {
             }
             //CLOSE FILES WHEN DONE WITH THEM DUMMY
             readFile.close();
-            System.out.println("data: " + fileDATA);
             ja = new JSONArray(fileDATA);
             int lastMsg = ja.length() - 1;
             message = ja.getJSONObject(lastMsg);
@@ -273,7 +285,6 @@ public class Message {
         }
         //if patient ID is empty or no files exist, return 0, there are no visits
 
-        System.out.println("\nempty id or file not exist\n");    //debug
         return message;
 
     }
@@ -334,11 +345,11 @@ public class Message {
             System.out.println("File Saved");
 
             //save to staff message dir
-            file = new File("./src/prototype/staff/");
+            file = new File(WORKINGPATH + "/staff/");
             file.mkdir();
-            file = new File("./src/prototype/staff/messages/");
+            file = new File(WORKINGPATH + "/staff/messages/");
             file.mkdir();
-            file = new File("./src/prototype/staff/messages/" + staffID + msgName);
+            file = new File(WORKINGPATH + "/staff/messages/" + staffID + msgName);
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -385,9 +396,7 @@ public class Message {
                 output.close();
                 return ja;
             }
-            System.out.println("File Found!");
             Scanner readFile = new Scanner(file);
-            //---------------------------------------
             //read file-----------------------------
             fileDATA = "";
             while (readFile.hasNextLine()) {
@@ -395,15 +404,13 @@ public class Message {
             }
             //CLOSE FILES WHEN DONE WITH THEM DUMMY
             readFile.close();
-            //System.out.println("data: " + fileDATA);
             ja = new JSONArray(fileDATA);
-            //System.out.println(jo.toString());
             return ja;
 
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening message file");
         } catch (IOException ex) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening message file");
         }
         ja = new JSONArray();
         return ja;

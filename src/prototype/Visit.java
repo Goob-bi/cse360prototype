@@ -56,10 +56,17 @@ public class Visit implements VisitInterface{
     private int visitNum = 0;
     private JSONObject jo;
 
+    private String WORKINGPATH = "";
+    public void setWorkingPath(String path) {
+        this.WORKINGPATH = path;
+        this.rootPath = WORKINGPATH + "/patients/";
+        this.patientDir = rootPath + patientID + "/";
+    }
 //-------------------constructors-------------------------------------------------
-    Visit(String ID) {
+    Visit(String ID, String path) {
         this.patientID = ID;
         this.patientDir = rootPath + patientID + "/";
+        setWorkingPath(path);
     }
 //------------------public methods--------------------------------------------------
 
@@ -389,9 +396,9 @@ public class Visit implements VisitInterface{
             return jo;
             
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening visit file");
         } catch (IOException ex) {
-            System.out.println("Error opening file");
+            System.out.println("Error opening visit file");
         }
         JSONObject jo = new JSONObject();
         return jo;
