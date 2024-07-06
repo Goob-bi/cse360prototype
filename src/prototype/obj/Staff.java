@@ -93,7 +93,7 @@ public class Staff implements StaffInterface{
             }
             ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
-                if (ja.getJSONObject(i).getString("patientID").matches(patientID)) {
+                if (ja.getJSONObject(i).getString("patientID").equals(patientID)) {
                     System.out.println("Already in staff list");
                     return;
                 }

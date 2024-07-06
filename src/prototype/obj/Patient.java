@@ -243,7 +243,7 @@ public Patient(String patientID, String path) {
             }
             ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
-                if (ja.getJSONObject(i).getString("patientID").matches(patientID)) {
+                if (ja.getJSONObject(i).getString("patientID").equals(patientID)) {
                     System.out.println("Already in patient list");
                     return;
                 }
@@ -276,7 +276,7 @@ public Patient(String patientID, String path) {
 
             for (int i=0; i < ja.length(); i++) {
                 jo2 = new JSONObject(ja.get(i).toString());
-                if (jo2.has("patientID") && jo2.getString("patientID").matches(patientID)) {
+                if (jo2.has("patientID") && jo2.getString("patientID").equals(patientID)) {
                     System.out.println("Match found");
                     ja.remove(i);
                     break;
@@ -312,7 +312,7 @@ public Patient(String patientID, String path) {
             }
             JSONArray ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
-                if (ja.getJSONObject(i).getString("patientID").matches(patientID)) {
+                if (ja.getJSONObject(i).getString("patientID").equals(patientID)) {
                     System.out.println("Already in user list");
                     return;
                 }
@@ -347,7 +347,7 @@ public Patient(String patientID, String path) {
             
             for (int i=0; i < ja.length(); i++) {
                 jo2 = new JSONObject(ja.get(i).toString());
-                if (jo2.has("patientID") && jo2.getString("patientID").matches(patientID)) {
+                if (jo2.has("patientID") && jo2.getString("patientID").equals(patientID)) {
                     System.out.println("Match found"); 
                     ja.remove(i);
                     break;

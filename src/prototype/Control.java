@@ -29,7 +29,7 @@ public class Control extends Application {
       //  for (int i=0; i < argList.length; i++) {
       //      System.out.println("Arg "+i + " : " + argList[i]);
       //  }
-        if (!(argList.length < 1) && argList[0].matches("-test")) {
+        if (!(argList.length < 1) && argList[0].equals("-test")) {
             setupStorage("[{\"pass\":\"doc\",\"patientID\":\"1\",\"type\":\"DOCTOR\",\"username\":\"doc\"}," +
                     "{\"pass\":\"nurse\",\"patientID\":\"2\",\"type\":\"NURSE\",\"username\":\"nurse\"}," +
                     "{\"pass\":\"patient\",\"patientID\":\"3\",\"type\":\"PATIENT\",\"username\":\"patient\"}," +

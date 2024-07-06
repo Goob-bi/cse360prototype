@@ -53,7 +53,7 @@ public class Visit implements VisitInterface{
     private String fileDATA = "";
     private String patientID = "";
     private BufferedWriter output = null;
-    private int visitNum = 0;
+    private int visitNum = 1;
     private JSONObject jo;
 
     private String WORKINGPATH = "";

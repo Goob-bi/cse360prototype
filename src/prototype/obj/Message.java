@@ -146,7 +146,7 @@ public class Message {
                 System.out.println(i);
                 //if fileList contains a matching staffID, add it to list
                 ID = staffList.get(i).getString("patientID");
-                if (fileList.contains(ID + msgName) && staffID.matches(ID)) {
+                if (fileList.contains(ID + msgName) && staffID.equals(ID)) {
                     File msgFile = new File(patientMsgDir + ID + msgName);
                     System.out.println("found matching message file");
                     Scanner readFile = null;
@@ -252,7 +252,7 @@ public class Message {
                 return message;
             }
             for (int i = 0; i < files.length; i++) {
-                if (files[i].matches(staffID + msgName)) {
+                if (files[i].equals(staffID + msgName)) {
                     temp = new File(WORKINGPATH + "/staff/messages/" + files[i]);
                     break;
                 }
@@ -302,7 +302,7 @@ public class Message {
         String compareStr = "";
         for (int i=0; i < ja.length(); i++) {
             compareStr = ja.getJSONObject(i).getString("msgID");
-            if (compareStr.matches(ID)) {
+            if (compareStr.equals(ID)) {
                 return ja.getJSONObject(i);
             }
         }

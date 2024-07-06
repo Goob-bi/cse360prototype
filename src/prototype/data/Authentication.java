@@ -67,7 +67,7 @@ public Authentication(String path){
                     userName = jo.get("username").toString();
                     userPass = jo.get("pass").toString();
                     userID = jo.get("patientID").toString();
-                    if (userName.matches(username) && userPass.matches(password)) {
+                    if (userName.equals(username) && userPass.equals(password)) {
                         System.out.println("Match Found");
                         //check what account type it is and set it
                         this.type = getAcctType(jo);

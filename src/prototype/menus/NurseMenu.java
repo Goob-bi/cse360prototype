@@ -193,7 +193,7 @@ public class NurseMenu extends DoctorMenu {
         grid.add(bloodPInput, 1, 5);
 
         RadioButton  rb = new RadioButton ();
-        rb.setText("Over 12?");
+        rb.setText("Under 12?");
         rb.setOnAction(event -> {
             if (rb.isSelected()) {
                 weightInput.setDisable(true);

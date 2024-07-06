@@ -21,6 +21,7 @@ import prototype.obj.Visit;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class AdminMenu extends Menus{
@@ -101,7 +102,7 @@ public class AdminMenu extends Menus{
             }
             JSONArray ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
-                if (ja.getJSONObject(i).getString("patientID").matches(patientID)) {
+                if (ja.getJSONObject(i).getString("patientID").equals(patientID)) {
                     System.out.println("Already in user list");
                     return;
                 }
@@ -136,7 +137,7 @@ public class AdminMenu extends Menus{
 
             for (int i=0; i < ja.length(); i++) {
                 jo2 = new JSONObject(ja.get(i).toString());
-                if (jo2.has("patientID") && jo2.getString("patientID").matches(patientID)) {
+                if (jo2.has("patientID") && jo2.getString("patientID").equals(patientID)) {
                     System.out.println("Match found");
                     ja.remove(i);
                     break;
@@ -157,9 +158,19 @@ public class AdminMenu extends Menus{
 
     AdminMenu(String path) {
         WORKINGPATH = path;
+        /*
+        //playing around with the idea of an installer
+        //vhoosing where the files will be stored
+        options =
+                FXCollections.observableArrayList(
+                        new File(WORKINGPATH).list()
+                );
+        comboBox.setItems(options);
 
         updateUserList();
         this.setTitle("Main Menu");
+
+         */
 
         GridPane layout = new GridPane();
         layout.setAlignment(Pos.CENTER);

@@ -19,9 +19,9 @@ public class STAFFCellFactory implements Callback<ListView<JSONObject>, ListCell
                 super.updateItem(jo, empty);
                 if (empty || jo == null) {
                     setText(null);
-                } else if (jo.getString("type").matches("DOCTOR")){
+                } else if (jo.getString("type").equals("DOCTOR")){
                     setText("Dr. " + jo.getString("username"));
-                } else if (jo.getString("type").matches("NURSE")){
+                } else if (jo.getString("type").equals("NURSE")){
                     setText("Nurse " + jo.getString("username"));
                 } else {
                     if (jo.getString("patientID").length() < 10) {
