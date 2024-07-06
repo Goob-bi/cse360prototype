@@ -1,1 +1,0 @@
-[{"patientID":"1","type":"DOCTOR","username":"doc"},{"patientID":"2","type":"NURSE","username":"nurse"},{"patientID":"4","type":"DOCTOR","username":"Lees"}]

@@ -1,1 +1,0 @@
-{"allergies":"asd","patientID":"JohnDoe12071997","healthConc":"asd"}

@@ -5,4 +5,10 @@ module cse360prototype {
 
     opens prototype to javafx.graphics;
     exports prototype;
+    exports prototype.menus;
+    opens prototype.menus to javafx.graphics;
+    exports prototype.data;
+    opens prototype.data to javafx.graphics;
+    exports prototype.obj;
+    opens prototype.obj to javafx.graphics;
 }

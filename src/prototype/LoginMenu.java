@@ -25,6 +25,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import prototype.data.Authentication;
+import prototype.data.InputValidation;
+import prototype.menus.Menus;
+import prototype.obj.Patient;
 
 import static javafx.scene.layout.GridPane.setHalignment;
 
@@ -62,13 +66,8 @@ public class LoginMenu extends Stage{
     }
     private Authentication authenticate;// = new Authentication(WORKINGPATH);
     private String WORKINGPATH = "";
-    public void setWorkingPath(String path) {
-        this.WORKINGPATH = path;
-
-        authenticate.setWorkingPath(WORKINGPATH);
-    }
 //--------------------------------------------------------------------
-    LoginMenu(String path) {
+public LoginMenu(String path) {
         WORKINGPATH = path;
         authenticate = new Authentication(WORKINGPATH);
         width = 600;
@@ -76,7 +75,6 @@ public class LoginMenu extends Stage{
        //Authentication authenticate = new Authentication();
 
        System.out.println(WORKINGPATH);
-       authenticate.setWorkingPath(WORKINGPATH);
 //---------------------grid-----------------------------------------------         
         GridPane layout = new GridPane();
         layout.setAlignment(Pos.CENTER);
@@ -228,7 +226,7 @@ public class LoginMenu extends Stage{
         phoneInput.setText("");
         grid.add(phoneInput, 1, 4);
         
-        Label bDay = new Label("Birthday (DDMMYYYY):");
+        Label bDay = new Label("Birthday (DD/MM/YYYY):");
         scenetitle.setAlignment(Pos.CENTER);
         grid.add(bDay, 0, 5);
         TextField bDayInput = new TextField ();
@@ -269,7 +267,7 @@ public class LoginMenu extends Stage{
                 phoneInput.setDisable(true);
                 bDayInput.setDisable(true);
                 insuranceInput.setDisable(true);
-                patientID = firstNameInput.getText() + lastNameInput.getText() + bDayInput.getText();
+                patientID = firstNameInput.getText() + lastNameInput.getText() + check.ConvertDate(bDayInput.getText());
 
 
                 errorLabel.setText("Password: " + patientID);

@@ -1,1 +1,0 @@
-{"temp":"n/a","patientID":"82746","weight":"n/a","over12":"no","bp":"n/a","height":"n/a"}

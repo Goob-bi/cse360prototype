@@ -46,7 +46,6 @@ public class Control extends Application {
             throw new RuntimeException(e);
         }
         LoginMenu authMenu = new LoginMenu(workingDir);
-        authMenu.setWorkingPath(workingDir);
     }
     /**
      * @param args the command line arguments
