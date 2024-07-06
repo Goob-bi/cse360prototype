@@ -150,6 +150,7 @@ public class StaffMessageMenu extends Menus {
         y = this.getY();
         //show menu
         this.show();
+        updatePatientList();
         this.setX(x);
         this.setY(y);
         this.requestFocus();
