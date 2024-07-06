@@ -42,6 +42,7 @@ public class PatientMenu extends Menus {
         this.patientID = ID;
         System.out.println("in patient menu id= " + patientID);
         patient = new Patient(patientID, WORKINGPATH);
+        patient.loadPatientFile();
         patient.setWorkingPath(WORKINGPATH);
         visit = new Visit(patientID, WORKINGPATH);
         visit.setWorkingPath(WORKINGPATH);

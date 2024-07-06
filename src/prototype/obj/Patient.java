@@ -52,12 +52,14 @@ public Patient(String patientID, String path) {
         System.out.println("double \n"+path);
         this.patientID = patientID;
         setWorkingPath(path);
+        buildPatientList();
     }
     
     public Patient(String path) {
         this.patientID = "";
         System.out.println("single \n"+path);
         setWorkingPath(path);
+        buildPatientList();
     }
 //-------------------public methods-------------------------------------------------
     protected String WORKINGPATH = "";
@@ -186,9 +188,15 @@ public Patient(String patientID, String path) {
         
     }
     private void buildPatientList() {
-        ja = listCheck(filePath + patientListFilename);
+        //ja = listCheck(filePath + patientListFilename);
         try {
             File file = new File(filePath + patientListFilename);
+            output = new BufferedWriter(new FileWriter(file));
+            output.write("[]");
+
+            output.close();
+
+            file = new File(WORKINGPATH + "/users.json");
             Scanner readFile = new Scanner(file);
             fileDATA = "";
             while (readFile.hasNextLine()) {
@@ -215,6 +223,8 @@ public Patient(String patientID, String path) {
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error opening staff file");
+        } catch (IOException e) {
+            System.out.println("Error opening staff file");
         }
 
     }
@@ -226,7 +236,7 @@ public Patient(String patientID, String path) {
             jo.put("username", username);
             jo.put("type", acct.toString());
 
-            System.out.println("Adding to staff list");
+            System.out.println("Adding to patient list");
             File file3 = new File(filePath + patientListFilename);
             Scanner readFile = new Scanner(file3);
             String fileDATA = "";
@@ -393,6 +403,8 @@ public Patient(String patientID, String path) {
             System.out.println("Error opening staff file");
         } catch (IOException ex) {
             System.out.println("Error opening staff file");
+        } catch (JSONException ex) {
+            System.out.println("Error opening staff file (JSON)");
         }
         return ja;
     }
@@ -410,10 +422,18 @@ public Patient(String patientID, String path) {
             if (bool) {
                 System.out.println("New File created"); 
             }
-            
+
             if (file.length() < 1) {
-                System.out.println("Empty File: populating"); 
+                System.out.println("Empty File: populating");
                 JSONObject jo = new JSONObject();
+                jo.put("patientID", patientID);
+                jo.put("firstName", "err");
+                jo.put("lastName", "err");
+                jo.put("email", "err");
+                jo.put("phone", "err");
+                jo.put("healthHist", "err");
+                jo.put("insID", "err");
+                jo.put("birthday", "00/00/0000");
                 
                 output = new BufferedWriter(new FileWriter(file));
                 output.write(jo.toString());
@@ -432,15 +452,54 @@ public Patient(String patientID, String path) {
             //CLOSE FILES WHEN DONE WITH THEM DUMMY
             readFile.close();
             JSONObject jo = new JSONObject(fileDATA);
+            if (jo.isEmpty()) {
+                jo.put("patientID", patientID);
+                jo.put("firstName", "err");
+                jo.put("lastName", "err");
+                jo.put("email", "err");
+                jo.put("phone", "err");
+                jo.put("healthHist", "err");
+                jo.put("insID", "err");
+                jo.put("birthday", "00/00/0000");
+
+                output = new BufferedWriter(new FileWriter(file));
+                output.write(jo.toString());
+
+                output.close();
+                return jo;
+
+            }
             return jo;
             
         } catch (FileNotFoundException e) {
             System.out.println("Error opening patient file3");
         } catch (IOException ex) {
             System.out.println("Error opening patient file4");
+        } catch (JSONException ex) {
+            System.out.println("Error opening staff file (JSON)");
+            File file = new File(filePath + patientID + "/" + patientID + infoName);
+            JSONObject jo = new JSONObject();
+            jo.put("patientID", patientID);
+            jo.put("firstName", "err");
+            jo.put("lastName", "err");
+            jo.put("email", "err");
+            jo.put("phone", "err");
+            jo.put("healthHist", "err");
+            jo.put("insID", "err");
+            jo.put("birthday", "00/00/0000");
+
+            try {
+                output = new BufferedWriter(new FileWriter(file));
+                output.write(jo.toString());
+                output.close();
+            } catch (IOException e) {
+                System.out.println("ewwie");
+            }
+
+            return jo;
         }
-        JSONObject jo = new JSONObject();
-        return jo;
+            JSONObject jo = new JSONObject();
+            return jo;
     }
     private Authentication.accountType getAcctType(JSONObject jo) {
         String type = jo.get("type").toString();

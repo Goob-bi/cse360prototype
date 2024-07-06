@@ -187,6 +187,11 @@ public class Menus extends Stage{
             
             case PATIENT:
                 System.out.println("ID = " + patientID);
+                if (patientID.isEmpty()) {
+                    changeTitle("Error Menu");
+                    this.setScene(ErrorMenu());
+                    this.show();
+                }
                 PatientMenu pMenu = new PatientMenu(patientID, WORKINGPATH);
                 pMenu.setWorkingPath(WORKINGPATH);
                 break;
