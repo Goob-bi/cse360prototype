@@ -6,8 +6,6 @@
  */
 package prototype;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -66,7 +64,7 @@ public class LoginMenu extends Stage{
         blueBtn.setDisable(false);
         return blueBtn;
     }
-    private Authentication authenticate;// = new Authentication(WORKINGPATH);
+    private final Authentication authenticate;// = new Authentication(WORKINGPATH);
     private String WORKINGPATH = "";
 //--------------------------------------------------------------------
 public LoginMenu(String path) {
