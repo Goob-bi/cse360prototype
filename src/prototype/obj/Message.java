@@ -53,12 +53,11 @@ interface MessageInterface {
     String getHealthFile();
     //loads data from visit number {receiverID} into a JSONObject
     JSONObject loadVisit(String fileName);
-    //returns a list of visits
-    List getVisitList();
     boolean saveVisitVitals(String over12, String weight, String height,String bodyTemp,String bloodP);
     boolean saveVisitHealth(String allergies, String healthConcerns);
 }
 
+@SuppressWarnings("ALL")
 public class Message {
 
 
@@ -67,16 +66,14 @@ public class Message {
     private String messageFile = "";
     private String fileDATA = "";
     private BufferedWriter output = null;
-    private int visitNum = 0;
 
     private int messageID = 0;
-    //private String messageID = "";
     private String patientID = "";
     private String staffID = "";
     private String receiverName = "";
     private String senderName = "";
-    private JSONObject staffO, patientO;
-    private String msgName = "_Message.txt";
+    private final JSONObject staffO, patientO;
+    private final String msgName = "_Message.txt";
     private JSONObject jo;
     private JSONArray ja;
 

@@ -6,6 +6,8 @@
  */
 package prototype;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -102,6 +104,7 @@ public LoginMenu(String path) {
         PasswordField passInput = new PasswordField();
         passInput.setPromptText("password");
 
+
         
         Button confirmBtn = BlueButton("Confirm");
         setHalignment(confirmBtn, HPos.CENTER);
@@ -144,6 +147,42 @@ public LoginMenu(String path) {
 
             }
         });
+        //hit enter in userInput
+        userInput.setOnAction(actionEvent -> {
+            failed.setVisible(false);
+            user = userInput.getText();
+            pass = passInput.getText();
+            confirmBtn.setDisable(true);
+            if (authenticate.auth(user, pass)) {
+                hideScene();
+                Menus login = new Menus(authenticate, WORKINGPATH);
+                login.setID(authenticate.getID());
+            } else {
+                System.out.println("[Info] Authentication failed!");
+                //reset page with error
+                failed.setVisible(true);
+                confirmBtn.setDisable(false);
+
+            }
+        });
+        //hit enter in passInput
+        passInput.setOnAction(actionEvent -> {
+            failed.setVisible(false);
+            user = userInput.getText();
+            pass = passInput.getText();
+            confirmBtn.setDisable(true);
+            if (authenticate.auth(user, pass)) {
+                hideScene();
+                Menus login = new Menus(authenticate, WORKINGPATH);
+                login.setID(authenticate.getID());
+            } else {
+                System.out.println("[Info] Authentication failed!");
+                //reset page with error
+                failed.setVisible(true);
+                confirmBtn.setDisable(false);
+
+            }
+        });
 
         createAcct.setOnAction(event -> {
                 changeTitle("Patient Intake");
@@ -157,6 +196,7 @@ public LoginMenu(String path) {
     public void showScene() {
         this.show();
     }
+
 //-------------------------------------------------------------------- 
     
     

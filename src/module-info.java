@@ -11,4 +11,5 @@ module cse360prototype {
     opens prototype.data to javafx.graphics;
     exports prototype.obj;
     opens prototype.obj to javafx.graphics;
+    exports org.json;
 }

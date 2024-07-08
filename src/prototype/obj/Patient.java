@@ -16,7 +16,6 @@ import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner; // Import the Scanner class to read text files
 
 import javafx.collections.FXCollections;
@@ -24,6 +23,7 @@ import javafx.collections.ObservableList;
 import org.json.*;
 import prototype.data.Authentication;
 
+@SuppressWarnings("ALL")
 interface PatientInterface {
     
     void deletePatient();
@@ -36,9 +36,10 @@ interface PatientInterface {
     JSONObject loadPatientFile();
 }
 
+@SuppressWarnings("ALL")
 public class Patient implements PatientInterface{
     
-    private String filePath = "./src/prototype/patients/";
+    private String filePath = "";   // "./src/prototype/patients/";
     private final String infoName = "_PatientInfo.txt";
     private final String patientListFilename = "patientList.txt";
     private String fileDATA = "";
@@ -378,10 +379,10 @@ public Patient(String patientID, String path) {
         JSONArray ja = new JSONArray();
         try {
             File rootPathCtrl = new File(filePath);
-            System.out.println(filePath);
+            //System.out.println(filePath); //debug
             boolean bool = rootPathCtrl.mkdir();
             if(bool){
-                System.out.println("[Info] patient Patient folder is created successfully");
+                System.out.println("[Info] Patient folder is created successfully");
             }
             File file = new File(pathToFile);
             bool = file.createNewFile();

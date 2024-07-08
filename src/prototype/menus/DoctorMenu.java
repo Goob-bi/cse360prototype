@@ -5,15 +5,12 @@
  */
 package prototype.menus;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.stage.WindowEvent;
 import org.json.JSONException;
 import prototype.data.InputValidation;
 import prototype.data.STAFFCellFactory;
@@ -53,12 +50,9 @@ public class DoctorMenu extends Menus{
         Label scenetitle = SetupTitleLabel("Welcome to " + companyName);
         layout.add(scenetitle, 0, 0);
 
-        this.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                closeExtraWindow();
-                System.out.println("[Info] bye bye");
-            }
+        this.setOnCloseRequest(windowEvent -> {
+            closeExtraWindow();
+            System.out.println("[Info] bye bye");
         });
 
         GridPane grid = new GridPane();
@@ -130,13 +124,7 @@ public class DoctorMenu extends Menus{
                 updatePatientList();
             }
         });
-        messageBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                msgPortal.showMenu();
-
-            }
-        });
+        messageBtn.setOnAction(event -> msgPortal.showMenu());
        backBtn.setOnAction(event -> {
            changeTitle("Main Menu");
            changeScene(loginScene);
@@ -358,7 +346,7 @@ public class DoctorMenu extends Menus{
     protected Scene InfoMenu() {
         //populate with contact info
         String pID, fname, lname, email, phone, healthHis, insID, bDay;
-        pID = fname = lname = email = phone = healthHis = insID = bDay = "";
+        fname = lname = email = phone = insID = bDay = "";
         try {
             jo = patient.loadPatientFile();
             //pID = jo.getString("patientID");

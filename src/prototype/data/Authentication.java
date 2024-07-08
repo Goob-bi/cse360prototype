@@ -14,6 +14,7 @@ import org.json.*;
  * @author andreas lees
  */
 
+@SuppressWarnings("ALL")
 public class Authentication {
     
     private String fileDATA ="";
