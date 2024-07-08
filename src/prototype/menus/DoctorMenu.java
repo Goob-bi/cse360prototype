@@ -109,7 +109,7 @@ public class DoctorMenu extends Menus{
             visit = new Visit(patientID, WORKINGPATH);
             visit.checkMissingData();
             changeTitle("Patient Health");
-            changeScene(patientMenu());
+            changeScene(patientVisitMenu());
         });
         patientDelBtn.setOnAction(event -> {
             if (list.getSelectionModel().getSelectedItem() == null) {
@@ -255,7 +255,7 @@ public class DoctorMenu extends Menus{
 
     }
     //--------------------------------------------------------------------
-    protected Scene patientMenu() {
+    protected Scene patientVisitMenu() {
         this.setTitle("Patient Menu");
 
         GridPane layout = new GridPane();
@@ -562,7 +562,6 @@ public class DoctorMenu extends Menus{
         return patientIntakeScene;
 
     }
-    //--------------------------------------------------------------------
     protected Scene SummaryMenu() {
 
         menu.setText("Patient Summary");

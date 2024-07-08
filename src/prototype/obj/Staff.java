@@ -65,7 +65,7 @@ public class Staff implements StaffInterface{
                     userID = jo.get("patientID").toString();
                     if (getAcctType(jo) == Authentication.accountType.DOCTOR || getAcctType(jo) == Authentication.accountType.NURSE) {
 
-                        System.out.println("Match Found");
+                        //System.out.println("Match Found");    //debug
                         addToStaffList(userID, userName, getAcctType(jo));
                     }
                 } catch (Exception e) {
@@ -84,7 +84,7 @@ public class Staff implements StaffInterface{
             jo.put("username", username);
             jo.put("type", acct.toString());
 
-            System.out.println("Adding to staff list");
+            //System.out.println("Adding to staff list");   //debug
             File file3 = new File(staffDir + staffListFilename);
             Scanner readFile = new Scanner(file3);
             String fileDATA = "";
@@ -94,7 +94,7 @@ public class Staff implements StaffInterface{
             ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
                 if (ja.getJSONObject(i).getString("patientID").equals(patientID)) {
-                    System.out.println("Already in staff list");
+                    //System.out.println("Already in staff list");  //debug
                     return;
                 }
             }
@@ -102,9 +102,9 @@ public class Staff implements StaffInterface{
             output = new BufferedWriter(new FileWriter(file3));
             output.write(ja.toString());
             output.close();
-            System.out.println("Added to staff list");
+            //System.out.println("Added to staff list");    //debug
         } catch (IOException ex) {
-            System.out.println("Error saving file");
+            System.out.println("[Staff] Error saving staff list");
         }
 
     }

@@ -29,27 +29,19 @@ import static javafx.scene.layout.GridPane.setHalignment;
  * @author andreas lees
  */
 public class PatientMenu extends Menus {
-    private Scene patientSummaryScene, patientInfoScene;
-    private JSONObject jo;
-    private Visit visit;
-    private String pName;
-    private InputValidation check = new InputValidation();
     private MessageMenu msgPortal;
 
-    //---------------Patient Menu-------------------
     PatientMenu(String ID, String path) {
         WORKINGPATH = path;
         this.patientID = ID;
-        System.out.println("in patient menu id= " + patientID);
+        //System.out.println("in patient menu id= " + patientID);   //debug
         patient = new Patient(patientID, WORKINGPATH);
         patient.loadPatientFile();
-        patient.setWorkingPath(WORKINGPATH);
         visit = new Visit(patientID, WORKINGPATH);
-        visit.setWorkingPath(WORKINGPATH);
-        visit.setVisit(visit.getCurrentVisit());
+        //visit.setVisit(visit.getCurrentVisit());
 
 
-        msgPortal = new MessageMenu(this.patientID, patient.getFirstName(), WORKINGPATH);
+        msgPortal = new MessageMenu(patientID, patient.getFirstName(), WORKINGPATH);
         this.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
@@ -58,7 +50,7 @@ public class PatientMenu extends Menus {
             }
         });
         
-        System.out.println("ID: " + patientID);
+        //System.out.println("ID: " + patientID);
         String patientName = patient.getName();
         menu.setText("Hello, " + patientName);   
         this.setTitle("Main Menu");
@@ -80,21 +72,11 @@ public class PatientMenu extends Menus {
         //grid.setGridLinesVisible(true);       //debug
         
         layout.add(grid, 0, 1);
-        
-//---------------------buttons----------------------------------------------- 
-        
-        
-//Color.LIGHTSKYBLUE
+
         Button pInfoBtn = SetupButton("Contact Info");
-        
-        
-        Button patientSumBtn = SetupButton("Last Visit Summary");
+        Button patientSumBtn = SetupButton("Visits");
         Button messageBtn = SetupButton("Message");
-        
-        //collect patient info
-        patient = new Patient(patientID, WORKINGPATH);
-        patient.setWorkingPath(WORKINGPATH);
-        
+
         column= 0;
         grid.add(pInfoBtn, column, row); 
         row++;
@@ -107,22 +89,20 @@ public class PatientMenu extends Menus {
         pInfoBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                    //load up main menu
-                    changeTitle("Patient Intake");
-                    changeScene(InfoMenu());
-                    
-                    
+                changeTitle("Contact Information");
+                changeScene(InfoMenu());
             }
             
         });
         patientSumBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                    if (patientID == null) {
-                        patientID = "";
-                    }
-                    changeTitle("Patient Health");
-                    changeScene(SummaryMenu());
+                if (patientID == null || patientID.isEmpty()) {
+                    return;
+                }
+                visit.checkMissingData();
+                changeTitle("Patient Health");
+                changeScene(patientVisitMenu());
                     
             }
         });
@@ -133,10 +113,6 @@ public class PatientMenu extends Menus {
                     patientID = "";
                 }
                 msgPortal.showMenu();
-                //changeTitle("Patient Health");
-                //changeScene(new MessageMenu().loginScene);
-
-
             }
         });
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -147,11 +123,216 @@ public class PatientMenu extends Menus {
                 changeScene(loginScene);
             }
         });
+        //
+        backVisitBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                changeTitle("Main Menu");
+                changeScene(loginScene);
+            }
+        });
         loginScene = new Scene(layout, width, height);
         this.setScene(loginScene);
         this.show();
 
-    }    
+    }
+    protected Scene patientVisitMenu() {
+        this.setTitle("Patient Visit Menu");
+
+        GridPane layout = new GridPane();
+        layout.setAlignment(Pos.CENTER);
+        //layout.setGridLinesVisible(true);     //debug
+
+        Label scenetitle = SetupTitleLabel("Visits:");
+        layout.add(scenetitle, 0, 0);
+
+        Label visitLabel = SetupTitleLabel("Latest visit: " + visit.getCurrentVisit());
+        layout.add(visitLabel, 1, 0);
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.TOP_CENTER);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.setHgap(5);
+        grid.setVgap(15);
+        layout.add(grid, 1, 1);
+
+        //Button physicalViewBtn = SetupButton("Enter Physical Data");
+        //Button medViewBtn = SetupButton("Enter Medications");
+        Button patientSumBtn = SetupButton("Visit Summary");
+        //Button newVisitBtn = SetupButton("New Visit");
+        //Button patientInfoBtn = SetupButton("Patient Info");
+        Button patientHistBtn = SetupButton("Visit History");
+
+        //collect list of visits
+        updateVisitList();
+        visitList.setPrefWidth(200);
+        visitList.setPrefHeight(300);
+        layout.add(visitList, 0, 1);
+
+        column = 0;
+        row = 0;
+        //grid.add(physicalViewBtn, column, row);
+        row++;
+        //grid.add(medViewBtn, column, row);
+        row++;
+        row++;
+        grid.add(patientSumBtn, column, row);
+        row++;
+        grid.add(patientHistBtn, column, row);
+        row++;
+        //grid.add(patientInfoBtn, column, row);
+        row++;
+        grid.add(backBtn, column, row);
+
+
+        patientSumBtn.setOnAction(event -> {
+            visitNum = visitList.getSelectionModel().getSelectedItem();
+            if (visitNum == null || !check.IntCheck(visitNum)) {
+                return;
+            }
+            visit.setVisit(Integer.parseInt(visitNum));
+            changeTitle("Patient Health");
+            changeScene(SummaryMenu());
+        });
+        patientHistBtn.setOnAction(event -> {
+            changeTitle("Patient History");
+            changeScene(HistoryMenu());
+        });
+
+        backVisitBtn.setOnAction(event -> {
+            changeTitle("Main Menu");
+            updateVisitList();
+            changeScene(patientScene);
+        });
+        patientScene = new Scene(layout, width, height);
+        return patientScene;
+    }
+    protected Scene HistoryMenu() {
+
+        menu.setText("Patient Summary");
+        GridPane layout = new GridPane();
+        menu.setAlignment(Pos.CENTER);
+        setHalignment(menu, HPos.CENTER);
+        layout.setAlignment(Pos.CENTER);
+
+        layout.add(menu, 0, 0);
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        //grid.setGridLinesVisible(true);       //debug
+
+        Label errorLabel = SetupTitleLabel("PatientID: " + patientID);
+        layout.add(errorLabel, 0, 2);
+
+
+        //load health file
+        jo = visit.loadVisitHistory();
+        String allergiesInfo = "";
+        String healthConcernsInfo = "";
+        try {
+            ja = jo.getJSONArray("allergies");
+            for(int i=0; i < ja.length(); i++) {
+                allergiesInfo = allergiesInfo.concat(ja.getString(i) + "\n");
+            }
+            ja = jo.getJSONArray("healthConc");
+            for(int i=0; i < ja.length(); i++) {
+                healthConcernsInfo = healthConcernsInfo.concat(ja.getString(i) + "\n");
+            }
+
+        } catch (JSONException e) {
+            System.out.println("[Loading Health History] No data");  //debug
+        }
+        column = 0;
+        row = 0;
+        Label allergies = SetupTitleLabel("Allergies:");
+        grid.add(allergies, column, row);
+        Label allergiesInput = SetupDataLabel(allergiesInfo);
+        row++;
+        grid.add(allergiesInput, column, row);
+
+        Label healthConc = SetupTitleLabel("Health Concerns:");
+        row++;
+        grid.add(healthConc, column, row);
+        Label healthConcInput = SetupDataLabel(healthConcernsInfo);
+        row++;
+        grid.add(healthConcInput, column, row);
+
+        //load physical file
+        String physicalInfo = "";
+        String physicalConcernsInfo = "";
+        try {
+            ja = jo.getJSONArray("phyRes");
+            for(int i=0; i < ja.length(); i++) {
+                physicalInfo = physicalInfo.concat(ja.getString(i) + "\n");
+            }
+            ja = jo.getJSONArray("phyConcerns");
+            for(int i=0; i < ja.length(); i++) {
+                physicalConcernsInfo = physicalConcernsInfo.concat(ja.getString(i) + "\n");
+            }
+
+        } catch (JSONException e) {
+            System.out.println("[Loading Physical History] No data");  //debug
+        }
+        column++;
+        row = 0;
+        Label physLbl = SetupTitleLabel("Physical Results:");
+        grid.add(physLbl, column, row);
+        Label physLblInput = SetupDataLabel(physicalInfo);
+        row++;
+        grid.add(physLblInput, column, row);
+
+        Label physConcLbl = SetupTitleLabel("Physical Concerns:");
+        row++;
+        grid.add(physConcLbl, column, row);
+        Label physConcLblInput = SetupDataLabel(physicalConcernsInfo);
+        row++;
+        grid.add(physConcLblInput, column, row);
+
+        //load medication file
+        String immunizationInfo = "";
+        String prescriptionInfo = "";
+        try {
+            ja = jo.getJSONArray("immunization");
+            for(int i=0; i < ja.length(); i++) {
+                immunizationInfo = immunizationInfo.concat(ja.getString(i) + "\n");
+            }
+            ja = jo.getJSONArray("perscription");
+            for(int i=0; i < ja.length(); i++) {
+                prescriptionInfo = prescriptionInfo.concat(ja.getString(i) + "\n");
+            }
+
+        } catch (JSONException e) {
+            System.out.println("[Loading Medication History] No data");  //debug
+        }
+        column++;
+        row = 0;
+        Label immmunLbl = SetupTitleLabel("Immunizations:");
+        grid.add(immmunLbl, column, row);
+        Label immmunLblInput = SetupDataLabel(immunizationInfo);
+        row++;
+        grid.add(immmunLblInput, column, row);
+
+        Label medLbl = SetupTitleLabel("Perscriptions:");
+        row++;
+        grid.add(medLbl, column, row);
+        Label medLblInput = SetupDataLabel(prescriptionInfo);
+        row++;
+        grid.add(medLblInput, column, row);
+
+        backVisitBtn.setAlignment(Pos.CENTER);
+        setHalignment(backVisitBtn, HPos.CENTER);
+        layout.add(backVisitBtn, 0, 2);
+
+        layout.add(grid, 0, 1);
+
+        patientSummaryScene = new Scene(layout, this.width + 100, this.height);
+        return patientSummaryScene;
+
+    }
     private Scene InfoMenu() {
         //populate with contact info
         String pID, fname, lname, email, phone, healthHis, insID, bDay;
@@ -291,7 +472,7 @@ public class PatientMenu extends Menus {
         patientInfoScene = new Scene(layout, this.width, this.height);
         return patientInfoScene;
     }
-    private Scene SummaryMenu() {
+    protected Scene SummaryMenu() {
 
         menu.setText("Patient Summary");
         GridPane layout = new GridPane();
@@ -308,19 +489,15 @@ public class PatientMenu extends Menus {
         grid.setPadding(new Insets(25, 25, 25, 25));
         //grid.setGridLinesVisible(true);       //debug
 
-        Label errorLabel = new Label();
-        errorLabel.setAlignment(Pos.CENTER);
-        setHalignment(errorLabel, HPos.CENTER);
-        errorLabel.setText("Error: Missing input");
+        Label errorLabel = SetupTitleLabel("Error: Missing input");
         errorLabel.setVisible(false);
-        layout.add(errorLabel, 0, 3);
+        layout.add(errorLabel, 0, 2);
 
         errorLabel.setText("PatientID: " + patientID);
         errorLabel.setVisible(true);
 
         //load health file
         jo = visit.loadVisit(visit.getHealthFile());
-        //System.out.println(jo.toString());
         String allergiesInfo = "";
         String healthConcernsInfo = "";
         try {
@@ -328,34 +505,25 @@ public class PatientMenu extends Menus {
             healthConcernsInfo = jo.getString("healthConc");
 
         } catch (JSONException e) {
-            System.out.println("no data");  //debug
+            System.out.println("[Loading Health File] No data");  //debug
         }
         column = 0;
         row = 0;
-        Label allergies = new Label("Allergies:");
+        Label allergies = SetupTitleLabel("Allergies:");
         grid.add(allergies, column, row);
-        Label allergiesInput = new Label();
-        allergiesInput.setText(allergiesInfo);
-        allergiesInput.setBorder(border);
-        allergiesInput.setMinHeight(100);
-        allergiesInput.setMinWidth(200);
+        Label allergiesInput = SetupDataLabel(allergiesInfo);
         row++;
         grid.add(allergiesInput, column, row);
 
-        Label healthConc = new Label("Health Concerns:");
+        Label healthConc = SetupTitleLabel("Health Concerns:");
         row++;
         grid.add(healthConc, column, row);
-        Label healthConcInput = new Label();
-        healthConcInput.setText(healthConcernsInfo);
-        healthConcInput.setBorder(border);
-        healthConcInput.setMinHeight(100);
-        healthConcInput.setMinWidth(200);
+        Label healthConcInput = SetupDataLabel(healthConcernsInfo);
         row++;
         grid.add(healthConcInput, column, row);
 
         //load physical file
         jo = visit.loadVisit(visit.getPhysicalFile());
-        //System.out.println(jo.toString());
         String physicalInfo = "";
         String physicalConcernsInfo = "";
         try {
@@ -363,34 +531,25 @@ public class PatientMenu extends Menus {
             physicalConcernsInfo = jo.getString("phyConcerns");
 
         } catch (JSONException e) {
-            System.out.println("no data");  //debug
+            System.out.println("[Loading Physical File] No data");  //debug
         }
         column++;
         row = 0;
-        Label physLbl = new Label("Physical Results:");
+        Label physLbl = SetupTitleLabel("Physical Results:");
         grid.add(physLbl, column, row);
-        Label physLblInput = new Label();
-        physLblInput.setText(physicalInfo);
-        physLblInput.setBorder(border);
-        physLblInput.setMinHeight(100);
-        physLblInput.setMinWidth(200);
+        Label physLblInput = SetupDataLabel(physicalInfo);
         row++;
         grid.add(physLblInput, column, row);
 
-        Label physConcLbl = new Label("Physical Concerns:");
+        Label physConcLbl = SetupTitleLabel("Physical Concerns:");
         row++;
         grid.add(physConcLbl, column, row);
-        Label physConcLblInput = new Label();
-        physConcLblInput.setText(physicalConcernsInfo);
-        physConcLblInput.setBorder(border);
-        physConcLblInput.setMinHeight(100);
-        physConcLblInput.setMinWidth(200);
+        Label physConcLblInput = SetupDataLabel(physicalConcernsInfo);
         row++;
         grid.add(physConcLblInput, column, row);
 
         //load medication file
         jo = visit.loadVisit(visit.getMedFile());
-        //System.out.println(jo.toString());
         String immunizationInfo = "";
         String prescriptionInfo = "";
         try {
@@ -398,34 +557,27 @@ public class PatientMenu extends Menus {
             prescriptionInfo = jo.getString("perscription");
 
         } catch (JSONException e) {
-            System.out.println("no data");  //debug
+            System.out.println("[Loading Medication File] No data");  //debug
         }
         column++;
         row = 0;
-        Label immmunLbl = new Label("Physical Results:");
+        Label immmunLbl = SetupTitleLabel("Immunizations:");
         grid.add(immmunLbl, column, row);
-        Label immmunLblInput = new Label();
-        immmunLblInput.setText(immunizationInfo);
-        immmunLblInput.setBorder(border);
-        immmunLblInput.setMinHeight(100);
-        immmunLblInput.setMinWidth(200);
+        Label immmunLblInput = SetupDataLabel(immunizationInfo);
         row++;
         grid.add(immmunLblInput, column, row);
 
-        Label medLbl = new Label("Physical Concerns:");
+        Label medLbl = SetupTitleLabel("Prescriptions:");
         row++;
         grid.add(medLbl, column, row);
-        Label medLblInput = new Label();
-        medLblInput.setText(prescriptionInfo);
-        medLblInput.setBorder(border);
-        medLblInput.setMinHeight(100);
-        medLblInput.setMinWidth(200);
+        Label medLblInput = SetupDataLabel(prescriptionInfo);
         row++;
         grid.add(medLblInput, column, row);
 
         //load vitals file
+
+        Label vitalLblInput = SetupDataLabel("");
         jo = visit.loadVisit(visit.getVitalFile());
-        //System.out.println(jo.toString());
 
         String over12 =  "";
         String weight = "";
@@ -439,20 +591,20 @@ public class PatientMenu extends Menus {
             bodyTemp = jo.getString("temp");
             bloodP = jo.getString("bp");
 
+            vitalLblInput.setText(
+                    "Over 12: " + over12 + "\n" +
+                            "Weight: " + weight + "\n" +
+                            "Height: " + pHeight + "\n" +
+                            "Body Temp: " + bodyTemp + "\n" +
+                            "Blood Pressure: " + bloodP);
+
         } catch (JSONException e) {
-            System.out.println("no data");  //debug
+            System.out.println("[Loading Vitals File] No data");  //debug
         }
         column++;
         row = 0;
-        Label vitalLbl = new Label("Vitals:");
+        Label vitalLbl = SetupTitleLabel("Vitals:");
         grid.add(vitalLbl, column, row);
-        Label vitalLblInput = new Label();
-        vitalLblInput.setText(
-                "Over 12: " + over12 + "\n" +
-                        "Weight: " + weight + "\n" +
-                        "Height: " + pHeight + "\n" +
-                        "Body Temp: " + bodyTemp + "\n" +
-                        "Blood Pressure: " + bloodP);
         vitalLblInput.setBorder(border);
         vitalLblInput.setMinHeight(100);
         vitalLblInput.setMinWidth(200);
@@ -461,9 +613,9 @@ public class PatientMenu extends Menus {
 
 
 
-        backBtn.setAlignment(Pos.CENTER);
-        setHalignment(backBtn, HPos.CENTER);
-        layout.add(backBtn, 0, 2);
+        backVisitBtn.setAlignment(Pos.CENTER);
+        setHalignment(backVisitBtn, HPos.CENTER);
+        layout.add(backVisitBtn, 0, 2);
 
         layout.add(grid, 0, 1);
 

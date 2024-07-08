@@ -27,7 +27,7 @@ public class NurseMenu extends DoctorMenu {
     }
 //--------------------------------------------------------------------
     @Override
-    protected Scene patientMenu() {
+    protected Scene patientVisitMenu() {
         this.setTitle("Patient Menu");
                
         GridPane layout = new GridPane();

@@ -67,7 +67,8 @@ public Visit(String ID, String path) {
         this.patientID = ID;
         this.patientDir = rootPath + patientID + "/";
         setWorkingPath(path);
-        if (getCurrentVisit() < 1) {
+        this.visitNum = getCurrentVisit();
+        if (visitNum < 1) {
             incrementVisit();
         }
 
@@ -117,6 +118,7 @@ public Visit(String ID, String path) {
     }
     @Override
     public void incrementVisit() {
+        System.out.println("incrementing visit");
         this.visitNum = getCurrentVisit();
         visitNum++;
         if (!dirCheck(visitNum)) {
@@ -189,7 +191,7 @@ public Visit(String ID, String path) {
                     }
                 }
             }
-            System.out.println("largest dir(curr visit) " + temp);
+            //System.out.println("largest dir(curr visit) " + temp);    //debug
         }
         //if patient ID is empty or no files exist, return 0, there are no visits
         return temp;

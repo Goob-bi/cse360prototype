@@ -190,16 +190,23 @@ public Patient(String patientID, String path) {
         }
         
     }
-    private void buildPatientList() {
-        //ja = listCheck(filePath + patientListFilename);
+    private void resetPatientListFile() {
         try {
             File file = new File(filePath + patientListFilename);
+            file.createNewFile();
             output = new BufferedWriter(new FileWriter(file));
             output.write("[]");
-
             output.close();
+            buildPatientList();
 
-            file = new File(WORKINGPATH + "/users.json");
+        } catch (IOException e) {
+            System.out.println("[Patient] Error opening patient file");
+        }
+    }
+    private void buildPatientList() {
+        try {
+
+            File file = new File(WORKINGPATH + "/users.json");
             Scanner readFile = new Scanner(file);
             fileDATA = "";
             while (readFile.hasNextLine()) {
@@ -216,18 +223,16 @@ public Patient(String patientID, String path) {
                     userName = jo.get("username").toString();
                     userID = jo.get("patientID").toString();
                     if (getAcctType(jo) == Authentication.accountType.PATIENT) {
-
-                        System.out.println("Match Found");
+                        //System.out.println("Match Found");    //debug
                         addToPatientList(userID, userName, getAcctType(jo));
                     }
                 } catch (Exception e) {
-                    //System.out.println("bad file");
+                    System.out.println("[Patient] Malformed file, rebuilding");
+                    resetPatientListFile();
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening staff file");
-        } catch (IOException e) {
-            System.out.println("Error opening staff file");
+            System.out.println("[Patient] Error patient file not found");
         }
 
     }
@@ -239,7 +244,7 @@ public Patient(String patientID, String path) {
             jo.put("username", username);
             jo.put("type", acct.toString());
 
-            System.out.println("Adding to patient list");
+            //System.out.println("Adding to patient list"); //debug
             File file3 = new File(filePath + patientListFilename);
             Scanner readFile = new Scanner(file3);
             String fileDATA = "";
@@ -249,7 +254,7 @@ public Patient(String patientID, String path) {
             ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
                 if (ja.getJSONObject(i).getString("patientID").equals(patientID)) {
-                    System.out.println("Already in patient list");
+                    //System.out.println("Already in patient list");    //debug
                     return;
                 }
             }
@@ -257,7 +262,7 @@ public Patient(String patientID, String path) {
             output = new BufferedWriter(new FileWriter(file3));
             output.write(ja.toString());
             output.close();
-            System.out.println("Added to patient list");
+            System.out.println("[Patient] Added to patient list");  //debug
         } catch (IOException ex) {
             System.out.println("Error saving file");
         }

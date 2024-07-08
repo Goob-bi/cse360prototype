@@ -140,15 +140,15 @@ public class Message {
             Staff staff = new Staff(WORKINGPATH);
             staff.setWorkingPath(WORKINGPATH);
             List<JSONObject> staffList = staff.getStaffList();
-            System.out.println("filelist: "+fileList.toString());
-            System.out.println(staffList.size());
+            //System.out.println("filelist: "+fileList.toString());
+            //System.out.println(staffList.size());
             for (int i=0; i < staffList.size(); i++) {
-                System.out.println(i);
+                //System.out.println(i);
                 //if fileList contains a matching staffID, add it to list
                 ID = staffList.get(i).getString("patientID");
                 if (fileList.contains(ID + msgName) && staffID.equals(ID)) {
                     File msgFile = new File(patientMsgDir + ID + msgName);
-                    System.out.println("found matching message file");
+                    //System.out.println("found matching message file");
                     Scanner readFile = null;
                     try {
                         readFile = new Scanner(msgFile);
@@ -188,7 +188,7 @@ public class Message {
             String[] files = file.list();
             //parse through the directory list
             if (files.length < 1) {
-                System.out.println("\nfile to short\n");    //debug
+                //System.out.println("\nfile to short\n");    //debug
                 return message;
             }
             temp = new File(patientMsgDir + files[0]);
@@ -196,16 +196,19 @@ public class Message {
                 current = new File(patientMsgDir + files[i]);
                 //if the current file was modified a shorter
                 //time ago than temp
+                /*
                 System.out.println(
                         files[i] + "\n" +
                         "current " + current.getName() + " modif: " + current.lastModified()
                         + "\ntemp " + temp.getName() + " modif: " + temp.lastModified()
                 );
+
+                 */
                 if (current.lastModified() > temp.lastModified()) {
                     temp = new File(patientMsgDir + files[i]);
                 }
             }
-            System.out.println("last modified message " + temp.getName());
+            //System.out.println("last modified message " + temp.getName());    //debug
             Scanner readFile = null;
             try {
                 readFile = new Scanner(temp);
@@ -221,13 +224,14 @@ public class Message {
             }
             //CLOSE FILES WHEN DONE WITH THEM DUMMY
             readFile.close();
-            System.out.println("data: " + fileDATA);
+            //System.out.println("data: " + fileDATA);
             ja = new JSONArray(fileDATA);
             int lastMsg = ja.length() - 1;
             message = ja.getJSONObject(lastMsg);
+            return message;
 
         }
-        //if patient ID is empty or no files exist, return 0, there are no visits
+        //if patient ID is empty or no files exist, return 0, there are no messages
 
         System.out.println("\nempty id or file not exist\n");    //debug
         return message;

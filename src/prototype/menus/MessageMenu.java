@@ -37,7 +37,6 @@ public class MessageMenu extends Menus {
     private void updateStaffList() {
         //collect list of patients
         staff = new Staff(WORKINGPATH);
-        staff.setWorkingPath(WORKINGPATH);
         //JSONCellFactory jitems = = FXCollections.observableArrayList (staff.getStaffList());
         //ObservableList<JSONObject> items = FXCollections.observableArrayList (staff.getStaffList());
         list.setCellFactory(new STAFFCellFactory());
@@ -57,7 +56,6 @@ public class MessageMenu extends Menus {
         recentMsg.setBorder(border);
         setHalignment(recentMsg, HPos.CENTER);
         Message recentMsgO = new Message(patientO, WORKINGPATH);
-        recentMsgO.setWorkingPath(WORKINGPATH);
         JSONObject jo1 = recentMsgO.getRecentMessage();
         String recentMsgTxt = "";
         try {
