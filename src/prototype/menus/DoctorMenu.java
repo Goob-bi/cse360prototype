@@ -334,6 +334,7 @@ public class DoctorMenu extends Menus{
                 return;
             }
             visit.setVisit(Integer.parseInt(visitNum));
+            System.out.println("[Info] loading visit #" + visitNum);
             changeTitle("Patient Health");
             changeScene(SummaryMenu());
         });

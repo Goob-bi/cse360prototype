@@ -213,6 +213,7 @@ public Visit(String ID, String path) {
 
     @Override
     public JSONObject loadVisit(String fileName) {
+        //System.out.println("[Info] loading visit #" + visitNum);
         if (patientID.isEmpty()) {
             jo = new JSONObject();
             return jo;
