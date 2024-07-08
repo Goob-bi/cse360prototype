@@ -35,7 +35,7 @@ public class Authentication {
     }
 
 //--------------------------------------------------------------------  
-public Authentication(String path){
+    public Authentication(String path){
         WORKINGPATH = path;
         this.userFile = WORKINGPATH + "/users.json";
         this.type = accountType.NONE;

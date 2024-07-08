@@ -31,9 +31,24 @@ interface PatientInterface {
     String getName();
     String getFirstName();
     boolean savePatient(String firstName, String lastName,String email,String phone,String healthHist,String insID, String bDay);
+    void setWorkingPath(String path);
+    String getID();
     //returns a list of patients
     ObservableList<JSONObject> getPatientList();
     JSONObject loadPatientFile();
+    /*
+    Private methods:
+        JSONArray listCheck(String pathToFile);
+        JSONObject fileCheck();
+        Authentication.accountType getAcctType(JSONObject jo);
+        void delSubFiles(File file);
+        void resetPatientListFile();
+        buildPatientList();
+        void addToPatientList(String patientID, String username, Authentication.accountType acct);
+        void removeFromPatientList();
+        void addToUserList();
+        void removeFromUserList();
+     */
 }
 
 @SuppressWarnings("ALL")
@@ -49,7 +64,7 @@ public class Patient implements PatientInterface{
     private JSONArray ja;
     
 //--------------------constructors------------------------------------------------
-public Patient(String patientID, String path) {
+    public Patient(String patientID, String path) {
         this.patientID = patientID;
         setWorkingPath(path);
         buildPatientList();

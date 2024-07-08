@@ -53,6 +53,7 @@ public class Staff implements StaffInterface{
             while (readFile.hasNextLine()) {
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
+            readFile.close();
             JSONArray ja = new JSONArray(fileDATA);
             String userInfo, userName, userID;
 
@@ -89,6 +90,7 @@ public class Staff implements StaffInterface{
             while (readFile.hasNextLine()) {
                 fileDATA = fileDATA.concat(readFile.nextLine());
             }
+            readFile.close();
             ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
                 if (ja.getJSONObject(i).getString("patientID").equals(patientID)) {

@@ -36,29 +36,29 @@ messages stored in JSONArray
 
 messages stored as JSONObject containing:
         ("from", senderID)  who sent it
-        ("to", receiverID)  who it was meant for
+        ("to", receiverID)  who it sent to
         ("msgTitle", msgTitle)  title/subject of message
         ("msgBody", msgBody)    message contents
         ("msgID", messageID)    unique ID to identify message
    {from:senderID, to:receiverID, msgTitle:"Title", msgBody:"This is the message", msgID:1}
  */
 interface MessageInterface {
-    //adds a new visit and increments receiverID
-    void incrementVisit();
-    //sets receiverID to num if directory num exists
-    void setVisit(String ID);
-    //returns latest visit
-    String getRecentMessage();
-    //returns the suffix for the health info file
-    String getHealthFile();
-    //loads data from visit number {receiverID} into a JSONObject
-    JSONObject loadVisit(String fileName);
-    boolean saveVisitVitals(String over12, String weight, String height,String bodyTemp,String bloodP);
-    boolean saveVisitHealth(String allergies, String healthConcerns);
+    ObservableList<JSONObject> getMessageList();
+    JSONObject getRecentMessage();
+    void setFromPatient();
+    void setFromStaff();
+    JSONObject getRecentStaffMessage(String staffID);
+    JSONObject loadMessageID(String ID);
+    boolean saveMessage(String msgTitle, String msgBody);
+    void setWorkingPath(String path);
+    /*
+    Private methods:
+        JSONArray fileCheck();
+     */
 }
 
 @SuppressWarnings("ALL")
-public class Message {
+public class Message implements MessageInterface{
 
 
     private String rootPath = "./src/prototype/patients/";
@@ -112,6 +112,7 @@ public class Message {
         }
     }
 //------------------public methods--------------------------------------------------
+    @Override
     public void setFromPatient() {
         receiverName = staffO.getString("username");
         senderName = patientO.getString("patientName");
