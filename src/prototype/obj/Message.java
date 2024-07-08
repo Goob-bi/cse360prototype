@@ -248,7 +248,7 @@ public class Message {
             String[] files = file.list();
             //parse through the directory list
             if (files == null || files.length < 1) {
-                System.out.println("[Error] file to short");    //debug
+                System.out.println("[Error] no message files");    //debug
                 return message;
             }
             for (int i = 0; i < files.length; i++) {
@@ -361,7 +361,7 @@ public class Message {
 
             return true;
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving file");
+            System.out.println("[Error] Error saving message file");
         }
         return false;
     }

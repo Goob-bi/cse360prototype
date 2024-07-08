@@ -137,7 +137,7 @@ public Patient(String patientID, String path) {
             addToUserList();
             return true;
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving file");
+            System.out.println("[Error] Error saving patient file");
         }
         
         return false;
@@ -264,7 +264,7 @@ public Patient(String patientID, String path) {
             output.close();
             //System.out.println("[Info] Added to patient list");  //debug
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving file");
+            System.out.println("[Error] Error saving patient list");
         }
 
     }
@@ -299,7 +299,7 @@ public Patient(String patientID, String path) {
 
 
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving file");
+            System.out.println("[Error] Error saving patient list");
         }
         
     }
@@ -335,7 +335,7 @@ public Patient(String patientID, String path) {
             
             
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving file");
+            System.out.println("[Error] Error saving user list");
         }
         
     }
@@ -370,7 +370,7 @@ public Patient(String patientID, String path) {
             
             
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving file");
+            System.out.println("[Error] Error saving user list");
         }
         
     }
@@ -378,9 +378,10 @@ public Patient(String patientID, String path) {
         JSONArray ja = new JSONArray();
         try {
             File rootPathCtrl = new File(filePath);
+            System.out.println(filePath);
             boolean bool = rootPathCtrl.mkdir();
             if(bool){
-                System.out.println("[Info] Staff folder is created successfully");
+                System.out.println("[Info] patient Patient folder is created successfully");
             }
             File file = new File(pathToFile);
             bool = file.createNewFile();
@@ -407,9 +408,9 @@ public Patient(String patientID, String path) {
             ja = new JSONArray(fileDATA);
             return ja;
         } catch (FileNotFoundException e) {
-            System.out.println("[Error] staff file not found");
+            System.out.println("[Error] patient file not found");
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving staff file");
+            System.out.println("[Error] Error saving patient file");
         } catch (JSONException ex) {
             System.out.println("[Error] bad file (JSON)");
         }

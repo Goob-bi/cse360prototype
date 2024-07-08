@@ -67,6 +67,18 @@ public Visit(String ID, String path) {
         this.patientID = ID;
         this.patientDir = rootPath + patientID + "/";
         setWorkingPath(path);
+        //check that patient folder exists
+        File rootPathCtrl = new File(patientDir);
+        boolean bool = rootPathCtrl.mkdir();
+        if(bool){
+            System.out.println("[Info] Patient folder is created successfully");
+        }
+        rootPathCtrl = new File(visitDir);
+        bool = rootPathCtrl.mkdir();
+        if(bool){
+            System.out.println("[Info] Visit folder is created successfully");
+        }
+
         this.visitNum = getCurrentVisit();
         if (visitNum < 1) {
             incrementVisit();
@@ -297,7 +309,7 @@ public Visit(String ID, String path) {
             
             return true;
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving file");
+            System.out.println("[Error] Error saving vitals file");
         }
         
         return false;
@@ -324,7 +336,7 @@ public Visit(String ID, String path) {
             
             return true;
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving file");
+            System.out.println("[Error] Error saving health file");
         }
         
         return false;
@@ -350,7 +362,7 @@ public Visit(String ID, String path) {
 
             return true;
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving file");
+            System.out.println("[Error] Error saving medicine file");
         }
 
         return false;
@@ -376,7 +388,7 @@ public Visit(String ID, String path) {
 
             return true;
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving file");
+            System.out.println("[Error] Error saving physical file");
         }
 
         return false;
@@ -412,7 +424,7 @@ public Visit(String ID, String path) {
             rootPathCtrl = new File(visitDir);
             bool = rootPathCtrl.mkdir();  
             if(bool){  
-               System.out.println("[Info] Patient folder is created successfully");
+               System.out.println("[Info] Visit folder is created successfully");
             }
             // check/create file---------------------
             File file = new File(visitDir + patientID + fileName);
