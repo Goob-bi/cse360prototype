@@ -203,7 +203,6 @@ public class Menus extends Stage{
         
         this.hide();
         this.patientID = auth.getID();
-        //System.out.println(patientID);
         this.acctType = auth.getType();
         switch (acctType) {
             case ADMIN:
@@ -218,7 +217,7 @@ public class Menus extends Stage{
                 break;
             
             case PATIENT:
-                System.out.println("ID = " + patientID);
+                //System.out.println("[Info] ID = " + patientID);
                 if (patientID.isEmpty()) {
                     changeTitle("Error Menu");
                     this.setScene(ErrorMenu());

@@ -74,7 +74,7 @@ public LoginMenu(String path) {
         height = 400;
        //Authentication authenticate = new Authentication();
 
-       System.out.println(WORKINGPATH);
+       //System.out.println("[Info] Path: " + WORKINGPATH);
 //---------------------grid-----------------------------------------------         
         GridPane layout = new GridPane();
         layout.setAlignment(Pos.CENTER);
@@ -137,7 +137,7 @@ public LoginMenu(String path) {
                 Menus login = new Menus(authenticate, WORKINGPATH);
                 login.setID(authenticate.getID());
             } else {
-                System.out.println("authentication failed");
+                System.out.println("[Info] Authentication failed!");
                 //reset page with error
                 failed.setVisible(true);
                 confirmBtn.setDisable(false);

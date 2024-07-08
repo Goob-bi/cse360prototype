@@ -64,16 +64,14 @@ public class Staff implements StaffInterface{
                     userName = jo.get("username").toString();
                     userID = jo.get("patientID").toString();
                     if (getAcctType(jo) == Authentication.accountType.DOCTOR || getAcctType(jo) == Authentication.accountType.NURSE) {
-
-                        //System.out.println("Match Found");    //debug
                         addToStaffList(userID, userName, getAcctType(jo));
                     }
                 } catch (Exception e) {
-                    //System.out.println("bad file");
+                    System.out.println("[Error] bad file");
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening staff file");
+            System.out.println("[Error]  staff file not found");
         }
 
     }
@@ -104,7 +102,7 @@ public class Staff implements StaffInterface{
             output.close();
             //System.out.println("Added to staff list");    //debug
         } catch (IOException ex) {
-            System.out.println("[Staff] Error saving staff list");
+            System.out.println("[Error] Couldn't save staff list");
         }
 
     }
@@ -125,7 +123,7 @@ public class Staff implements StaffInterface{
                 jo.getString("type");
                 items.add(jo);
             } catch (JSONException e) {
-                System.out.println("key doesnt exist");
+                System.out.println("[Error] key doesnt exist");
             }
         }
         return items;
@@ -137,16 +135,16 @@ public class Staff implements StaffInterface{
             File rootPathCtrl = new File(staffDir);
             boolean bool = rootPathCtrl.mkdir();
             if(bool){
-                System.out.println("Staff folder is created successfully");
+                System.out.println("[Info] Staff folder is created successfully");  //debug
             }
             File file = new File(pathToFile);
             bool = file.createNewFile();
             if (bool) {
-                System.out.println("New File created");
+                System.out.println("[Info] New File created");  //debug
             }
 
             if (file.length() < 1) {
-                System.out.println("Empty File: populating");
+                System.out.println("[Info] Empty File: populating");    //debug
                 output = new BufferedWriter(new FileWriter(file));
                 output.write("[]");
 
@@ -164,9 +162,9 @@ public class Staff implements StaffInterface{
             ja = new JSONArray(fileDATA);
             return ja;
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening staff file");
+            System.out.println("[Error] staff file not found");
         } catch (IOException ex) {
-            System.out.println("Error opening staff file");
+            System.out.println("[Error] Couldn't save staff file");
         }
         return ja;
     }

@@ -81,7 +81,7 @@ public Visit(String ID, String path) {
             jo.getString("healthConc");
 
         } catch (JSONException e) {
-            System.out.println("[Loading Health File] No data");  //debug
+            System.out.println("[Error] Loading Health File: No data");  //debug
             return false;
         }
         jo = loadVisit(getPhysicalFile());
@@ -90,7 +90,7 @@ public Visit(String ID, String path) {
             jo.getString("phyConcerns");
 
         } catch (JSONException e) {
-            System.out.println("[Loading Physical File] No data");  //debug
+            System.out.println("[Error] Loading Physical File: No data");  //debug
             return false;
         }
         jo = loadVisit(getMedFile());
@@ -99,7 +99,7 @@ public Visit(String ID, String path) {
             jo.getString("perscription");
 
         } catch (JSONException e) {
-            System.out.println("[Loading Medication File] No data");  //debug
+            System.out.println("[Error] Loading Medication File: No data");  //debug
             return false;
         }
         jo = loadVisit(getVitalFile());
@@ -110,7 +110,7 @@ public Visit(String ID, String path) {
             jo.getString("temp");
             jo.getString("bp");
         } catch (JSONException e) {
-            System.out.println("[Loading Vitals File] No data");  //debug
+            System.out.println("[Error] Loading Vitals File: No data");  //debug
             return false;
         }
         return true;
@@ -118,14 +118,14 @@ public Visit(String ID, String path) {
     }
     @Override
     public void incrementVisit() {
-        System.out.println("incrementing visit");
+        System.out.println("[Info] incrementing visit");
         this.visitNum = getCurrentVisit();
         visitNum++;
         if (!dirCheck(visitNum)) {
             File rootPathCtrl = new File(rootPath + patientID + "/" + visitNum + "/");
             boolean bool = rootPathCtrl.mkdir();  
             if(bool){  
-               System.out.println("New Visit folder is created successfully");  
+               System.out.println("[Info] New Visit folder is created successfully");
             }
             
         }
@@ -227,6 +227,7 @@ public Visit(String ID, String path) {
     }
     public JSONObject loadVisitHistory() {
         JSONObject jo = new JSONObject();
+        System.out.println("[Info] loading visit history");
 
         if (patientID.isEmpty()) {
             return jo;
@@ -248,19 +249,19 @@ public Visit(String ID, String path) {
                     jo.append("allergies", "[" + visitNum + "] " + loadVisit(healthName).getString("allergies"));
                     jo.append("healthConc", "[" + visitNum + "] " + loadVisit(healthName).getString("healthConc"));
                 } catch (JSONException e) {
-                    System.out.println("No allergy/health concern data for visit " + visitNum);
+                    System.out.println("[Error] No allergy/health concern data for visit " + visitNum);
                 }
                 try {
                     jo.append("phyRes", "[" + visitNum + "] " + loadVisit(physicalName).getString("phyRes"));
                     jo.append("phyConcerns", "[" + visitNum + "] " + loadVisit(physicalName).getString("phyConcerns"));
                 } catch (JSONException e) {
-                    System.out.println("No physical concern data for visit " + visitNum);
+                    System.out.println("[Error] No physical concern data for visit " + visitNum);
                 }
                 try {
                     jo.append("immunization", "[" + visitNum + "] " + loadVisit(medsName).getString("immunization"));
                     jo.append("perscription", "[" + visitNum + "] " + loadVisit(medsName).getString("perscription"));
                 } catch (JSONException e) {
-                    System.out.println("No immunization/prescription data for visit " + visitNum);
+                    System.out.println("[Error] No immunization/prescription data for visit " + visitNum);
                 }
             }
             return jo;
@@ -284,18 +285,18 @@ public Visit(String ID, String path) {
         jo.put("temp", bodyTemp);
         jo.put("bp", bloodP);
         //save to file
-        System.out.println("Saving file");
+        //System.out.println("[Info] Saving file");
 
         try {
             output = new BufferedWriter(new FileWriter(file));
             output.write(jo.toString());
 
             output.close();
-            System.out.println("File Saved"); 
+            //System.out.println("[Info] File Saved");
             
             return true;
         } catch (IOException ex) {
-            System.out.println("Error saving file"); 
+            System.out.println("[Error] Error saving file");
         }
         
         return false;
@@ -311,18 +312,18 @@ public Visit(String ID, String path) {
         jo.put("allergies", allergies);
         jo.put("healthConc", healthConcerns);
         //save to file
-        System.out.println("Saving file");
+        //System.out.println("[Info] Saving file");
 
         try {
             output = new BufferedWriter(new FileWriter(file));
             output.write(jo.toString());
 
             output.close();
-            System.out.println("File Saved"); 
+            //System.out.println("[Info] File Saved");
             
             return true;
         } catch (IOException ex) {
-            System.out.println("Error saving file"); 
+            System.out.println("[Error] Error saving file");
         }
         
         return false;
@@ -337,18 +338,18 @@ public Visit(String ID, String path) {
         jo.put("immunization", immunization);
         jo.put("perscription", perscription);
         //save to file
-        System.out.println("Saving file");
+        //System.out.println("[Info] Saving file");
 
         try {
             output = new BufferedWriter(new FileWriter(file));
             output.write(jo.toString());
 
             output.close();
-            System.out.println("File Saved");
+            //System.out.println("[Info] File Saved");
 
             return true;
         } catch (IOException ex) {
-            System.out.println("Error saving file");
+            System.out.println("[Error] Error saving file");
         }
 
         return false;
@@ -363,18 +364,18 @@ public Visit(String ID, String path) {
         jo.put("phyRes", phyResult);
         jo.put("phyConcerns", PhysConcerns);
         //save to file
-        System.out.println("Saving file");
+        //System.out.println("[Info] Saving file");
 
         try {
             output = new BufferedWriter(new FileWriter(file));
             output.write(jo.toString());
 
             output.close();
-            System.out.println("File Saved");
+            //System.out.println("[Info] File Saved");
 
             return true;
         } catch (IOException ex) {
-            System.out.println("Error saving file");
+            System.out.println("[Error] Error saving file");
         }
 
         return false;
@@ -405,22 +406,22 @@ public Visit(String ID, String path) {
             }
             boolean bool = rootPathCtrl.mkdir();  
             if(bool){  
-               System.out.println("Patient folder is created successfully");  
+               System.out.println("[Info] Patient folder is created successfully");
             }
             rootPathCtrl = new File(visitDir);
             bool = rootPathCtrl.mkdir();  
             if(bool){  
-               System.out.println("Patient folder is created successfully");  
+               System.out.println("[Info] Patient folder is created successfully");
             }
             // check/create file---------------------
             File file = new File(visitDir + patientID + fileName);
             bool = file.createNewFile();
             if (bool) {
-                System.out.println("New File created"); 
+                System.out.println("[Info] New File created");
             }
             
             if (file.length() < 1) {
-                System.out.println("Empty File: populating"); 
+                System.out.println("[Info] Empty File: populating");
                 jo = new JSONObject();
                 
                 output = new BufferedWriter(new FileWriter(file));
@@ -443,9 +444,9 @@ public Visit(String ID, String path) {
             return jo;
             
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening visit file");
+            System.out.println("[Error] visit file not found");
         } catch (IOException ex) {
-            System.out.println("Error opening visit file");
+            System.out.println("[Error] Error saving visit file");
         }
         JSONObject jo = new JSONObject();
         return jo;

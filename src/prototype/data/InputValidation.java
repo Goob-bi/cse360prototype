@@ -38,16 +38,16 @@ public class InputValidation {
          */
         //test with format dd/mm/yyyy
         if (date.length() != 10) {
-            System.out.println("wrong length");
+            System.out.println("[Error] Date is wrong length");
             return false;
         }
         for (int i = 0; i < date.length(); i++) {
             if ((i == 2 || i ==5) && !(date.charAt(i) == '/')){
-                System.out.println("/ in wrong spot");
+                System.out.println("[Error] '/' in wrong spot");
                 return false;
             } else if (i != 2 && i !=5 && !Character.isDigit(date.charAt(i))) {
 
-                System.out.println("not number: " + date.charAt(i));
+                System.out.println("[Error] Not a number: " + date.charAt(i));
                 return false;
             }
         }

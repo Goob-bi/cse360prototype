@@ -75,12 +75,12 @@ public Patient(String patientID, String path) {
             //check file/dir exists then delete it
             if (!file.delete()) {
                 //if dir contains files
-                System.out.println("Couldnt delete, non-empty dir");   //debug
+                System.out.println("[Info] Non-empty dir, deleting sub-files");   //debug
                 delSubFiles(file);
                 file.delete();
             }
         }
-        System.out.println("Deleted!");   //debug
+        System.out.println("[Info] Deleted patient!");   //debug
             removeFromPatientList();
             removeFromUserList();
     }
@@ -100,7 +100,7 @@ public Patient(String patientID, String path) {
         try {
             return jo.getString("firstName");
         } catch (JSONException e) {
-            System.out.println("bad patient name");
+            System.out.println("[Error] bad file");
             return "";
         }
     }
@@ -123,21 +123,21 @@ public Patient(String patientID, String path) {
         jo.put("insID", insID);
         jo.put("birthday", bDay);
         //save to file
-        System.out.println("Saving file");
+        System.out.println("[Info] Saving patient file");   //debug
 
         try {
             output = new BufferedWriter(new FileWriter(file));
             output.write(jo.toString());
 
             output.close();
-            System.out.println("File Saved"); 
+            //System.out.println("[Info] File Saved"); //debug
             //add to patientList
             addToPatientList(patientID, firstName, Authentication.accountType.PATIENT);
             //add to userList
             addToUserList();
             return true;
         } catch (IOException ex) {
-            System.out.println("Error saving file"); 
+            System.out.println("[Error] Error saving file");
         }
         
         return false;
@@ -159,7 +159,7 @@ public Patient(String patientID, String path) {
                 jo.getString("type");
                 items.add(jo);
             } catch (JSONException e) {
-                System.out.println("key doesnt exist");
+                System.out.println("[Error] key doesnt exist");
             }
         }
         return items;
@@ -200,7 +200,7 @@ public Patient(String patientID, String path) {
             buildPatientList();
 
         } catch (IOException e) {
-            System.out.println("[Patient] Error opening patient file");
+            System.out.println("[Error] Error opening patient file");
         }
     }
     private void buildPatientList() {
@@ -227,12 +227,12 @@ public Patient(String patientID, String path) {
                         addToPatientList(userID, userName, getAcctType(jo));
                     }
                 } catch (Exception e) {
-                    System.out.println("[Patient] Malformed file, rebuilding");
+                    System.out.println("[Error] Malformed file, rebuilding");
                     resetPatientListFile();
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("[Patient] Error patient file not found");
+            System.out.println("[Error] Error patient file not found");
         }
 
     }
@@ -244,7 +244,7 @@ public Patient(String patientID, String path) {
             jo.put("username", username);
             jo.put("type", acct.toString());
 
-            //System.out.println("Adding to patient list"); //debug
+            //System.out.println("[Info] Adding to patient list"); //debug
             File file3 = new File(filePath + patientListFilename);
             Scanner readFile = new Scanner(file3);
             String fileDATA = "";
@@ -254,7 +254,7 @@ public Patient(String patientID, String path) {
             ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
                 if (ja.getJSONObject(i).getString("patientID").equals(patientID)) {
-                    //System.out.println("Already in patient list");    //debug
+                    //System.out.println("[Info] Already in patient list");    //debug
                     return;
                 }
             }
@@ -262,9 +262,9 @@ public Patient(String patientID, String path) {
             output = new BufferedWriter(new FileWriter(file3));
             output.write(ja.toString());
             output.close();
-            System.out.println("[Patient] Added to patient list");  //debug
+            //System.out.println("[Info] Added to patient list");  //debug
         } catch (IOException ex) {
-            System.out.println("Error saving file");
+            System.out.println("[Error] Error saving file");
         }
 
     }
@@ -273,8 +273,7 @@ public Patient(String patientID, String path) {
         try {
             JSONObject jo2;
 
-            //JSONArray ja = new JSONArray();
-            System.out.println("Removing from user list");
+            System.out.println("[Info] Removing from patient list");   //debug
             File file3 = new File(filePath + patientListFilename);
             Scanner readFile = new Scanner(file3);
             String fileDATA = "";
@@ -287,7 +286,7 @@ public Patient(String patientID, String path) {
             for (int i=0; i < ja.length(); i++) {
                 jo2 = new JSONObject(ja.get(i).toString());
                 if (jo2.has("patientID") && jo2.getString("patientID").equals(patientID)) {
-                    System.out.println("Match found");
+                    //System.out.println("[Info] Match found"); //debug
                     ja.remove(i);
                     break;
                 }
@@ -296,11 +295,11 @@ public Patient(String patientID, String path) {
             output.write(ja.toString());
 
             output.close();
-            System.out.println("Removed from user list");
+            //System.out.println("[Info] Removed from patient list");  //debug
 
 
         } catch (IOException ex) {
-            System.out.println("Error saving file");
+            System.out.println("[Error] Error saving file");
         }
         
     }
@@ -313,7 +312,7 @@ public Patient(String patientID, String path) {
             jo2.put("type", "PATIENT");
             
             //JSONArray ja = new JSONArray();
-            System.out.println("Adding to user list"); 
+            //System.out.println("[Info] Adding to user list");   //debug
             File file3 = new File(WORKINGPATH + "/users.json");
             Scanner readFile = new Scanner(file3);
             String fileDATA = "";
@@ -323,7 +322,7 @@ public Patient(String patientID, String path) {
             JSONArray ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
                 if (ja.getJSONObject(i).getString("patientID").equals(patientID)) {
-                    System.out.println("Already in user list");
+                    //System.out.println("[Info] Already in user list");    //debug
                     return;
                 }
             }
@@ -332,11 +331,11 @@ public Patient(String patientID, String path) {
             output.write(ja.toString());
 
             output.close();
-            System.out.println("Added to user list"); 
+            //System.out.println("[Info] Added to user list"); //debug
             
             
         } catch (IOException ex) {
-            System.out.println("Error saving file"); 
+            System.out.println("[Error] Error saving file");
         }
         
     }
@@ -345,7 +344,7 @@ public Patient(String patientID, String path) {
             JSONObject jo2;
             
             //JSONArray ja = new JSONArray();
-            System.out.println("Removing from user list"); 
+            System.out.println("[Info] Removing from user list");
             File file3 = new File(WORKINGPATH + "/users.json");
             Scanner readFile = new Scanner(file3);
             String fileDATA = "";
@@ -358,7 +357,7 @@ public Patient(String patientID, String path) {
             for (int i=0; i < ja.length(); i++) {
                 jo2 = new JSONObject(ja.get(i).toString());
                 if (jo2.has("patientID") && jo2.getString("patientID").equals(patientID)) {
-                    System.out.println("Match found"); 
+                    //System.out.println("[Info] Match found");
                     ja.remove(i);
                     break;
                 }
@@ -367,11 +366,11 @@ public Patient(String patientID, String path) {
             output.write(ja.toString());
 
             output.close();
-            System.out.println("Removed from user list"); 
+            //System.out.println("[Info] Removed from user list");
             
             
         } catch (IOException ex) {
-            System.out.println("Error saving file"); 
+            System.out.println("[Error] Error saving file");
         }
         
     }
@@ -381,16 +380,16 @@ public Patient(String patientID, String path) {
             File rootPathCtrl = new File(filePath);
             boolean bool = rootPathCtrl.mkdir();
             if(bool){
-                System.out.println("Staff folder is created successfully");
+                System.out.println("[Info] Staff folder is created successfully");
             }
             File file = new File(pathToFile);
             bool = file.createNewFile();
             if (bool) {
-                System.out.println("New File created");
+                System.out.println("[Info] New File created");
             }
 
             if (file.length() < 1) {
-                System.out.println("Empty File: populating");
+                System.out.println("[Info] Empty File: populating");
                 output = new BufferedWriter(new FileWriter(file));
                 output.write("[]");
 
@@ -408,11 +407,11 @@ public Patient(String patientID, String path) {
             ja = new JSONArray(fileDATA);
             return ja;
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening staff file");
+            System.out.println("[Error] staff file not found");
         } catch (IOException ex) {
-            System.out.println("Error opening staff file");
+            System.out.println("[Error] Error saving staff file");
         } catch (JSONException ex) {
-            System.out.println("Error opening staff file (JSON)");
+            System.out.println("[Error] bad file (JSON)");
         }
         return ja;
     }
@@ -422,17 +421,17 @@ public Patient(String patientID, String path) {
             File filePathCtrl = new File(filePath + patientID);
             boolean bool = filePathCtrl.mkdir();  
             if(bool){  
-               System.out.println("Folder is created successfully");  
+               System.out.println("[Info] Folder is created successfully");
             }
             // check/create file---------------------
             File file = new File(filePath + patientID + "/" + patientID + infoName);
             bool = file.createNewFile();
             if (bool) {
-                System.out.println("New File created"); 
+                System.out.println("[Info] New File created");
             }
 
             if (file.length() < 1) {
-                System.out.println("Empty File: populating");
+                System.out.println("[Info] Empty File: populating");
                 JSONObject jo = new JSONObject();
                 jo.put("patientID", patientID);
                 jo.put("firstName", "err");
@@ -480,11 +479,11 @@ public Patient(String patientID, String path) {
             return jo;
             
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening patient file3");
+            System.out.println("[Error] patient file not found");
         } catch (IOException ex) {
-            System.out.println("Error opening patient file4");
+            System.out.println("[Error] Error saving patient file");
         } catch (JSONException ex) {
-            System.out.println("Error opening staff file (JSON)");
+            System.out.println("[Error] bad file (JSON)");
             File file = new File(filePath + patientID + "/" + patientID + infoName);
             JSONObject jo = new JSONObject();
             jo.put("patientID", patientID);
@@ -501,7 +500,7 @@ public Patient(String patientID, String path) {
                 output.write(jo.toString());
                 output.close();
             } catch (IOException e) {
-                System.out.println("ewwie");
+                System.out.println("[Error] ewwie");
             }
 
             return jo;

@@ -68,19 +68,18 @@ public Authentication(String path){
                     userPass = jo.get("pass").toString();
                     userID = jo.get("patientID").toString();
                     if (userName.equals(username) && userPass.equals(password)) {
-                        System.out.println("Match Found");
                         //check what account type it is and set it
                         this.type = getAcctType(jo);
-                        System.out.println("Account Type: " + this.type.toString());
+                        System.out.println("[Info] Account Type: " + this.type.toString());
                         return true;
                     }
                 } catch (Exception e) {
-                    System.out.println("Bad File");
+                    System.out.println("[Error] Bad File");
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening user file");
-            System.out.println(userFile);   //debug
+            System.out.println("[Error] User file not found");
+            //System.out.println("[Info] File:" + userFile);   //debug
         }
         return false;
     }

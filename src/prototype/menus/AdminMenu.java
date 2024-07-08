@@ -73,7 +73,7 @@ public class AdminMenu extends Menus{
                     items.add(jo);
                 }
             } catch (JSONException e) {
-                System.out.println("key doesnt exist");
+                System.out.println("[Error] key doesnt exist");
             }
         }
         return items;
@@ -93,7 +93,7 @@ public class AdminMenu extends Menus{
             jo2.put("type", type);
 
             //JSONArray ja = new JSONArray();
-            System.out.println("Adding to user list");
+            System.out.println("[Info] Adding to user list");
             File file3 = new File(WORKINGPATH + "/users.json");
             Scanner readFile = new Scanner(file3);
             String fileDATA = "";
@@ -103,7 +103,7 @@ public class AdminMenu extends Menus{
             JSONArray ja = new JSONArray(fileDATA);
             for (int i = 0; i < ja.length(); i++) {
                 if (ja.getJSONObject(i).getString("patientID").equals(patientID)) {
-                    System.out.println("Already in user list");
+                    //System.out.println("[Info] Already in user list");
                     return;
                 }
             }
@@ -112,11 +112,11 @@ public class AdminMenu extends Menus{
             output.write(ja.toString());
 
             output.close();
-            System.out.println("Added to user list");
+            //System.out.println("[Info] Added to user list");
 
 
         } catch (IOException ex) {
-            System.out.println("Error saving file");
+            System.out.println("[Error] Couldn't save user file");
         }
 
     }
@@ -125,7 +125,7 @@ public class AdminMenu extends Menus{
             JSONObject jo2;
 
             //JSONArray ja = new JSONArray();
-            System.out.println("Removing from user list");
+            System.out.println("[Info] Removing from user list");
             File file3 = new File(WORKINGPATH + "/users.json");
             Scanner readFile = new Scanner(file3);
             String fileDATA = "";
@@ -138,7 +138,7 @@ public class AdminMenu extends Menus{
             for (int i=0; i < ja.length(); i++) {
                 jo2 = new JSONObject(ja.get(i).toString());
                 if (jo2.has("patientID") && jo2.getString("patientID").equals(patientID)) {
-                    System.out.println("Match found");
+                    //System.out.println("[Info] Match found");
                     ja.remove(i);
                     break;
                 }
@@ -147,11 +147,11 @@ public class AdminMenu extends Menus{
             output.write(ja.toString());
 
             output.close();
-            System.out.println("Removed from user list");
+            //System.out.println("[Info] Removed from user list");
 
 
         } catch (IOException ex) {
-            System.out.println("Error saving file");
+            System.out.println("[Error] Couldn't save user file");
         }
 
     }
@@ -182,7 +182,7 @@ public class AdminMenu extends Menus{
             @Override
             public void handle(WindowEvent windowEvent) {
                 closeExtraWindow();
-                System.out.println("bye bye");
+                System.out.println("[Info] bye bye");
             }
         });
 

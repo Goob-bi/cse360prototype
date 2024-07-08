@@ -34,11 +34,9 @@ public class PatientMenu extends Menus {
     PatientMenu(String ID, String path) {
         WORKINGPATH = path;
         this.patientID = ID;
-        //System.out.println("in patient menu id= " + patientID);   //debug
         patient = new Patient(patientID, WORKINGPATH);
         patient.loadPatientFile();
         visit = new Visit(patientID, WORKINGPATH);
-        //visit.setVisit(visit.getCurrentVisit());
 
 
         msgPortal = new MessageMenu(patientID, patient.getFirstName(), WORKINGPATH);
@@ -46,7 +44,7 @@ public class PatientMenu extends Menus {
             @Override
             public void handle(WindowEvent windowEvent) {
                 msgPortal.close();
-                System.out.println("bye bye");
+                System.out.println("[Info] bye bye");
             }
         });
         
@@ -244,7 +242,7 @@ public class PatientMenu extends Menus {
             }
 
         } catch (JSONException e) {
-            System.out.println("[Loading Health History] No data");  //debug
+            System.out.println("[Error] Loading Health History: No data");  //debug
         }
         column = 0;
         row = 0;
@@ -275,7 +273,7 @@ public class PatientMenu extends Menus {
             }
 
         } catch (JSONException e) {
-            System.out.println("[Loading Physical History] No data");  //debug
+            System.out.println("[Error] Loading Physical History: No data");  //debug
         }
         column++;
         row = 0;
@@ -306,7 +304,7 @@ public class PatientMenu extends Menus {
             }
 
         } catch (JSONException e) {
-            System.out.println("[Loading Medication History] No data");  //debug
+            System.out.println("[Error] Loading Medication History: No data");  //debug
         }
         column++;
         row = 0;
@@ -349,7 +347,7 @@ public class PatientMenu extends Menus {
             bDay = jo.getString("birthday");
 
         } catch (JSONException e) {
-            System.out.println("bad file");
+            System.out.println("[Error] Bad file");
         }
 
         menu.setText("Patient Intake Form");
@@ -428,13 +426,13 @@ public class PatientMenu extends Menus {
                 if (firstNameInput.getText().isEmpty() || lastNameInput.getText().isEmpty() || emailInput.getText().isEmpty() ||
                         phoneInput.getText().isEmpty() || bDayInput.getText().isEmpty() || insuranceInput.getText().isEmpty()) {
 
-                    System.out.println("missing input"); //debug
+                    System.out.println("[Error] Missing input"); //debug
                     errorLabel.setText("Error: Missing input");
                     errorLabel.setVisible(true);
                 } else {
                     //patientID is fistName, lastName, birthday
                     if (!check.DateCheck(bDayInput.getText()) || !check.NameCheck(firstNameInput.getText()) || !check.NameCheck(lastNameInput.getText())) {
-                        System.out.println("Bad format input");
+                        System.out.println("[Error] Bad format input");
                         errorLabel.setVisible(true);
                         errorLabel.setText("Error: Bad input");
                         return;
@@ -505,7 +503,7 @@ public class PatientMenu extends Menus {
             healthConcernsInfo = jo.getString("healthConc");
 
         } catch (JSONException e) {
-            System.out.println("[Loading Health File] No data");  //debug
+            System.out.println("[Error] Loading Health File: No data");  //debug
         }
         column = 0;
         row = 0;
@@ -531,7 +529,7 @@ public class PatientMenu extends Menus {
             physicalConcernsInfo = jo.getString("phyConcerns");
 
         } catch (JSONException e) {
-            System.out.println("[Loading Physical File] No data");  //debug
+            System.out.println("[Error] Loading Physical File: No data");  //debug
         }
         column++;
         row = 0;
@@ -557,7 +555,7 @@ public class PatientMenu extends Menus {
             prescriptionInfo = jo.getString("perscription");
 
         } catch (JSONException e) {
-            System.out.println("[Loading Medication File] No data");  //debug
+            System.out.println("[Error] Loading Medication File: No data");  //debug
         }
         column++;
         row = 0;
@@ -599,7 +597,7 @@ public class PatientMenu extends Menus {
                             "Blood Pressure: " + bloodP);
 
         } catch (JSONException e) {
-            System.out.println("[Loading Vitals File] No data");  //debug
+            System.out.println("[Error] Loading Vitals File: No data");  //debug
         }
         column++;
         row = 0;

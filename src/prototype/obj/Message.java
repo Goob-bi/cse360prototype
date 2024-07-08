@@ -89,7 +89,6 @@ public class Message {
             this.patientMsgDir = rootPath + "badID" + "/messages/";
         }
     }
-
     //-------------------constructors-------------------------------------------------
     public Message(JSONObject patient, String path) {
         setWorkingPath(path);
@@ -140,10 +139,7 @@ public class Message {
             Staff staff = new Staff(WORKINGPATH);
             staff.setWorkingPath(WORKINGPATH);
             List<JSONObject> staffList = staff.getStaffList();
-            //System.out.println("filelist: "+fileList.toString());
-            //System.out.println(staffList.size());
             for (int i=0; i < staffList.size(); i++) {
-                //System.out.println(i);
                 //if fileList contains a matching staffID, add it to list
                 ID = staffList.get(i).getString("patientID");
                 if (fileList.contains(ID + msgName) && staffID.equals(ID)) {
@@ -153,7 +149,7 @@ public class Message {
                     try {
                         readFile = new Scanner(msgFile);
                     } catch (FileNotFoundException e) {
-                        System.out.println("file not found");
+                        System.out.println("[Error] file not found");
                         return list;
                     }
                     //---------------------------------------
@@ -213,7 +209,7 @@ public class Message {
             try {
                 readFile = new Scanner(temp);
             } catch (FileNotFoundException e) {
-                System.out.println("file not found");
+                System.out.println("[Error] file not found");
                 return message;
             }
             //---------------------------------------
@@ -233,7 +229,7 @@ public class Message {
         }
         //if patient ID is empty or no files exist, return 0, there are no messages
 
-        System.out.println("\nempty id or file not exist\n");    //debug
+        System.out.println("[Error] empty id or file not exist");    //debug
         return message;
 
     }
@@ -252,7 +248,7 @@ public class Message {
             String[] files = file.list();
             //parse through the directory list
             if (files == null || files.length < 1) {
-                System.out.println("\nfile to short\n");    //debug
+                System.out.println("[Error] file to short");    //debug
                 return message;
             }
             for (int i = 0; i < files.length; i++) {
@@ -270,7 +266,7 @@ public class Message {
             try {
                 readFile = new Scanner(temp);
             } catch (FileNotFoundException e) {
-                System.out.println("file not found");
+                System.out.println("[Error] file not found");
                 return message;
             }
             //---------------------------------------
@@ -300,7 +296,7 @@ public class Message {
         }
         ja = fileCheck();
         if (ja.isEmpty()) {
-            System.out.println("bad file");
+            System.out.println("[Error] bad file");
             return jo;
         }
         String compareStr = "";
@@ -338,14 +334,14 @@ public class Message {
 
         ja.put(jo);
         //save to file
-        System.out.println("Saving file");
+        System.out.println("[Info] Saving message file");
 
         try {
             output = new BufferedWriter(new FileWriter(file));
             output.write(ja.toString());
 
             output.close();
-            System.out.println("File Saved");
+            //System.out.println("[Info] File Saved");
 
             //save to staff message dir
             file = new File(WORKINGPATH + "/staff/");
@@ -360,12 +356,12 @@ public class Message {
             output.write(ja.toString());
 
             output.close();
-            System.out.println("File Saved to staff messages");
+            //System.out.println("[Info] File Saved to staff messages");
 
 
             return true;
         } catch (IOException ex) {
-            System.out.println("Error saving file");
+            System.out.println("[Error] Error saving file");
         }
         return false;
     }
@@ -379,20 +375,19 @@ public class Message {
             File rootPathCtrl = new File(patientMsgDir);
             boolean bool = rootPathCtrl.mkdir();
             if(bool){
-                System.out.println("Patient message folder is created successfully");
+                System.out.println("[Info] Patient message folder is created successfully");  //debug
             }
             // check/create file---------------------
             File file = new File(messageFile);
             bool = file.createNewFile();
             if (bool) {
-                System.out.println("New File created");
+                System.out.println("[Info] New File created");  //debug
             }
             //try storing messages as a message array
             if (file.length() < 1) {
-                System.out.println("Empty File: populating");
+                System.out.println("[Info] Empty File: populating");
                 ja = new JSONArray();
 
-                System.out.println("Empty File: populating");
                 output = new BufferedWriter(new FileWriter(file));
                 output.write("[]");
 
@@ -411,9 +406,9 @@ public class Message {
             return ja;
 
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening message file");
+            System.out.println("[Error] Message file not found");
         } catch (IOException ex) {
-            System.out.println("Error opening message file");
+            System.out.println("[Error] Error opening message file");
         }
         ja = new JSONArray();
         return ja;
