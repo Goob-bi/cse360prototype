@@ -302,7 +302,7 @@ public Visit(String ID, String path) {
 
         try {
             output = new BufferedWriter(new FileWriter(file));
-            output.write(jo.toString());
+            output.write(jo.toString(2));
 
             output.close();
             //System.out.println("[Info] File Saved");
@@ -329,7 +329,7 @@ public Visit(String ID, String path) {
 
         try {
             output = new BufferedWriter(new FileWriter(file));
-            output.write(jo.toString());
+            output.write(jo.toString(2));
 
             output.close();
             //System.out.println("[Info] File Saved");
@@ -355,7 +355,7 @@ public Visit(String ID, String path) {
 
         try {
             output = new BufferedWriter(new FileWriter(file));
-            output.write(jo.toString());
+            output.write(jo.toString(2));
 
             output.close();
             //System.out.println("[Info] File Saved");
@@ -381,7 +381,7 @@ public Visit(String ID, String path) {
 
         try {
             output = new BufferedWriter(new FileWriter(file));
-            output.write(jo.toString());
+            output.write(jo.toString(2));
 
             output.close();
             //System.out.println("[Info] File Saved");
@@ -438,7 +438,7 @@ public Visit(String ID, String path) {
                 jo = new JSONObject();
                 
                 output = new BufferedWriter(new FileWriter(file));
-                output.write(jo.toString());
+                output.write(jo.toString(2));
                 
                 output.close();
                 return jo;

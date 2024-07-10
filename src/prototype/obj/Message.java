@@ -336,7 +336,7 @@ public class Message implements MessageInterface{
 
         try {
             output = new BufferedWriter(new FileWriter(file));
-            output.write(ja.toString());
+            output.write(ja.toString(2));
 
             output.close();
             //System.out.println("[Info] File Saved");
@@ -351,7 +351,7 @@ public class Message implements MessageInterface{
                 file.createNewFile();
             }
             output = new BufferedWriter(new FileWriter(file));
-            output.write(ja.toString());
+            output.write(ja.toString(2));
 
             output.close();
             //System.out.println("[Info] File Saved to staff messages");

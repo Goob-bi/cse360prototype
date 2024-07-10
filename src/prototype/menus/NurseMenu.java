@@ -118,6 +118,7 @@ public class NurseMenu extends DoctorMenu {
             changeTitle("Patient History");
             changeScene(HistoryMenu());
         });
+        ButtonType testBut = new ButtonType("Ok");
         newVisitBtn.setOnAction(event -> {
             //stop creating new visit if missing data
             if (!visit.checkMissingData()) {

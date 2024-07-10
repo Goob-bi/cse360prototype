@@ -123,7 +123,6 @@ public class Patient implements PatientInterface{
     public String getID() {
         return patientID;
     }
-    
     @Override
     public boolean savePatient(String firstName, String lastName,String email,String phone,String healthHist,String insID, String bDay) {
         
@@ -143,7 +142,7 @@ public class Patient implements PatientInterface{
 
         try {
             output = new BufferedWriter(new FileWriter(file));
-            output.write(jo.toString());
+            output.write(jo.toString(2));
 
             output.close();
             //System.out.println("[Info] File Saved"); //debug
@@ -276,7 +275,7 @@ public class Patient implements PatientInterface{
             }
             ja.put(jo);
             output = new BufferedWriter(new FileWriter(file3));
-            output.write(ja.toString());
+            output.write(ja.toString(2));
             output.close();
             //System.out.println("[Info] Added to patient list");  //debug
         } catch (IOException ex) {
@@ -308,7 +307,7 @@ public class Patient implements PatientInterface{
                 }
             }
             output = new BufferedWriter(new FileWriter(file3));
-            output.write(ja.toString());
+            output.write(ja.toString(2));
 
             output.close();
             //System.out.println("[Info] Removed from patient list");  //debug
@@ -344,7 +343,7 @@ public class Patient implements PatientInterface{
             }
             ja.put(jo2);
             output = new BufferedWriter(new FileWriter(file3));
-            output.write(ja.toString());
+            output.write(ja.toString(2));
 
             output.close();
             //System.out.println("[Info] Added to user list"); //debug
@@ -379,7 +378,7 @@ public class Patient implements PatientInterface{
                 }
             }
             output = new BufferedWriter(new FileWriter(file3));
-            output.write(ja.toString());
+            output.write(ja.toString(2));
 
             output.close();
             //System.out.println("[Info] Removed from user list");
@@ -433,12 +432,18 @@ public class Patient implements PatientInterface{
         return ja;
     }
     private JSONObject fileCheck() {
+        System.out.println(filePath+ " id: " + patientID);
         try {
             // check/create folder--------------------
-            File filePathCtrl = new File(filePath + patientID);
-            boolean bool = filePathCtrl.mkdir();  
-            if(bool){  
+            File filePathCtrl = new File(filePath);
+            boolean bool = filePathCtrl.mkdir();
+            if(bool){
                System.out.println("[Info] Folder is created successfully");
+            }
+            filePathCtrl = new File(filePath + patientID);
+            bool = filePathCtrl.mkdir();
+            if(bool){
+                System.out.println("[Info] Folder is created successfully");
             }
             // check/create file---------------------
             File file = new File(filePath + patientID + "/" + patientID + infoName);
@@ -460,7 +465,7 @@ public class Patient implements PatientInterface{
                 jo.put("birthday", "00/00/0000");
                 
                 output = new BufferedWriter(new FileWriter(file));
-                output.write(jo.toString());
+                output.write(jo.toString(2));
                 
                 output.close();
                 return jo;
@@ -487,7 +492,7 @@ public class Patient implements PatientInterface{
                 jo.put("birthday", "00/00/0000");
 
                 output = new BufferedWriter(new FileWriter(file));
-                output.write(jo.toString());
+                output.write(jo.toString(2));
 
                 output.close();
                 return jo;
@@ -498,7 +503,7 @@ public class Patient implements PatientInterface{
         } catch (FileNotFoundException e) {
             System.out.println("[Error] patient file not found");
         } catch (IOException ex) {
-            System.out.println("[Error] Error saving patient file");
+            System.out.println("[Error] Error saving patient file (filecheck)");
         } catch (JSONException ex) {
             System.out.println("[Error] bad file (JSON)");
             File file = new File(filePath + patientID + "/" + patientID + infoName);
@@ -514,7 +519,7 @@ public class Patient implements PatientInterface{
 
             try {
                 output = new BufferedWriter(new FileWriter(file));
-                output.write(jo.toString());
+                output.write(jo.toString(2));
                 output.close();
             } catch (IOException e) {
                 System.out.println("[Error] ewwie");

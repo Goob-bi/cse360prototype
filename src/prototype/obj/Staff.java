@@ -100,7 +100,7 @@ public class Staff implements StaffInterface{
             }
             ja.put(jo);
             output = new BufferedWriter(new FileWriter(file3));
-            output.write(ja.toString());
+            output.write(ja.toString(2));
             output.close();
             //System.out.println("Added to staff list");    //debug
         } catch (IOException ex) {

@@ -109,7 +109,7 @@ public class AdminMenu extends Menus{
             }
             ja.put(jo2);
             output = new BufferedWriter(new FileWriter(file3));
-            output.write(ja.toString());
+            output.write(ja.toString(2));
 
             output.close();
             //System.out.println("[Info] Added to user list");
@@ -144,7 +144,7 @@ public class AdminMenu extends Menus{
                 }
             }
             output = new BufferedWriter(new FileWriter(file3));
-            output.write(ja.toString());
+            output.write(ja.toString(2));
 
             output.close();
             //System.out.println("[Info] Removed from user list");

@@ -7,6 +7,7 @@ package prototype;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import org.json.JSONArray;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -46,6 +47,7 @@ public class Control extends Application {
     }
     private void setupStorage(String users) {
         System.out.println("[Debug] Working Directory = " + System.getProperty("user.dir"));
+        JSONArray ja = new JSONArray(users);
         workingDir = System.getProperty("user.dir");
         File file = new File(workingDir + "/storage/");
         file.mkdirs();
@@ -55,7 +57,7 @@ public class Control extends Application {
             if (file.createNewFile()) {
                 System.out.println("[Info] Creating user list");
                 output = new BufferedWriter(new FileWriter(file));
-                output.write(users);
+                output.write(ja.toString(2));
 
                 output.close();
                 //System.out.println("File Saved");
